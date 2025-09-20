@@ -21,6 +21,26 @@ export interface FinancialGoal {
   isCompleted: boolean;
 }
 
+export interface Debt {
+  id: string;
+  name: string;
+  totalAmount: number;
+  remainingAmount: number;
+  interestRate: number;
+  minimumPayment: number;
+  dueDate: string;
+  category: string;
+  isActive: boolean;
+  payments: DebtPayment[];
+}
+
+export interface DebtPayment {
+  id: string;
+  amount: number;
+  date: string;
+  type: 'minimum' | 'extra';
+}
+
 export interface Tag {
   id: string;
   name: string;
@@ -33,6 +53,7 @@ interface FinancialContextType {
   monthlyStartingPoint: number;
   recurringTransactions: RecurringTransaction[];
   goals: FinancialGoal[];
+  debts: Debt[];
   tags: Tag[];
   currency: string;
   isDarkMode: boolean;
@@ -47,6 +68,10 @@ interface FinancialContextType {
   addGoal: (goal: Omit<FinancialGoal, 'id'>) => void;
   updateGoal: (id: string, updates: Partial<FinancialGoal>) => void;
   deleteGoal: (id: string) => void;
+  addDebt: (debt: Omit<Debt, 'id' | 'payments'>) => void;
+  updateDebt: (id: string, updates: Partial<Debt>) => void;
+  deleteDebt: (id: string) => void;
+  addDebtPayment: (debtId: string, payment: Omit<DebtPayment, 'id'>) => void;
   addTag: (tag: Omit<Tag, 'id'>) => void;
   updateTag: (id: string, updates: Partial<Tag>) => void;
   deleteTag: (id: string) => void;
@@ -67,6 +92,7 @@ export function FinancialProvider({ children }: { children: React.ReactNode }) {
   const [monthlyStartingPoint, setMonthlyStartingPointState] = useState<number>(755);
   const [recurringTransactions, setRecurringTransactions] = useState<RecurringTransaction[]>([]);
   const [goals, setGoals] = useState<FinancialGoal[]>([]);
+  const [debts, setDebts] = useState<Debt[]>([]);
   const [tags, setTags] = useState<Tag[]>([
     { id: '1', name: 'Essential', color: '#ef4444' },
     { id: '2', name: 'Luxury', color: '#8b5cf6' },
@@ -82,6 +108,7 @@ export function FinancialProvider({ children }: { children: React.ReactNode }) {
     const savedStartingPoint = localStorage.getItem('potsStartingPoint');
     const savedRecurring = localStorage.getItem('potsRecurringTransactions');
     const savedGoals = localStorage.getItem('potsGoals');
+    const savedDebts = localStorage.getItem('potsDebts');
     const savedTags = localStorage.getItem('potsTags');
     const savedCurrency = localStorage.getItem('potsCurrency');
     const savedTheme = localStorage.getItem('potsTheme');
@@ -102,6 +129,10 @@ export function FinancialProvider({ children }: { children: React.ReactNode }) {
 
     if (savedGoals) {
       setGoals(JSON.parse(savedGoals));
+    }
+
+    if (savedDebts) {
+      setDebts(JSON.parse(savedDebts));
     }
 
     if (savedTags) {
@@ -135,6 +166,10 @@ export function FinancialProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     localStorage.setItem('potsGoals', JSON.stringify(goals));
   }, [goals]);
+
+  useEffect(() => {
+    localStorage.setItem('potsDebts', JSON.stringify(debts));
+  }, [debts]);
 
   useEffect(() => {
     localStorage.setItem('potsTags', JSON.stringify(tags));
@@ -238,6 +273,47 @@ export function FinancialProvider({ children }: { children: React.ReactNode }) {
     setGoals(prev => prev.filter(g => g.id !== id));
   };
 
+  const addDebt = (newDebt: Omit<Debt, 'id' | 'payments'>) => {
+    const debt: Debt = {
+      ...newDebt,
+      id: Date.now().toString(),
+      payments: []
+    };
+    setDebts(prev => [...prev, debt]);
+  };
+
+  const updateDebt = (id: string, updates: Partial<Debt>) => {
+    setDebts(prev => 
+      prev.map(d => d.id === id ? { ...d, ...updates } : d)
+    );
+  };
+
+  const deleteDebt = (id: string) => {
+    setDebts(prev => prev.filter(d => d.id !== id));
+  };
+
+  const addDebtPayment = (debtId: string, payment: Omit<DebtPayment, 'id'>) => {
+    const paymentWithId: DebtPayment = {
+      ...payment,
+      id: Date.now().toString()
+    };
+    
+    setDebts(prev => 
+      prev.map(debt => {
+        if (debt.id === debtId) {
+          const newRemainingAmount = Math.max(0, debt.remainingAmount - payment.amount);
+          return {
+            ...debt,
+            remainingAmount: newRemainingAmount,
+            isActive: newRemainingAmount > 0,
+            payments: [...debt.payments, paymentWithId]
+          };
+        }
+        return debt;
+      })
+    );
+  };
+
   const addTag = (newTag: Omit<Tag, 'id'>) => {
     const tag = {
       ...newTag,
@@ -333,6 +409,7 @@ export function FinancialProvider({ children }: { children: React.ReactNode }) {
       monthlyStartingPoint,
       recurringTransactions,
       goals,
+      debts,
       tags,
       currency,
       isDarkMode,
@@ -347,6 +424,10 @@ export function FinancialProvider({ children }: { children: React.ReactNode }) {
       addGoal,
       updateGoal,
       deleteGoal,
+      addDebt,
+      updateDebt,
+      deleteDebt,
+      addDebtPayment,
       addTag,
       updateTag,
       deleteTag,

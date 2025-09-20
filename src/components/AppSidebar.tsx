@@ -19,6 +19,7 @@ import {
     { title: "Categories", url: "/categories", icon: PieChart },
     { title: "Budget", url: "/budget", icon: Target },
     { title: "Goals", url: "/goals", icon: Flag },
+    { title: "Debts", url: "/debts", icon: CreditCard },
     { title: "Recurring", url: "/recurring", icon: RefreshCw },
     { title: "Calendar", url: "/calendar", icon: Calendar },
     { title: "Settings", url: "/settings", icon: Settings },

@@ -11,6 +11,7 @@ import Index from "./pages/Index";
 import Analytics from "./pages/Analytics";
 import Transactions from "./pages/Transactions";
 import Goals from "./pages/Goals";
+import Debts from "./pages/Debts";
 import Recurring from "./pages/Recurring";
 import Categories from "./pages/Categories";
 import Calendar from "./pages/Calendar";
@@ -42,6 +43,7 @@ const App = () => (
                     <Route path="/analytics" element={<Analytics />} />
                     <Route path="/transactions" element={<Transactions />} />
                     <Route path="/goals" element={<Goals />} />
+                    <Route path="/debts" element={<Debts />} />
                     <Route path="/recurring" element={<Recurring />} />
                     <Route path="/categories" element={<Categories />} />
                     <Route path="/budget" element={<Budget />} />
