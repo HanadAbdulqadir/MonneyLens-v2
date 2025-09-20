@@ -2,8 +2,11 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useFinancial } from "@/contexts/FinancialContext";
 import { useState, useMemo } from "react";
-import { Plus, Download, Filter, BarChart3 } from "lucide-react";
+import { Plus, Download, Filter, BarChart3, Upload } from "lucide-react";
 import AddTransactionModal from "@/components/AddTransactionModal";
+import SmartTransactionSearch, { SearchFilters } from "@/components/SmartTransactionSearch";
+import SmartTransactionEntry from "@/components/SmartTransactionEntry";
+import CSVImportModal from "@/components/CSVImportModal";
 import TransactionAnalytics from "@/components/TransactionAnalytics";
 import EnhancedTransactionList from "@/components/EnhancedTransactionList";
 import TransactionInsights from "@/components/TransactionInsights";
@@ -25,12 +28,52 @@ const Transactions = () => {
     transactionType: 'all'
   });
   
+  const [searchFilters, setSearchFilters] = useState<SearchFilters>({
+    categories: [],
+    tags: [],
+    amountRange: { min: 0, max: 10000 },
+    dateRange: { from: null, to: null },
+    transactionType: 'all',
+    recurring: null
+  });
+  
+  const [searchQuery, setSearchQuery] = useState('');
   const [showAnalytics, setShowAnalytics] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Enhanced transaction filtering
+  // Enhanced transaction filtering with smart search
   const filteredTransactions = useMemo(() => {
     let result = transactions;
+
+    // Apply search query first
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      result = result.filter(t => 
+        t.category.toLowerCase().includes(query) ||
+        Math.abs(t.amount).toString().includes(query) ||
+        t.date.includes(query)
+      );
+    }
+
+    // Apply search filters
+    if (searchFilters.categories.length > 0) {
+      result = result.filter(t => searchFilters.categories.includes(t.category));
+    }
+
+    if (searchFilters.transactionType !== 'all') {
+      if (searchFilters.transactionType === 'income') {
+        result = result.filter(t => t.category === 'Earnings');
+      } else if (searchFilters.transactionType === 'expense') {
+        result = result.filter(t => t.category !== 'Earnings');
+      }
+    }
+
+    if (searchFilters.amountRange.min > 0 || searchFilters.amountRange.max < 10000) {
+      result = result.filter(t => {
+        const amount = Math.abs(t.amount);
+        return amount >= searchFilters.amountRange.min && amount <= searchFilters.amountRange.max;
+      });
+    }
 
     // Time range filter
     if (filters.timeRange !== 'all') {
@@ -88,7 +131,7 @@ const Transactions = () => {
     }
 
     return result.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-  }, [transactions, filters]);
+  }, [transactions, filters, searchQuery, searchFilters]);
 
   const handleFiltersChange = (newFilters: FilterState) => {
     setFilters(newFilters);
@@ -135,6 +178,8 @@ const Transactions = () => {
             {showAnalytics ? 'Hide' : 'Show'} Analytics
           </Button>
           
+          <CSVImportModal />
+          
           <Button
             variant="outline"
             onClick={handleExportTransactions}
@@ -145,9 +190,17 @@ const Transactions = () => {
             {isLoading ? 'Exporting...' : 'Export'}
           </Button>
           
+          <SmartTransactionEntry />
           <AddTransactionModal />
         </div>
       </div>
+
+      {/* Smart Search */}
+      <SmartTransactionSearch 
+        onSearch={setSearchQuery}
+        onFilterChange={setSearchFilters}
+        placeholder="Search transactions, amounts, categories..."
+      />
 
       {/* Advanced Data Filter */}
       <DataFilter 
