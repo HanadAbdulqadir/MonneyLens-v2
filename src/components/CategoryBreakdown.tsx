@@ -1,8 +1,20 @@
 import { Card } from "@/components/ui/card";
 import { Fuel, UtensilsCrossed, ShoppingBag, TrendingUp } from "lucide-react";
-import { getCategoryTotals } from "@/data/financialData";
+import { useFinancial } from "@/contexts/FinancialContext";
 
 const CategoryBreakdown = () => {
+  const { transactions } = useFinancial();
+  
+  const getCategoryTotals = () => {
+    const totals = { Petrol: 0, Food: 0, Other: 0, Earnings: 0 };
+    transactions.forEach(transaction => {
+      if (transaction.category in totals) {
+        totals[transaction.category as keyof typeof totals] += transaction.amount;
+      }
+    });
+    return totals;
+  };
+  
   const totals = getCategoryTotals();
   
   const categories = [

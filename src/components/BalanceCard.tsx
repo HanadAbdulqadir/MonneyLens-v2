@@ -1,8 +1,9 @@
 import { Card } from "@/components/ui/card";
 import { TrendingUp, TrendingDown } from "lucide-react";
-import { getCurrentBalance, getTodaysData } from "@/data/financialData";
+import { useFinancial } from "@/contexts/FinancialContext";
 
 const BalanceCard = () => {
+  const { getCurrentBalance, getTodaysData, monthlyStartingPoint } = useFinancial();
   const balance = getCurrentBalance();
   const todaysData = getTodaysData();
   const isPositiveChange = todaysData.netChange >= 0;
@@ -31,7 +32,11 @@ const BalanceCard = () => {
           </div>
         </div>
         
-        <div className="grid grid-cols-3 gap-4 pt-4 border-t border-primary-foreground/20">
+        <div className="grid grid-cols-4 gap-3 pt-4 border-t border-primary-foreground/20">
+          <div className="text-center">
+            <p className="text-xs text-primary-foreground/80">Starting</p>
+            <p className="font-semibold text-blue-200">£{monthlyStartingPoint.toFixed(0)}</p>
+          </div>
           <div className="text-center">
             <p className="text-xs text-primary-foreground/80">Earnings</p>
             <p className="font-semibold text-green-200">+£{todaysData.earnings}</p>

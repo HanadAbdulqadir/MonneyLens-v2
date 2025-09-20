@@ -1,9 +1,28 @@
 import { Card } from "@/components/ui/card";
-import { Fuel, UtensilsCrossed, ShoppingBag, TrendingUp } from "lucide-react";
-import { getRecentTransactions } from "@/data/financialData";
+import { Button } from "@/components/ui/button";
+import { Fuel, UtensilsCrossed, ShoppingBag, TrendingUp, Trash2 } from "lucide-react";
+import { useFinancial } from "@/contexts/FinancialContext";
+import { useToast } from "@/hooks/use-toast";
 
 const RecentTransactions = () => {
+  const { transactions, deleteTransaction } = useFinancial();
+  const { toast } = useToast();
+  
+  const getRecentTransactions = (limit = 8) => {
+    return transactions
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+      .slice(0, limit);
+  };
+  
   const recentTransactions = getRecentTransactions(8);
+  
+  const handleDelete = (id: string) => {
+    deleteTransaction(id);
+    toast({
+      title: "Success",
+      description: "Transaction deleted successfully",
+    });
+  };
   
   const getIcon = (category: string) => {
     switch (category) {
@@ -52,7 +71,7 @@ const RecentTransactions = () => {
           const isEarnings = transaction.category === "Earnings";
           
           return (
-            <div key={index} className="flex items-center justify-between py-2">
+            <div key={index} className="flex items-center justify-between py-2 group">
               <div className="flex items-center gap-3">
                 <div className={`p-2 rounded-lg ${getBgClass(transaction.category)}`}>
                   <Icon className={`h-4 w-4 ${getColorClass(transaction.category)}`} />
@@ -62,9 +81,19 @@ const RecentTransactions = () => {
                   <p className="text-xs text-muted-foreground">{formatDate(transaction.date)}</p>
                 </div>
               </div>
-              <span className={`font-semibold text-sm ${isEarnings ? 'text-success' : 'text-foreground'}`}>
-                {isEarnings ? '+' : '-'}£{transaction.amount.toFixed(2)}
-              </span>
+              <div className="flex items-center gap-2">
+                <span className={`font-semibold text-sm ${isEarnings ? 'text-success' : 'text-foreground'}`}>
+                  {isEarnings ? '+' : '-'}£{transaction.amount.toFixed(2)}
+                </span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="opacity-0 group-hover:opacity-100 transition-opacity p-1 h-8 w-8 text-destructive hover:text-destructive"
+                  onClick={() => handleDelete(transaction.dailyEntryId.toString())}
+                >
+                  <Trash2 className="h-3 w-3" />
+                </Button>
+              </div>
             </div>
           );
         })}

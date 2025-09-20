@@ -1,8 +1,10 @@
 import { Card } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { dailyData } from "@/data/financialData";
+import { useFinancial } from "@/contexts/FinancialContext";
 
 const WeeklyChart = () => {
+  const { dailyData } = useFinancial();
+  
   const chartData = dailyData.map(entry => ({
     date: new Date(entry.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }),
     balance: entry.balance,
