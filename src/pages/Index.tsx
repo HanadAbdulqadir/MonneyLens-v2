@@ -7,6 +7,9 @@ import StartingPointModal from "@/components/StartingPointModal";
 import SmartNotifications from "@/components/SmartNotifications";
 import PersonalizedOverview from "@/components/PersonalizedOverview";
 import FloatingActionButtons from "@/components/FloatingActionButtons";
+import FinancialHealthScore from "@/components/FinancialHealthScore";
+import QuickInsightsGrid from "@/components/QuickInsightsGrid";
+import RecentActivityFeed from "@/components/RecentActivityFeed";
 
 const Index = () => {
   return (
@@ -14,8 +17,8 @@ const Index = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-          <p className="text-muted-foreground">Your complete financial overview at a glance</p>
+          <h1 className="text-3xl font-bold tracking-tight">Financial Command Center</h1>
+          <p className="text-muted-foreground">Your complete financial ecosystem at a glance</p>
         </div>
         <div className="flex items-center gap-3">
           <StartingPointModal />
@@ -28,26 +31,38 @@ const Index = () => {
       {/* Smart Notifications */}
       <SmartNotifications />
 
-      {/* Personalized Overview */}
-      <PersonalizedOverview />
+      {/* Top Row - Key Metrics */}
+      <div className="grid gap-6 lg:grid-cols-3">
+        <div className="lg:col-span-2">
+          <PersonalizedOverview />
+        </div>
+        <div>
+          <FinancialHealthScore />
+        </div>
+      </div>
 
       {/* Balance Card - Full Width */}
       <BalanceCard />
+
+      {/* Quick Insights Grid */}
+      <QuickInsightsGrid />
       
-      {/* Content Grid */}
-      <div className="grid gap-6 lg:grid-cols-3">
-        {/* Left Column - 2 columns wide on large screens */}
+      {/* Main Content Grid */}
+      <div className="grid gap-6 lg:grid-cols-4">
+        {/* Left Section - Charts and Analysis */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Charts Row */}
           <div className="grid gap-6 md:grid-cols-2">
             <CategoryBreakdown />
             <WeeklyChart />
           </div>
         </div>
         
-        {/* Right Column - 1 column wide on large screens */}
-        <div className="space-y-6">
-          <RecentTransactions />
+        {/* Right Section - Activity and Transactions */}
+        <div className="lg:col-span-2 space-y-6">
+          <div className="grid gap-6 md:grid-cols-2">
+            <RecentTransactions />
+            <RecentActivityFeed />
+          </div>
         </div>
       </div>
 
