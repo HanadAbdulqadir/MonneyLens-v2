@@ -17,7 +17,6 @@ import GoalsOverview from "@/components/GoalsOverview";
 import BudgetOverview from "@/components/BudgetOverview";
 import DataFilter from "@/components/DataFilter";
 import ResponsiveLayout, { ResponsiveGrid } from "@/components/ResponsiveLayout";
-import UpcomingRecurringWidget from "@/components/UpcomingRecurringWidget";
 
 const Index = () => {
   return (
@@ -54,9 +53,6 @@ const Index = () => {
         <GoalsOverview />
         <BudgetOverview />
       </div>
-
-      {/* Upcoming Recurring Transactions */}
-      <UpcomingRecurringWidget />
       
       {/* Data Filtering */}
       <DataFilter compact={true} />
