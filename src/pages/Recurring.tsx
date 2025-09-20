@@ -40,7 +40,7 @@ const Recurring = () => {
       name: formData.name,
       category: formData.category,
       amount: parseFloat(formData.amount),
-      frequency: formData.frequency as 'weekly' | 'monthly' | 'yearly',
+      frequency: formData.frequency as 'daily' | 'weekly' | 'monthly' | 'yearly',
       nextDate: formData.nextDate,
       isActive: true
     };
@@ -106,6 +106,9 @@ const Recurring = () => {
     let nextDate = new Date(currentDate);
     
     switch (recurring.frequency) {
+      case 'daily':
+        nextDate.setDate(currentDate.getDate() + 1);
+        break;
       case 'weekly':
         nextDate.setDate(currentDate.getDate() + 7);
         break;
@@ -207,6 +210,7 @@ const Recurring = () => {
                     <SelectValue placeholder="Select frequency" />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="daily">Daily</SelectItem>
                     <SelectItem value="weekly">Weekly</SelectItem>
                     <SelectItem value="monthly">Monthly</SelectItem>
                     <SelectItem value="yearly">Yearly</SelectItem>
@@ -261,7 +265,7 @@ const Recurring = () => {
                 {currency}{activeRecurring
                   .filter(r => r.category === 'Earnings')
                   .reduce((sum, r) => {
-                    const multiplier = r.frequency === 'weekly' ? 4.33 : r.frequency === 'yearly' ? 1/12 : 1;
+                    const multiplier = r.frequency === 'daily' ? 30.44 : r.frequency === 'weekly' ? 4.33 : r.frequency === 'yearly' ? 1/12 : 1;
                     return sum + (r.amount * multiplier);
                   }, 0)
                   .toFixed(2)}
@@ -281,7 +285,7 @@ const Recurring = () => {
                 {currency}{activeRecurring
                   .filter(r => r.category !== 'Earnings')
                   .reduce((sum, r) => {
-                    const multiplier = r.frequency === 'weekly' ? 4.33 : r.frequency === 'yearly' ? 1/12 : 1;
+                    const multiplier = r.frequency === 'daily' ? 30.44 : r.frequency === 'weekly' ? 4.33 : r.frequency === 'yearly' ? 1/12 : 1;
                     return sum + (r.amount * multiplier);
                   }, 0)
                   .toFixed(2)}

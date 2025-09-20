@@ -6,7 +6,7 @@ export interface RecurringTransaction {
   name: string;
   category: string;
   amount: number;
-  frequency: 'weekly' | 'monthly' | 'yearly';
+  frequency: 'daily' | 'weekly' | 'monthly' | 'yearly';
   nextDate: string;
   isActive: boolean;
 }
