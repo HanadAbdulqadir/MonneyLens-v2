@@ -1,18 +1,45 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useFinancial } from "@/contexts/FinancialContext";
+import { useState, useEffect } from "react";
 import { TrendingUp, TrendingDown, Target, Calendar, Award, Zap } from "lucide-react";
 
 const PersonalizedOverview = () => {
   const { transactions, goals, debts, getCurrentBalance } = useFinancial();
+  const [userName, setUserName] = useState('');
+
+  // Load user name from localStorage
+  useEffect(() => {
+    const savedName = localStorage.getItem('user-name') || '';
+    setUserName(savedName);
+    
+    // Listen for storage changes to update name in real-time
+    const handleStorageChange = () => {
+      const updatedName = localStorage.getItem('user-name') || '';
+      setUserName(updatedName);
+    };
+    
+    const handleNameUpdate = () => {
+      const updatedName = localStorage.getItem('user-name') || '';
+      setUserName(updatedName);
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('user-name-updated', handleNameUpdate);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('user-name-updated', handleNameUpdate);
+    };
+  }, []);
   
   const getGreeting = () => {
     const hour = new Date().getHours();
-    const name = "Alex"; // Could be made dynamic in the future
+    const name = userName || "there"; // Use saved name or generic greeting
     
-    if (hour < 12) return `Good morning, ${name}!`;
-    if (hour < 17) return `Good afternoon, ${name}!`;
-    return `Good evening, ${name}!`;
+    if (hour < 12) return `Good morning${userName ? `, ${name}` : ''}!`;
+    if (hour < 17) return `Good afternoon${userName ? `, ${name}` : ''}!`;
+    return `Good evening${userName ? `, ${name}` : ''}!`;
   };
 
   const getWeeklyHighlights = () => {
@@ -103,7 +130,10 @@ const PersonalizedOverview = () => {
         <div className="text-center">
           <h2 className="text-2xl font-bold mb-2">{getGreeting()}</h2>
           <p className="text-muted-foreground">
-            Here's your financial snapshot for this week
+            {userName ? 
+              "Here's your personalized financial snapshot for this week" :
+              "Here's your financial snapshot for this week"
+            }
           </p>
         </div>
 
