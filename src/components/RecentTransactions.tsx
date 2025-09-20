@@ -1,15 +1,19 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Fuel, UtensilsCrossed, ShoppingBag, TrendingUp, Trash2 } from "lucide-react";
+import { Fuel, UtensilsCrossed, ShoppingBag, TrendingUp, Trash2, X } from "lucide-react";
 import { useFinancial } from "@/contexts/FinancialContext";
 import { useToast } from "@/hooks/use-toast";
 
 const RecentTransactions = () => {
-  const { transactions, deleteTransaction } = useFinancial();
+  const { transactions, deleteTransaction, categoryFilter, setCategoryFilter } = useFinancial();
   const { toast } = useToast();
   
   const getRecentTransactions = (limit = 8) => {
-    return transactions
+    const filtered = categoryFilter 
+      ? transactions.filter(t => t.category === categoryFilter)
+      : transactions;
+    
+    return filtered
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
       .slice(0, limit);
   };
@@ -64,7 +68,27 @@ const RecentTransactions = () => {
 
   return (
     <Card className="p-6 shadow-card hover:shadow-card-hover transition-all duration-300 hover:scale-[1.02]">
-      <h3 className="text-lg font-semibold mb-4">Recent Transactions</h3>
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-lg font-semibold">
+          Recent Transactions
+          {categoryFilter && (
+            <span className="text-sm text-muted-foreground ml-2">
+              ({categoryFilter})
+            </span>
+          )}
+        </h3>
+        {categoryFilter && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setCategoryFilter(null)}
+            className="text-xs"
+          >
+            <X className="h-3 w-3 mr-1" />
+            Show All
+          </Button>
+        )}
+      </div>
       <div className="space-y-3">
         {recentTransactions.map((transaction, index) => {
           const Icon = getIcon(transaction.category);

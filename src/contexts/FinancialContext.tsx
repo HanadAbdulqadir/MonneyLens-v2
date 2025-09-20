@@ -36,6 +36,7 @@ interface FinancialContextType {
   tags: Tag[];
   currency: string;
   isDarkMode: boolean;
+  categoryFilter: string | null;
   setMonthlyStartingPoint: (amount: number) => void;
   addTransaction: (transaction: Omit<Transaction, 'dailyEntryId'>) => void;
   updateTransaction: (id: string, transaction: Partial<Transaction>) => void;
@@ -51,6 +52,7 @@ interface FinancialContextType {
   deleteTag: (id: string) => void;
   setCurrency: (currency: string) => void;
   toggleDarkMode: () => void;
+  setCategoryFilter: (category: string | null) => void;
   getCurrentBalance: () => number;
   getTodaysData: () => DailyEntry;
 }
@@ -72,6 +74,7 @@ export function FinancialProvider({ children }: { children: React.ReactNode }) {
   ]);
   const [currency, setCurrencyState] = useState<string>('£');
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
+  const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
 
   // Load data from localStorage on mount
   useEffect(() => {
@@ -333,6 +336,7 @@ export function FinancialProvider({ children }: { children: React.ReactNode }) {
       tags,
       currency,
       isDarkMode,
+      categoryFilter,
       setMonthlyStartingPoint,
       addTransaction,
       updateTransaction,
@@ -348,6 +352,7 @@ export function FinancialProvider({ children }: { children: React.ReactNode }) {
       deleteTag,
       setCurrency,
       toggleDarkMode,
+      setCategoryFilter,
       getCurrentBalance,
       getTodaysData
     }}>
