@@ -10,6 +10,11 @@ import { AppSidebar } from "@/components/AppSidebar";
 import AccessibilityEnhancer from "@/components/AccessibilityEnhancer";
 import QuickActionsToolbar from "@/components/QuickActionsToolbar";
 import UserOnboarding from "@/components/UserOnboarding";
+import NotificationSystem from "@/components/NotificationSystem";
+import VisualizationPreferences from "@/components/VisualizationPreferences";
+import DataImporter from "@/components/DataImporter";
+import AdvancedSearch from "@/components/AdvancedSearch";
+import OfflineSupport from "@/components/OfflineSupport";
 import Index from "./pages/Index";
 import Analytics from "./pages/Analytics";
 import Transactions from "./pages/Transactions";
@@ -35,26 +40,33 @@ const App = () => (
               
               <main className="flex-1 overflow-auto">
                 <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b">
-                  <div className="flex items-center h-14 px-6">
+                  <div className="flex items-center justify-between h-14 px-6">
                     <SidebarTrigger className="mr-4" />
+                    
+                    {/* Header Actions */}
+                    <div className="flex items-center gap-3">
+                      <NotificationSystem />
+                      <VisualizationPreferences />
+                      <DataImporter />
+                    </div>
                   </div>
                 </header>
                 
-                <div className="p-6">
-                  <Routes>
-                    <Route path="/" element={<Index />} />
-                    <Route path="/analytics" element={<Analytics />} />
-                    <Route path="/transactions" element={<Transactions />} />
-                    <Route path="/goals" element={<Goals />} />
-                    <Route path="/debts" element={<Debts />} />
-                    <Route path="/recurring" element={<Recurring />} />
-                    <Route path="/categories" element={<Categories />} />
-                    <Route path="/budget" element={<Budget />} />
-                    <Route path="/calendar" element={<Calendar />} />
-                    <Route path="/settings" element={<Settings />} />
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </div>
+        <div className="p-6">
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/analytics" element={<Analytics />} />
+            <Route path="/transactions" element={<Transactions />} />
+            <Route path="/goals" element={<Goals />} />
+            <Route path="/debts" element={<Debts />} />
+            <Route path="/recurring" element={<Recurring />} />
+            <Route path="/categories" element={<Categories />} />
+            <Route path="/budget" element={<Budget />} />
+            <Route path="/calendar" element={<Calendar />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </div>
 
                 {/* Enhanced UX Components */}
                 <QuickActionsToolbar />
