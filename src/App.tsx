@@ -7,6 +7,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { FinancialProvider } from "@/contexts/FinancialContext";
 import { AppSidebar } from "@/components/AppSidebar";
+import AccessibilityEnhancer from "@/components/AccessibilityEnhancer";
+import QuickActionsToolbar from "@/components/QuickActionsToolbar";
+import UserOnboarding from "@/components/UserOnboarding";
 import Index from "./pages/Index";
 import Analytics from "./pages/Analytics";
 import Transactions from "./pages/Transactions";
@@ -52,6 +55,11 @@ const App = () => (
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </div>
+
+                {/* Enhanced UX Components */}
+                <QuickActionsToolbar />
+                <AccessibilityEnhancer />
+                <UserOnboarding />
               </main>
             </div>
             
