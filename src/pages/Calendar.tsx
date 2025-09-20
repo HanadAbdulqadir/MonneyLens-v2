@@ -7,7 +7,7 @@ import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, TrendingUp, Trendi
 import AddTransactionModal from "@/components/AddTransactionModal";
 
 const Calendar = () => {
-  const { dailyData, transactions } = useFinancial();
+  const { dailyData, transactions, recurringTransactions } = useFinancial();
   const [currentDate, setCurrentDate] = useState(new Date());
 
   const monthNames = [
@@ -45,12 +45,45 @@ const Calendar = () => {
     const dayData = dailyData.find(d => d.date === dateStr);
     const dayTransactions = transactions.filter(t => t.date === dateStr);
     
+    // Check for recurring transactions that should appear on this date
+    const targetDate = new Date(dateStr);
+    const recurringForDay = recurringTransactions.filter(recurring => {
+      if (!recurring.isActive) return false;
+      
+      const nextDate = new Date(recurring.nextDate);
+      const recurringDate = new Date(recurring.nextDate);
+      
+      // Check if this recurring transaction should appear on this day
+      switch (recurring.frequency) {
+        case 'daily':
+          // For daily, check if this date is on or after the next due date
+          return targetDate >= recurringDate;
+        case 'weekly':
+          // For weekly, check if it's the same day of week and on/after start date
+          return targetDate.getDay() === recurringDate.getDay() && targetDate >= recurringDate;
+        case 'monthly':
+          // For monthly, check if it's the same day of month and on/after start date
+          return targetDate.getDate() === recurringDate.getDate() && targetDate >= recurringDate;
+        case 'yearly':
+          // For yearly, check if it's the same day and month and on/after start date
+          return targetDate.getDate() === recurringDate.getDate() && 
+                 targetDate.getMonth() === recurringDate.getMonth() && 
+                 targetDate >= recurringDate;
+        default:
+          return false;
+      }
+    });
+    
+    const recurringEarnings = recurringForDay.filter(r => r.category === 'Earnings').reduce((sum, r) => sum + r.amount, 0);
+    const recurringExpenses = recurringForDay.filter(r => r.category !== 'Earnings').reduce((sum, r) => sum + r.amount, 0);
+    
     return {
       date: dateStr,
       data: dayData,
       transactions: dayTransactions,
-      earnings: dayTransactions.filter(t => t.category === 'Earnings').reduce((sum, t) => sum + t.amount, 0),
-      expenses: dayTransactions.filter(t => t.category !== 'Earnings').reduce((sum, t) => sum + t.amount, 0)
+      recurringTransactions: recurringForDay,
+      earnings: dayTransactions.filter(t => t.category === 'Earnings').reduce((sum, t) => sum + t.amount, 0) + recurringEarnings,
+      expenses: dayTransactions.filter(t => t.category !== 'Earnings').reduce((sum, t) => sum + t.amount, 0) + recurringExpenses
     };
   };
 
@@ -79,7 +112,7 @@ const Calendar = () => {
   const days = getDaysInMonth(currentDate);
   const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-  // Calculate monthly totals
+  // Calculate monthly totals including recurring transactions
   const monthlyEarnings = transactions
     .filter(t => {
       const tDate = new Date(t.date);
@@ -98,6 +131,24 @@ const Calendar = () => {
     })
     .reduce((sum, t) => sum + t.amount, 0);
 
+  // Add estimated recurring transaction totals for the month
+  const recurringEarnings = recurringTransactions
+    .filter(r => r.isActive && r.category === 'Earnings')
+    .reduce((sum, r) => {
+      const multiplier = r.frequency === 'daily' ? 30.44 : r.frequency === 'weekly' ? 4.33 : r.frequency === 'yearly' ? 1/12 : 1;
+      return sum + (r.amount * multiplier);
+    }, 0);
+
+  const recurringExpenses = recurringTransactions
+    .filter(r => r.isActive && r.category !== 'Earnings')
+    .reduce((sum, r) => {
+      const multiplier = r.frequency === 'daily' ? 30.44 : r.frequency === 'weekly' ? 4.33 : r.frequency === 'yearly' ? 1/12 : 1;
+      return sum + (r.amount * multiplier);
+    }, 0);
+
+  const totalMonthlyEarnings = monthlyEarnings + recurringEarnings;
+  const totalMonthlyExpenses = monthlyExpenses + recurringExpenses;
+
   return (
     <div className="space-y-6 animate-fade-in">
       <div className="flex items-center justify-between">
@@ -115,7 +166,7 @@ const Calendar = () => {
             <TrendingUp className="h-6 w-6" />
             <div>
               <p className="text-sm opacity-90">Monthly Earnings</p>
-              <p className="text-xl font-bold">£{monthlyEarnings.toFixed(2)}</p>
+              <p className="text-xl font-bold">£{totalMonthlyEarnings.toFixed(2)}</p>
             </div>
           </div>
         </Card>
@@ -125,7 +176,7 @@ const Calendar = () => {
             <TrendingDown className="h-6 w-6 text-destructive" />
             <div>
               <p className="text-sm text-muted-foreground">Monthly Expenses</p>
-              <p className="text-xl font-bold text-destructive">£{monthlyExpenses.toFixed(2)}</p>
+              <p className="text-xl font-bold text-destructive">£{totalMonthlyExpenses.toFixed(2)}</p>
             </div>
           </div>
         </Card>
@@ -135,8 +186,8 @@ const Calendar = () => {
             <CalendarIcon className="h-6 w-6 text-primary" />
             <div>
               <p className="text-sm text-muted-foreground">Net Total</p>
-              <p className={`text-xl font-bold ${(monthlyEarnings - monthlyExpenses) >= 0 ? 'text-success' : 'text-destructive'}`}>
-                £{(monthlyEarnings - monthlyExpenses).toFixed(2)}
+              <p className={`text-xl font-bold ${(totalMonthlyEarnings - totalMonthlyExpenses) >= 0 ? 'text-success' : 'text-destructive'}`}>
+                £{(totalMonthlyEarnings - totalMonthlyExpenses).toFixed(2)}
               </p>
             </div>
           </div>
@@ -228,9 +279,12 @@ const Calendar = () => {
                             </Badge>
                           </div>
                         )}
-                        {dayInfo.transactions.length > 0 && (
+                        {(dayInfo.transactions.length > 0 || dayInfo.recurringTransactions?.length > 0) && (
                           <p className="text-xs text-muted-foreground">
-                            {dayInfo.transactions.length} transaction{dayInfo.transactions.length !== 1 ? 's' : ''}
+                            {dayInfo.transactions.length + (dayInfo.recurringTransactions?.length || 0)} transaction{(dayInfo.transactions.length + (dayInfo.recurringTransactions?.length || 0)) !== 1 ? 's' : ''}
+                            {dayInfo.recurringTransactions?.length > 0 && (
+                              <span className="text-primary"> ({dayInfo.recurringTransactions.length} recurring)</span>
+                            )}
                           </p>
                         )}
                       </div>
