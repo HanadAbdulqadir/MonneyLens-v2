@@ -3,13 +3,14 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Slider } from "@/components/ui/slider";
 import { useFinancial } from "@/contexts/FinancialContext";
-import { Target, TrendingUp, AlertTriangle, CheckCircle, Settings, TrendingDown, Calendar, DollarSign, Zap } from "lucide-react";
+import { Target, TrendingUp, AlertTriangle, CheckCircle, Settings, TrendingDown, Calendar, DollarSign, Zap, Plus, Trash2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 
@@ -25,6 +26,19 @@ const Budget = () => {
   const [newAmount, setNewAmount] = useState("");
   const [sliderBudgets, setSliderBudgets] = useState(budgets);
   const [showRecommendations, setShowRecommendations] = useState(false);
+  const [isAddingCategory, setIsAddingCategory] = useState(false);
+  const [newCategoryData, setNewCategoryData] = useState({
+    name: '',
+    budget: '',
+    usePreset: false
+  });
+
+  // Common budget categories
+  const commonCategories = [
+    'Groceries', 'Transportation', 'Entertainment', 'Shopping', 'Bills', 
+    'Healthcare', 'Education', 'Travel', 'Subscriptions', 'Insurance',
+    'Dining Out', 'Fitness', 'Utilities', 'Internet', 'Phone'
+  ];
 
   // Update slider budgets when budgets change
   useEffect(() => {
@@ -133,6 +147,69 @@ const Budget = () => {
     setSliderBudgets(budgets);
   };
 
+  // Add new budget category
+  const handleAddCategory = () => {
+    const categoryName = newCategoryData.name.trim();
+    const budgetAmount = parseFloat(newCategoryData.budget);
+
+    if (!categoryName || isNaN(budgetAmount) || budgetAmount <= 0) {
+      toast({
+        title: "Error",
+        description: "Please enter a valid category name and budget amount",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (budgets.hasOwnProperty(categoryName)) {
+      toast({
+        title: "Error",
+        description: "This category already exists",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setBudgets(prev => ({ ...prev, [categoryName]: budgetAmount }));
+    setNewCategoryData({ name: '', budget: '', usePreset: false });
+    setIsAddingCategory(false);
+    
+    toast({
+      title: "Success",
+      description: `${categoryName} category added with £${budgetAmount} budget`,
+    });
+  };
+
+  // Delete budget category
+  const handleDeleteCategory = (category: string) => {
+    if (Object.keys(budgets).length <= 1) {
+      toast({
+        title: "Error",
+        description: "You must have at least one budget category",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const newBudgets = { ...budgets };
+    delete newBudgets[category];
+    setBudgets(newBudgets);
+    
+    toast({
+      title: "Success",
+      description: `${category} category removed`,
+    });
+  };
+
+  // Handle preset category selection
+  const handlePresetSelect = (categoryName: string) => {
+    setNewCategoryData(prev => ({
+      ...prev,
+      name: categoryName,
+      usePreset: true
+    }));
+  };
+
   const handleUpdateBudget = (category: string) => {
     const amount = parseFloat(newAmount);
     if (isNaN(amount) || amount <= 0) {
@@ -197,14 +274,101 @@ const Budget = () => {
           <h1 className="text-3xl font-bold tracking-tight">Budget Management</h1>
           <p className="text-muted-foreground">Track spending, adjust budgets, and get smart recommendations</p>
         </div>
-        <Button
-          variant="outline"
-          onClick={() => setShowRecommendations(!showRecommendations)}
-          className="gap-2"
-        >
-          <Zap className="h-4 w-4" />
-          {showRecommendations ? 'Hide' : 'Show'} Smart Insights
-        </Button>
+        <div className="flex items-center gap-3">
+          <Dialog open={isAddingCategory} onOpenChange={setIsAddingCategory}>
+            <DialogTrigger asChild>
+              <Button className="gap-2">
+                <Plus className="h-4 w-4" />
+                Add Category
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[500px]">
+              <DialogHeader>
+                <DialogTitle>Add New Budget Category</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-6">
+                {/* Quick Presets */}
+                <div>
+                  <Label className="text-sm font-medium mb-3 block">Quick Add Common Categories</Label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {commonCategories
+                      .filter(cat => !budgets.hasOwnProperty(cat))
+                      .slice(0, 9)
+                      .map((category) => (
+                      <Button
+                        key={category}
+                        variant="outline"
+                        size="sm"
+                        className="text-xs h-8"
+                        onClick={() => handlePresetSelect(category)}
+                      >
+                        {category}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-background px-2 text-muted-foreground">Or create custom</span>
+                  </div>
+                </div>
+
+                {/* Custom Category Form */}
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="category-name">Category Name</Label>
+                    <Input
+                      id="category-name"
+                      value={newCategoryData.name}
+                      onChange={(e) => setNewCategoryData(prev => ({ ...prev, name: e.target.value }))}
+                      placeholder="e.g., Entertainment, Gym, etc."
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="category-budget">Monthly Budget (£)</Label>
+                    <Input
+                      id="category-budget"
+                      type="number"
+                      step="0.01"
+                      value={newCategoryData.budget}
+                      onChange={(e) => setNewCategoryData(prev => ({ ...prev, budget: e.target.value }))}
+                      placeholder="0.00"
+                    />
+                  </div>
+                </div>
+                
+                <div className="flex justify-end gap-2 pt-4">
+                  <Button 
+                    variant="outline" 
+                    onClick={() => {
+                      setIsAddingCategory(false);
+                      setNewCategoryData({ name: '', budget: '', usePreset: false });
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button onClick={handleAddCategory}>
+                    Add Category
+                  </Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
+          
+          <Button
+            variant="outline"
+            onClick={() => setShowRecommendations(!showRecommendations)}
+            className="gap-2"
+          >
+            <Zap className="h-4 w-4" />
+            {showRecommendations ? 'Hide' : 'Show'} Smart Insights
+          </Button>
+        </div>
       </div>
 
       {/* Enhanced Budget Overview */}
@@ -380,52 +544,66 @@ const Budget = () => {
                   </div>
                 </div>
                 
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button 
-                      variant="ghost" 
+                <div className="flex items-center gap-2">
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        className="hover:bg-primary/10"
+                        onClick={() => {
+                          setEditingBudget(item.category);
+                          setNewAmount(item.budget.toString());
+                        }}
+                      >
+                        <Settings className="h-4 w-4" />
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[425px]">
+                      <DialogHeader>
+                        <DialogTitle>Update {item.category} Budget</DialogTitle>
+                      </DialogHeader>
+                      <div className="space-y-4">
+                        <div>
+                          <Label htmlFor="budget-amount">Monthly Budget (£)</Label>
+                          <Input
+                            id="budget-amount"
+                            type="number"
+                            step="0.01"
+                            value={newAmount}
+                            onChange={(e) => setNewAmount(e.target.value)}
+                          />
+                        </div>
+                        <div className="flex justify-end gap-2">
+                          <Button 
+                            variant="outline" 
+                            onClick={() => {
+                              setEditingBudget(null);
+                              setNewAmount("");
+                            }}
+                          >
+                            Cancel
+                          </Button>
+                          <Button onClick={() => handleUpdateBudget(item.category)}>
+                            Update Budget
+                          </Button>
+                        </div>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+
+                  {/* Delete Category Button - only show if more than 1 category */}
+                  {Object.keys(budgets).length > 1 && (
+                    <Button
+                      variant="ghost"
                       size="sm"
-                      className="hover:bg-primary/10"
-                      onClick={() => {
-                        setEditingBudget(item.category);
-                        setNewAmount(item.budget.toString());
-                      }}
+                      className="hover:bg-destructive/10 text-destructive"
+                      onClick={() => handleDeleteCategory(item.category)}
                     >
-                      <Settings className="h-4 w-4" />
+                      <Trash2 className="h-4 w-4" />
                     </Button>
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-[425px]">
-                    <DialogHeader>
-                      <DialogTitle>Update {item.category} Budget</DialogTitle>
-                    </DialogHeader>
-                    <div className="space-y-4">
-                      <div>
-                        <Label htmlFor="budget-amount">Monthly Budget (£)</Label>
-                        <Input
-                          id="budget-amount"
-                          type="number"
-                          step="0.01"
-                          value={newAmount}
-                          onChange={(e) => setNewAmount(e.target.value)}
-                        />
-                      </div>
-                      <div className="flex justify-end gap-2">
-                        <Button 
-                          variant="outline" 
-                          onClick={() => {
-                            setEditingBudget(null);
-                            setNewAmount("");
-                          }}
-                        >
-                          Cancel
-                        </Button>
-                        <Button onClick={() => handleUpdateBudget(item.category)}>
-                          Update Budget
-                        </Button>
-                      </div>
-                    </div>
-                  </DialogContent>
-                </Dialog>
+                  )}
+                </div>
               </div>
               
               <div className="space-y-6">
