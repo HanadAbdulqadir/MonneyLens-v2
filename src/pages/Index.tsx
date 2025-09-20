@@ -1,7 +1,9 @@
 import BalanceCard from "@/components/BalanceCard";
 import CategoryBreakdown from "@/components/CategoryBreakdown";
+import EnhancedCategoryBreakdown from "@/components/EnhancedCategoryBreakdown";
 import RecentTransactions from "@/components/RecentTransactions";
 import WeeklyChart from "@/components/WeeklyChart";
+import EnhancedWeeklyChart from "@/components/EnhancedWeeklyChart";
 import AddTransactionModal from "@/components/AddTransactionModal";
 import StartingPointModal from "@/components/StartingPointModal";
 import SmartNotifications from "@/components/SmartNotifications";
@@ -13,6 +15,8 @@ import RecentActivityFeed from "@/components/RecentActivityFeed";
 import DebtOverview from "@/components/DebtOverview";
 import GoalsOverview from "@/components/GoalsOverview";
 import BudgetOverview from "@/components/BudgetOverview";
+import DataFilter from "@/components/DataFilter";
+import ResponsiveLayout, { ResponsiveGrid } from "@/components/ResponsiveLayout";
 
 const Index = () => {
   return (
@@ -50,24 +54,22 @@ const Index = () => {
         <BudgetOverview />
       </div>
       
-      {/* Main Content Grid */}
-      <div className="grid gap-6 lg:grid-cols-4">
-        {/* Left Section - Charts and Analysis */}
-        <div className="lg:col-span-2 space-y-6">
-          <div className="grid gap-6 md:grid-cols-2">
-            <CategoryBreakdown />
-            <WeeklyChart />
-          </div>
-        </div>
-        
-        {/* Right Section - Activity and Transactions */}
-        <div className="lg:col-span-2 space-y-6">
-          <div className="grid gap-6 md:grid-cols-2">
-            <RecentTransactions />
-            <RecentActivityFeed />
-          </div>
-        </div>
-      </div>
+      {/* Data Filtering */}
+      <DataFilter compact={true} />
+
+      {/* Enhanced Charts Section */}
+      <ResponsiveLayout enableGridToggle={true} enableDevicePreview={false}>
+        <ResponsiveGrid columns={{ sm: 1, lg: 2 }} gap={6}>
+          <EnhancedWeeklyChart />
+          <EnhancedCategoryBreakdown />
+        </ResponsiveGrid>
+      </ResponsiveLayout>
+      
+      {/* Activity and Transactions Grid */}
+      <ResponsiveGrid columns={{ sm: 1, md: 2 }} gap={6}>
+        <RecentTransactions />
+        <RecentActivityFeed />
+      </ResponsiveGrid>
 
       {/* Financial Health Score - Bottom Section */}
       <div className="max-w-4xl mx-auto">
