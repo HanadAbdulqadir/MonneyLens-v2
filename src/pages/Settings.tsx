@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { useFinancial } from "@/contexts/FinancialContext";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Settings as SettingsIcon, Download, Upload, Trash2, RefreshCw, User, Bell, Shield, Palette } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
@@ -18,6 +18,30 @@ const Settings = () => {
   const [startingPoint, setStartingPoint] = useState(monthlyStartingPoint.toString());
   const [notifications, setNotifications] = useState(true);
   const [autoBackup, setAutoBackup] = useState(false);
+  const [userName, setUserName] = useState('');
+  const [tempUserName, setTempUserName] = useState('');
+
+  // Load user name from localStorage on component mount
+  useEffect(() => {
+    const savedName = localStorage.getItem('user-name') || '';
+    setUserName(savedName);
+    setTempUserName(savedName);
+  }, []);
+
+  // Save user name to localStorage
+  const handleUpdateUserName = () => {
+    const trimmedName = tempUserName.trim();
+    setUserName(trimmedName);
+    localStorage.setItem('user-name', trimmedName);
+    
+    // Dispatch custom event to update sidebar in real-time
+    window.dispatchEvent(new Event('user-name-updated'));
+    
+    toast({
+      title: "Name Updated",
+      description: trimmedName ? `Welcome, ${trimmedName}!` : "Name cleared successfully"
+    });
+  };
 
   const handleUpdateStartingPoint = () => {
     const amount = parseFloat(startingPoint);
@@ -75,6 +99,9 @@ const Settings = () => {
     setStartingPoint("755");
     setNotifications(true);
     setAutoBackup(false);
+    setTempUserName('');
+    setUserName('');
+    localStorage.removeItem('user-name');
     
     toast({
       title: "Settings Reset",
@@ -83,11 +110,18 @@ const Settings = () => {
   };
 
   return (
-    <div className="space-y-6 animate-fade-in max-w-4xl">
+      <div className="space-y-6 animate-fade-in max-w-4xl">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
-          <p className="text-muted-foreground">Manage your account and application preferences</p>
+          <h1 className="text-3xl font-bold tracking-tight">
+            {userName ? `Settings - ${userName}` : 'Settings'}
+          </h1>
+          <p className="text-muted-foreground">
+            {userName ? 
+              `Manage your account and application preferences, ${userName}` : 
+              'Manage your account and application preferences'
+            }
+          </p>
         </div>
       </div>
 
@@ -99,6 +133,36 @@ const Settings = () => {
         </div>
         
         <div className="space-y-6">
+          {/* User Name */}
+          <div>
+            <Label htmlFor="user-name">Display Name</Label>
+            <div className="flex gap-3 mt-2">
+              <Input
+                id="user-name"
+                type="text"
+                placeholder="Enter your name (optional)"
+                value={tempUserName}
+                onChange={(e) => setTempUserName(e.target.value)}
+                className="flex-1"
+                maxLength={50}
+              />
+              <Button 
+                onClick={handleUpdateUserName}
+                disabled={tempUserName === userName}
+              >
+                {userName ? 'Update' : 'Save'}
+              </Button>
+            </div>
+            <p className="text-sm text-muted-foreground mt-2">
+              {userName ? 
+                `Currently set to: ${userName}. This name will appear throughout the app.` :
+                'Set a display name to personalize your experience.'
+              }
+            </p>
+          </div>
+
+          <Separator />
+
           <div>
             <Label htmlFor="starting-balance">Monthly Starting Balance ({currency})</Label>
             <div className="flex gap-3 mt-2">

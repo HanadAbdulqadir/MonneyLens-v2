@@ -1,5 +1,6 @@
 import { LayoutDashboard, TrendingUp, PieChart, Target, Settings, CreditCard, Calendar, Flag, RefreshCw } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
 import {
   Sidebar,
   SidebarContent,
@@ -29,6 +30,34 @@ export function AppSidebar() {
   const { state } = useSidebar();
   const location = useLocation();
   const isCollapsed = state === "collapsed";
+  const [userName, setUserName] = useState('');
+
+  // Load user name from localStorage
+  useEffect(() => {
+    const savedName = localStorage.getItem('user-name') || '';
+    setUserName(savedName);
+    
+    // Listen for storage changes to update name in real-time
+    const handleStorageChange = () => {
+      const updatedName = localStorage.getItem('user-name') || '';
+      setUserName(updatedName);
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Also listen for custom events when name changes in same tab
+    const handleNameUpdate = () => {
+      const updatedName = localStorage.getItem('user-name') || '';
+      setUserName(updatedName);
+    };
+    
+    window.addEventListener('user-name-updated', handleNameUpdate);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('user-name-updated', handleNameUpdate);
+    };
+  }, []);
 
   const isActive = (path: string) => {
     if (path === "/") return location.pathname === "/";
@@ -47,7 +76,9 @@ export function AppSidebar() {
             {!isCollapsed && (
               <div>
                 <h2 className="font-semibold text-sm">Pots</h2>
-                <p className="text-xs text-muted-foreground">Financial Tracker</p>
+                <p className="text-xs text-muted-foreground">
+                  {userName ? `Welcome, ${userName}` : 'Financial Tracker'}
+                </p>
               </div>
             )}
           </div>
