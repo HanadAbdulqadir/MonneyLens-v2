@@ -57,6 +57,8 @@ interface FinancialContextType {
 
 const FinancialContext = createContext<FinancialContextType | undefined>(undefined);
 
+export { FinancialContext };
+
 export function FinancialProvider({ children }: { children: React.ReactNode }) {
   const [dailyData, setDailyData] = useState<DailyEntry[]>(initialDailyData);
   const [transactions, setTransactions] = useState<Transaction[]>(initialTransactions);
