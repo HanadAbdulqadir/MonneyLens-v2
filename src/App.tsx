@@ -10,6 +10,9 @@ import { AppSidebar } from "@/components/AppSidebar";
 import Index from "./pages/Index";
 import Analytics from "./pages/Analytics";
 import Transactions from "./pages/Transactions";
+import Categories from "./pages/Categories";
+import Calendar from "./pages/Calendar";
+import Settings from "./pages/Settings";
 import Budget from "./pages/Budget";
 import NotFound from "./pages/NotFound";
 
@@ -36,7 +39,10 @@ const App = () => (
                     <Route path="/" element={<Index />} />
                     <Route path="/analytics" element={<Analytics />} />
                     <Route path="/transactions" element={<Transactions />} />
+                    <Route path="/categories" element={<Categories />} />
                     <Route path="/budget" element={<Budget />} />
+                    <Route path="/calendar" element={<Calendar />} />
+                    <Route path="/settings" element={<Settings />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </div>
