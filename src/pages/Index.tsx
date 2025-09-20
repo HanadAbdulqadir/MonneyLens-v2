@@ -31,15 +31,8 @@ const Index = () => {
       {/* Smart Notifications */}
       <SmartNotifications />
 
-      {/* Top Row - Key Metrics */}
-      <div className="grid gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-2">
-          <PersonalizedOverview />
-        </div>
-        <div>
-          <FinancialHealthScore />
-        </div>
-      </div>
+      {/* Personalized Overview - Full Width */}
+      <PersonalizedOverview />
 
       {/* Balance Card - Full Width */}
       <BalanceCard />
@@ -64,6 +57,11 @@ const Index = () => {
             <RecentActivityFeed />
           </div>
         </div>
+      </div>
+
+      {/* Financial Health Score - Bottom Section */}
+      <div className="max-w-4xl mx-auto">
+        <FinancialHealthScore />
       </div>
 
       {/* Floating Action Buttons */}
