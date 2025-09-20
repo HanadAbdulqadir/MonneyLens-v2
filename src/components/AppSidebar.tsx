@@ -1,4 +1,4 @@
-import { LayoutDashboard, TrendingUp, PieChart, Target, Settings, CreditCard, Calendar } from "lucide-react";
+import { LayoutDashboard, TrendingUp, PieChart, Target, Settings, CreditCard, Calendar, Flag, RefreshCw } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import {
   Sidebar,
@@ -12,15 +12,17 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
-const menuItems = [
-  { title: "Dashboard", url: "/", icon: LayoutDashboard },
-  { title: "Transactions", url: "/transactions", icon: CreditCard },
-  { title: "Analytics", url: "/analytics", icon: TrendingUp },
-  { title: "Categories", url: "/categories", icon: PieChart },
-  { title: "Budget", url: "/budget", icon: Target },
-  { title: "Calendar", url: "/calendar", icon: Calendar },
-  { title: "Settings", url: "/settings", icon: Settings },
-];
+  const menuItems = [
+    { title: "Dashboard", url: "/", icon: LayoutDashboard },
+    { title: "Transactions", url: "/transactions", icon: CreditCard },
+    { title: "Analytics", url: "/analytics", icon: TrendingUp },
+    { title: "Categories", url: "/categories", icon: PieChart },
+    { title: "Budget", url: "/budget", icon: Target },
+    { title: "Goals", url: "/goals", icon: Flag },
+    { title: "Recurring", url: "/recurring", icon: RefreshCw },
+    { title: "Calendar", url: "/calendar", icon: Calendar },
+    { title: "Settings", url: "/settings", icon: Settings },
+  ];
 
 export function AppSidebar() {
   const { state } = useSidebar();

@@ -9,14 +9,15 @@ import { useState } from "react";
 import { Settings as SettingsIcon, Download, Upload, Trash2, RefreshCw, User, Bell, Shield, Palette } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
+import ThemeToggle from "@/components/ThemeToggle";
+import CurrencySelector from "@/components/CurrencySelector";
 
 const Settings = () => {
-  const { monthlyStartingPoint, setMonthlyStartingPoint, dailyData, transactions } = useFinancial();
+  const { monthlyStartingPoint, setMonthlyStartingPoint, dailyData, transactions, currency } = useFinancial();
   const { toast } = useToast();
   const [startingPoint, setStartingPoint] = useState(monthlyStartingPoint.toString());
   const [notifications, setNotifications] = useState(true);
   const [autoBackup, setAutoBackup] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
 
   const handleUpdateStartingPoint = () => {
     const amount = parseFloat(startingPoint);
@@ -74,7 +75,6 @@ const Settings = () => {
     setStartingPoint("755");
     setNotifications(true);
     setAutoBackup(false);
-    setDarkMode(false);
     
     toast({
       title: "Settings Reset",
@@ -100,7 +100,7 @@ const Settings = () => {
         
         <div className="space-y-6">
           <div>
-            <Label htmlFor="starting-balance">Monthly Starting Balance (£)</Label>
+            <Label htmlFor="starting-balance">Monthly Starting Balance ({currency})</Label>
             <div className="flex gap-3 mt-2">
               <Input
                 id="starting-balance"
@@ -116,6 +116,16 @@ const Settings = () => {
             </div>
             <p className="text-sm text-muted-foreground mt-2">
               This will recalculate all your balances based on the new starting point.
+            </p>
+          </div>
+
+          <Separator />
+
+          <div>
+            <Label className="text-sm font-medium mb-3 block">Currency</Label>
+            <CurrencySelector />
+            <p className="text-sm text-muted-foreground mt-2">
+              Change the currency symbol used throughout the app.
             </p>
           </div>
 
@@ -166,13 +176,10 @@ const Settings = () => {
 
           <div className="flex items-center justify-between">
             <div>
-              <Label className="text-sm font-medium">Dark Mode</Label>
+              <Label className="text-sm font-medium">Theme</Label>
               <p className="text-sm text-muted-foreground">Switch between light and dark themes</p>
             </div>
-            <Switch 
-              checked={darkMode}
-              onCheckedChange={setDarkMode}
-            />
+            <ThemeToggle />
           </div>
         </div>
       </Card>
@@ -261,25 +268,19 @@ const Settings = () => {
         
         <div className="space-y-4">
           <div>
-            <Label className="text-sm font-medium">Theme</Label>
-            <p className="text-sm text-muted-foreground mb-3">Choose your preferred color theme</p>
-            <div className="grid grid-cols-3 gap-3">
-              <Button variant="outline" className="h-auto p-4">
+            <Label className="text-sm font-medium">Theme Presets</Label>
+            <p className="text-sm text-muted-foreground mb-3">Choose your preferred appearance</p>
+            <div className="grid grid-cols-2 gap-3">
+              <Button variant="outline" className="h-auto p-4" disabled>
                 <div className="text-center">
-                  <div className="w-8 h-8 bg-gradient-primary rounded-full mx-auto mb-2" />
-                  <p className="text-xs">Emerald</p>
+                  <div className="w-8 h-8 bg-gradient-to-r from-slate-900 to-slate-700 rounded-full mx-auto mb-2" />
+                  <p className="text-xs">Professional</p>
                 </div>
               </Button>
-              <Button variant="outline" className="h-auto p-4">
+              <Button variant="outline" className="h-auto p-4" disabled>
                 <div className="text-center">
-                  <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full mx-auto mb-2" />
-                  <p className="text-xs">Ocean</p>
-                </div>
-              </Button>
-              <Button variant="outline" className="h-auto p-4">
-                <div className="text-center">
-                  <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mx-auto mb-2" />
-                  <p className="text-xs">Sunset</p>
+                  <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full mx-auto mb-2" />
+                  <p className="text-xs">Colorful</p>
                 </div>
               </Button>
             </div>

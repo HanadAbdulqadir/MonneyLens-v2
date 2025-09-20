@@ -10,6 +10,8 @@ import { AppSidebar } from "@/components/AppSidebar";
 import Index from "./pages/Index";
 import Analytics from "./pages/Analytics";
 import Transactions from "./pages/Transactions";
+import Goals from "./pages/Goals";
+import Recurring from "./pages/Recurring";
 import Categories from "./pages/Categories";
 import Calendar from "./pages/Calendar";
 import Settings from "./pages/Settings";
@@ -39,6 +41,8 @@ const App = () => (
                     <Route path="/" element={<Index />} />
                     <Route path="/analytics" element={<Analytics />} />
                     <Route path="/transactions" element={<Transactions />} />
+                    <Route path="/goals" element={<Goals />} />
+                    <Route path="/recurring" element={<Recurring />} />
                     <Route path="/categories" element={<Categories />} />
                     <Route path="/budget" element={<Budget />} />
                     <Route path="/calendar" element={<Calendar />} />
