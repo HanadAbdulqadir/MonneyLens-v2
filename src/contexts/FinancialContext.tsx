@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import * as React from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import { DailyEntry, Transaction, dailyData as initialDailyData, transactions as initialTransactions } from '@/data/financialData';
 
 interface FinancialContextType {
@@ -15,9 +16,16 @@ interface FinancialContextType {
 
 const FinancialContext = createContext<FinancialContextType | undefined>(undefined);
 
-export const FinancialProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export function FinancialProvider({ children }: { children: React.ReactNode }) {
+  console.log('FinancialProvider initializing...');
+  
+  console.log('About to call useState for dailyData...');
   const [dailyData, setDailyData] = useState<DailyEntry[]>(initialDailyData);
+  
+  console.log('About to call useState for transactions...');
   const [transactions, setTransactions] = useState<Transaction[]>(initialTransactions);
+  
+  console.log('About to call useState for monthlyStartingPoint...');
   const [monthlyStartingPoint, setMonthlyStartingPointState] = useState<number>(755);
 
   // Load data from localStorage on mount
@@ -175,7 +183,7 @@ export const FinancialProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       {children}
     </FinancialContext.Provider>
   );
-};
+}
 
 export const useFinancial = () => {
   const context = useContext(FinancialContext);
