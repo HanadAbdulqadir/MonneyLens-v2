@@ -6,10 +6,11 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { useFinancial } from "@/contexts/FinancialContext";
 import { useState } from "react";
-import { Plus, Target, Edit, Trash2, Calendar, DollarSign } from "lucide-react";
+import { Plus, Target, Edit, Trash2, Calendar, DollarSign, TrendingUp, Clock, AlertTriangle } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const Goals = () => {
   const { goals, addGoal, updateGoal, deleteGoal, currency } = useFinancial();
@@ -112,6 +113,44 @@ const Goals = () => {
     return diffDays;
   };
 
+  const getMonthlyTarget = (current: number, target: number, deadline: string) => {
+    const daysRemaining = getDaysRemaining(deadline);
+    if (daysRemaining <= 0) return 0;
+    
+    const remaining = target - current;
+    const monthsRemaining = daysRemaining / 30.44; // Average days per month
+    return remaining / monthsRemaining;
+  };
+
+  const getPrediction = (current: number, target: number, deadline: string) => {
+    const daysRemaining = getDaysRemaining(deadline);
+    const remaining = target - current;
+    const monthlyTarget = getMonthlyTarget(current, target, deadline);
+    
+    if (daysRemaining <= 0) return "Goal deadline has passed";
+    if (remaining <= 0) return "Goal completed! 🎉";
+    
+    const monthsNeeded = Math.ceil(remaining / monthlyTarget);
+    return `Save £${monthlyTarget.toFixed(2)}/month to reach goal`;
+  };
+
+  const getProgressColor = (progress: number, daysRemaining: number) => {
+    if (progress >= 100) return "text-success";
+    if (progress >= 75) return "text-success";
+    if (progress >= 50) return "text-warning";
+    if (daysRemaining < 30 && progress < 75) return "text-destructive";
+    return "text-primary";
+  };
+
+  const getCircularProgress = (progress: number) => {
+    const radius = 40;
+    const circumference = 2 * Math.PI * radius;
+    const strokeDasharray = circumference;
+    const strokeDashoffset = circumference - (progress / 100) * circumference;
+    
+    return { strokeDasharray, strokeDashoffset };
+  };
+
   const activeGoals = goals.filter(g => !g.isCompleted);
   const completedGoals = goals.filter(g => g.isCompleted);
 
@@ -212,92 +251,205 @@ const Goals = () => {
         </Dialog>
       </div>
 
-      {/* Overview Stats */}
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card className="p-6 bg-gradient-primary text-primary-foreground">
+      {/* Overview Stats with Enhanced Design */}
+      <div className="grid gap-6 md:grid-cols-4">
+        <Card className="p-6 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground hover:shadow-lg transition-all duration-300">
           <div className="flex items-center gap-4">
-            <Target className="h-8 w-8" />
+            <div className="p-3 bg-white/20 rounded-full">
+              <Target className="h-6 w-6" />
+            </div>
             <div>
               <p className="text-sm opacity-90">Active Goals</p>
-              <p className="text-2xl font-bold">{activeGoals.length}</p>
+              <p className="text-3xl font-bold">{activeGoals.length}</p>
             </div>
           </div>
         </Card>
 
-        <Card className="p-6 hover:shadow-card-hover transition-all duration-200">
+        <Card className="p-6 hover:shadow-lg transition-all duration-300 border-success/20">
           <div className="flex items-center gap-4">
-            <DollarSign className="h-8 w-8 text-success" />
+            <div className="p-3 bg-success/10 rounded-full">
+              <DollarSign className="h-6 w-6 text-success" />
+            </div>
             <div>
-              <p className="text-sm text-muted-foreground">Total Target</p>
-              <p className="text-2xl font-bold">
-                {currency}{activeGoals.reduce((sum, g) => sum + g.targetAmount, 0).toFixed(2)}
+              <p className="text-sm text-muted-foreground">Total Saved</p>
+              <p className="text-3xl font-bold text-success">
+                £{activeGoals.reduce((sum, g) => sum + g.currentAmount, 0).toFixed(2)}
               </p>
             </div>
           </div>
         </Card>
 
-        <Card className="p-6 hover:shadow-card-hover transition-all duration-200">
+        <Card className="p-6 hover:shadow-lg transition-all duration-300 border-primary/20">
           <div className="flex items-center gap-4">
-            <Calendar className="h-8 w-8 text-primary" />
+            <div className="p-3 bg-primary/10 rounded-full">
+              <TrendingUp className="h-6 w-6 text-primary" />
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Total Target</p>
+              <p className="text-3xl font-bold">
+                £{activeGoals.reduce((sum, g) => sum + g.targetAmount, 0).toFixed(2)}
+              </p>
+            </div>
+          </div>
+        </Card>
+
+        <Card className="p-6 hover:shadow-lg transition-all duration-300 border-warning/20">
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-warning/10 rounded-full">
+              <Calendar className="h-6 w-6 text-warning" />
+            </div>
             <div>
               <p className="text-sm text-muted-foreground">Completed</p>
-              <p className="text-2xl font-bold text-success">{completedGoals.length}</p>
+              <p className="text-3xl font-bold text-warning">{completedGoals.length}</p>
             </div>
           </div>
         </Card>
       </div>
 
-      {/* Active Goals */}
+      {/* Active Goals with Enhanced Design */}
       {activeGoals.length > 0 && (
         <div>
-          <h2 className="text-xl font-semibold mb-4">Active Goals</h2>
-          <div className="grid gap-4 md:grid-cols-2">
+          <h2 className="text-2xl font-semibold mb-6 flex items-center gap-2">
+            <Target className="h-6 w-6 text-primary" />
+            Active Goals
+          </h2>
+          <div className="grid gap-6 lg:grid-cols-2">
             {activeGoals.map((goal) => {
               const progress = getProgress(goal.currentAmount, goal.targetAmount);
               const daysRemaining = getDaysRemaining(goal.deadline);
               const isOverdue = daysRemaining < 0;
+              const isUrgent = daysRemaining < 30 && progress < 75;
+              const monthlyTarget = getMonthlyTarget(goal.currentAmount, goal.targetAmount, goal.deadline);
+              const { strokeDasharray, strokeDashoffset } = getCircularProgress(progress);
               
               return (
-                <Card key={goal.id} className="p-6 hover:shadow-card-hover transition-all duration-200">
-                  <div className="flex items-start justify-between mb-4">
-                    <div>
-                      <h3 className="font-semibold text-lg">{goal.name}</h3>
-                      <Badge variant="secondary" className="mt-1">
-                        {goal.category}
-                      </Badge>
+                <Card key={goal.id} className={`p-6 hover:shadow-xl transition-all duration-300 hover:scale-[1.02] ${
+                  isOverdue ? 'border-destructive/50 bg-destructive/5' : 
+                  isUrgent ? 'border-warning/50 bg-warning/5' : 
+                  'border-border hover:border-primary/30'
+                }`}>
+                  <div className="flex flex-col gap-6">
+                    {/* Header */}
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <h3 className="font-bold text-xl mb-2">{goal.name}</h3>
+                        <div className="flex items-center gap-2 mb-3">
+                          <Badge variant="outline" className="text-xs">
+                            {goal.category}
+                          </Badge>
+                          {isOverdue && <Badge variant="destructive" className="text-xs">Overdue</Badge>}
+                          {isUrgent && !isOverdue && <Badge variant="secondary" className="text-xs bg-warning/20 text-warning">Urgent</Badge>}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Button variant="ghost" size="sm" onClick={() => handleEdit(goal)} className="hover:bg-primary/10">
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="sm" onClick={() => handleDelete(goal.id)} className="text-destructive hover:bg-destructive/10">
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Button variant="ghost" size="sm" onClick={() => handleEdit(goal)}>
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button variant="ghost" size="sm" onClick={() => handleDelete(goal.id)} className="text-destructive">
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+
+                    {/* Progress Visualization */}
+                    <div className="flex items-center gap-8">
+                      {/* Circular Progress */}
+                      <div className="relative">
+                        <svg className="w-24 h-24 transform -rotate-90" viewBox="0 0 100 100">
+                          <circle
+                            cx="50"
+                            cy="50"
+                            r="40"
+                            stroke="hsl(var(--muted))"
+                            strokeWidth="8"
+                            fill="none"
+                            className="opacity-20"
+                          />
+                          <circle
+                            cx="50"
+                            cy="50"
+                            r="40"
+                            stroke={progress >= 100 ? "hsl(var(--success))" : 
+                                   progress >= 75 ? "hsl(var(--success))" :
+                                   progress >= 50 ? "hsl(var(--warning))" :
+                                   isUrgent ? "hsl(var(--destructive))" : "hsl(var(--primary))"}
+                            strokeWidth="8"
+                            fill="none"
+                            strokeLinecap="round"
+                            strokeDasharray={strokeDasharray}
+                            strokeDashoffset={strokeDashoffset}
+                            className="transition-all duration-1000 ease-out"
+                          />
+                        </svg>
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <span className={`text-lg font-bold ${getProgressColor(progress, daysRemaining)}`}>
+                            {progress.toFixed(0)}%
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Progress Details */}
+                      <div className="flex-1 space-y-3">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-muted-foreground">Current</span>
+                          <span className="font-semibold text-lg">£{goal.currentAmount.toFixed(2)}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-muted-foreground">Target</span>
+                          <span className="font-semibold text-lg">£{goal.targetAmount.toFixed(2)}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-muted-foreground">Remaining</span>
+                          <span className="font-semibold text-lg text-primary">
+                            £{(goal.targetAmount - goal.currentAmount).toFixed(2)}
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                  
-                  <div className="space-y-3">
-                    <div className="flex justify-between text-sm">
-                      <span>Progress: {currency}{goal.currentAmount.toFixed(2)}</span>
-                      <span>Target: {currency}{goal.targetAmount.toFixed(2)}</span>
+
+                    {/* Smart Insights */}
+                    <Alert className={`${isOverdue ? 'border-destructive bg-destructive/5' : 
+                                      isUrgent ? 'border-warning bg-warning/5' : 
+                                      'border-primary/20 bg-primary/5'}`}>
+                      <div className="flex items-center gap-2">
+                        {isOverdue ? <AlertTriangle className="h-4 w-4 text-destructive" /> : 
+                         isUrgent ? <Clock className="h-4 w-4 text-warning" /> : 
+                         <TrendingUp className="h-4 w-4 text-primary" />}
+                        <AlertDescription className="text-sm font-medium">
+                          {isOverdue ? 
+                            `Goal is ${Math.abs(daysRemaining)} days overdue` :
+                            `${daysRemaining} days left • ${getPrediction(goal.currentAmount, goal.targetAmount, goal.deadline)}`
+                          }
+                        </AlertDescription>
+                      </div>
+                    </Alert>
+
+                    {/* Linear Progress Bar */}
+                    <div className="space-y-2">
+                      <Progress 
+                        value={progress} 
+                        className={`h-3 transition-all duration-700 ${
+                          progress >= 100 ? '[&>div]:bg-success' :
+                          progress >= 75 ? '[&>div]:bg-success' :
+                          progress >= 50 ? '[&>div]:bg-warning' :
+                          isUrgent ? '[&>div]:bg-destructive' : '[&>div]:bg-primary'
+                        }`}
+                      />
+                      <div className="flex justify-between items-center text-xs text-muted-foreground">
+                        <span>0%</span>
+                        <span>25%</span>
+                        <span>50%</span>
+                        <span>75%</span>
+                        <span>100%</span>
+                      </div>
                     </div>
                     
-                    <Progress value={progress} className="h-3" />
-                    
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm font-medium">
-                        {progress.toFixed(1)}% complete
-                      </span>
-                      <span className={`text-sm ${isOverdue ? 'text-destructive' : 'text-muted-foreground'}`}>
-                        {isOverdue ? `${Math.abs(daysRemaining)} days overdue` : `${daysRemaining} days left`}
-                      </span>
-                    </div>
-                    
-                    <div className="flex gap-2 pt-2">
+                    {/* Quick Add Amount */}
+                    <div className="flex gap-2 pt-2 border-t border-border">
                       <Input
                         type="number"
                         step="0.01"
-                        placeholder={`Add ${currency}`}
+                        placeholder={`Add £`}
                         className="flex-1"
                         onKeyDown={(e) => {
                           if (e.key === 'Enter') {
@@ -319,6 +471,7 @@ const Goals = () => {
                             if (input) input.value = '';
                           }
                         }}
+                        className="px-6"
                       >
                         Add
                       </Button>
