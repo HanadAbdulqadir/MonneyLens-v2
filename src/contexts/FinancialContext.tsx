@@ -17,15 +17,8 @@ interface FinancialContextType {
 const FinancialContext = createContext<FinancialContextType | undefined>(undefined);
 
 export function FinancialProvider({ children }: { children: React.ReactNode }) {
-  console.log('FinancialProvider initializing...');
-  
-  console.log('About to call useState for dailyData...');
   const [dailyData, setDailyData] = useState<DailyEntry[]>(initialDailyData);
-  
-  console.log('About to call useState for transactions...');
   const [transactions, setTransactions] = useState<Transaction[]>(initialTransactions);
-  
-  console.log('About to call useState for monthlyStartingPoint...');
   const [monthlyStartingPoint, setMonthlyStartingPointState] = useState<number>(755);
 
   // Load data from localStorage on mount
