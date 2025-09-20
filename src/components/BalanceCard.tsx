@@ -9,7 +9,7 @@ const BalanceCard = () => {
   const isPositiveChange = todaysData.netChange >= 0;
 
   return (
-    <Card className="relative overflow-hidden bg-gradient-primary shadow-elevated border-0">
+    <Card className="relative overflow-hidden bg-gradient-primary shadow-glow border-0 animate-scale-in">
       <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent" />
       <div className="relative p-6 text-primary-foreground">
         <div className="flex items-center justify-between mb-4">

@@ -4,53 +4,38 @@ import RecentTransactions from "@/components/RecentTransactions";
 import WeeklyChart from "@/components/WeeklyChart";
 import AddTransactionModal from "@/components/AddTransactionModal";
 import StartingPointModal from "@/components/StartingPointModal";
-import { Wallet } from "lucide-react";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="space-y-6 animate-fade-in">
       {/* Header */}
-      <header className="bg-card shadow-card border-b">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-primary/10">
-                <Wallet className="h-6 w-6 text-primary" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold">Pots</h1>
-                <p className="text-sm text-muted-foreground">Financial tracking made simple</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <StartingPointModal />
-              <AddTransactionModal />
-            </div>
-          </div>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+          <p className="text-muted-foreground">Welcome back! Here's your financial overview.</p>
         </div>
-      </header>
+        <div className="flex items-center gap-3">
+          <StartingPointModal />
+          <AddTransactionModal />
+        </div>
+      </div>
 
-      {/* Main Content */}
-      <main className="container mx-auto px-4 py-6">
-        <div className="grid gap-6">
-          {/* Balance Card - Full Width */}
-          <BalanceCard />
-          
-          {/* Content Grid */}
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {/* Category Breakdown */}
-            <CategoryBreakdown />
-            
-            {/* Recent Transactions */}
-            <RecentTransactions />
-            
-            {/* Weekly Chart - Spans 2 columns on larger screens */}
-            <div className="md:col-span-2 lg:col-span-1 lg:col-start-3 lg:row-span-2">
-              <WeeklyChart />
-            </div>
-          </div>
+      {/* Balance Card - Full Width */}
+      <BalanceCard />
+      
+      {/* Content Grid */}
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {/* Category Breakdown */}
+        <CategoryBreakdown />
+        
+        {/* Recent Transactions */}
+        <RecentTransactions />
+        
+        {/* Weekly Chart */}
+        <div className="md:col-span-2 lg:col-span-1">
+          <WeeklyChart />
         </div>
-      </main>
+      </div>
     </div>
   );
 };

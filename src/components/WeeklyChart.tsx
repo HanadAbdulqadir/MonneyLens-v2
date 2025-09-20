@@ -12,7 +12,7 @@ const WeeklyChart = () => {
   }));
 
   return (
-    <Card className="p-6 shadow-card hover:shadow-card-hover transition-shadow">
+    <Card className="p-6 shadow-card hover:shadow-card-hover transition-all duration-300 hover:scale-[1.02]">
       <h3 className="text-lg font-semibold mb-4">Balance Trend</h3>
       <div className="h-64">
         <ResponsiveContainer width="100%" height="100%">
