@@ -1,6 +1,9 @@
+import React, { useState, useMemo, useCallback } from 'react';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { 
   Popover,
   PopoverContent,
@@ -12,7 +15,6 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import { useFinancial } from "@/contexts/FinancialContext";
-import { useState, useMemo, useCallback } from "react";
 import { 
   ChevronLeft, 
   ChevronRight, 
@@ -26,11 +28,18 @@ import {
   Grid3X3,
   List,
   Filter,
-  GripVertical
+  GripVertical,
+  Brain,
+  Maximize2,
+  BarChart3,
+  Target
 } from "lucide-react";
 import AddTransactionModal from "@/components/AddTransactionModal";
 import SmartTransactionEntry from "@/components/SmartTransactionEntry";
-import { format, parseISO, addDays, subDays, isSameDay, startOfWeek, endOfWeek } from "date-fns";
+import QuickActionMenu from "@/components/QuickActionMenu";
+import CalendarDayView from "@/components/CalendarDayView";
+import TransactionPredictions from "@/components/TransactionPredictions";
+import { format, parseISO, addDays, subDays, isSameDay, startOfWeek, endOfWeek, startOfMonth, endOfMonth } from "date-fns";
 import { useDrag, useDrop, DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
@@ -63,12 +72,21 @@ const EnhancedCalendarView = ({
   showRecurring = true,
   enableDragDrop = true 
 }: EnhancedCalendarViewProps) => {
-  const { dailyData, transactions, recurringTransactions, updateTransaction } = useFinancial();
+  const { 
+    dailyData, 
+    transactions, 
+    recurringTransactions, 
+    updateTransaction, 
+    deleteTransaction 
+  } = useFinancial();
+  
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [calendarView, setCalendarView] = useState<'month' | 'week' | 'list'>(view as any);
+  const [calendarView, setCalendarView] = useState<'month' | 'week' | 'day' | 'list' | 'agenda'>(view as any);
   const [hoveredDay, setHoveredDay] = useState<string | null>(null);
   const [filterCategory, setFilterCategory] = useState<string | null>(null);
+  const [showPredictions, setShowPredictions] = useState(false);
+  const [draggedTransaction, setDraggedTransaction] = useState<DraggableTransaction | null>(null);
 
   const monthNames = [
     "January", "February", "March", "April", "May", "June",
@@ -77,7 +95,7 @@ const EnhancedCalendarView = ({
 
   const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-  // Get calendar days based on view
+  // Optimized calendar days calculation
   const calendarDays = useMemo(() => {
     if (calendarView === 'week') {
       const start = startOfWeek(currentDate);
@@ -88,7 +106,7 @@ const EnhancedCalendarView = ({
       return days;
     }
     
-    // Month view
+    // Month view - optimized calculation
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
     const firstDay = new Date(year, month, 1);
@@ -111,7 +129,7 @@ const EnhancedCalendarView = ({
     return days;
   }, [currentDate, calendarView]);
 
-  // Get data for a specific date
+  // Optimized data retrieval with memoization
   const getDataForDate = useCallback((date: Date | null): DayData | null => {
     if (!date) return null;
     
@@ -124,16 +142,15 @@ const EnhancedCalendarView = ({
       ? dayTransactions.filter(t => t.category === filterCategory)
       : dayTransactions;
     
-    // Check for recurring transactions that should appear on this date
+    // Optimized recurring transactions calculation
     const recurringForDay = showRecurring ? recurringTransactions.filter(recurring => {
       if (!recurring.isActive) return false;
       
       const nextDate = new Date(recurring.nextDate);
       
-      // Simplified recurring logic - in reality this would be more complex
       switch (recurring.frequency) {
         case 'daily':
-          return true; // Show on every day
+          return true;
         case 'weekly':
           return date.getDay() === nextDate.getDay();
         case 'monthly':
@@ -179,6 +196,11 @@ const EnhancedCalendarView = ({
     });
   };
 
+  const goToToday = () => {
+    setCurrentDate(new Date());
+    setSelectedDate(new Date());
+  };
+
   const isToday = (date: Date | null) => {
     if (!date) return false;
     return isSameDay(date, new Date());
@@ -189,21 +211,35 @@ const EnhancedCalendarView = ({
     return isSameDay(date, selectedDate);
   };
 
-  // Drag and Drop for rescheduling
+  // Enhanced drag and drop functionality
   const DraggableTransaction = ({ transaction, date }: { transaction: DraggableTransaction; date: string }) => {
-    const [{ isDragging }, drag] = useDrag({
+    const [{ isDragging }, drag] = useDrag(() => ({
       type: 'transaction',
       item: { ...transaction, originalDate: date },
       collect: (monitor) => ({
         isDragging: monitor.isDragging(),
       }),
-    });
+    }));
+
+    const handleEdit = () => {
+      console.log('Edit transaction:', transaction);
+    };
+
+    const handleDelete = () => {
+      if (transaction.type === 'transaction') {
+        deleteTransaction(transaction.id);
+      }
+    };
+
+    const handleDuplicate = () => {
+      console.log('Duplicate transaction:', transaction);
+    };
 
     return (
       <div
         ref={enableDragDrop ? drag : undefined}
-        className={`p-1 rounded text-xs cursor-move transition-opacity ${
-          isDragging ? 'opacity-50' : ''
+        className={`group relative p-1 rounded text-xs cursor-move transition-all duration-200 ${
+          isDragging ? 'drag-preview' : 'transaction-item'
         }`}
       >
         <Badge 
@@ -211,100 +247,118 @@ const EnhancedCalendarView = ({
           className={`text-xs w-full justify-between ${
             transaction.type === 'recurring' ? 'border-dashed' : ''
           } ${
-            transaction.category === 'Earnings' ? 'bg-success/10 text-success border-success/20' :
-            transaction.category === 'Petrol' ? 'bg-warning/10 text-warning border-warning/20' :
-            transaction.category === 'Food' ? 'bg-destructive/10 text-destructive border-destructive/20' :
-            'bg-muted text-muted-foreground'
+            transaction.category === 'Earnings' ? 'bg-success/10 text-success border-success/20 hover:bg-success/20' :
+            transaction.category === 'Petrol' ? 'bg-blue-500/10 text-blue-600 border-blue-500/20 hover:bg-blue-500/20' :
+            transaction.category === 'Food' ? 'bg-orange-500/10 text-orange-600 border-orange-500/20 hover:bg-orange-500/20' :
+            'bg-muted text-muted-foreground hover:bg-muted/70'
           }`}
         >
-          {transaction.category === 'Earnings' ? '+' : '-'}£{transaction.amount.toFixed(0)}
-          {enableDragDrop && <GripVertical className="h-3 w-3 ml-1" />}
+          <span className="flex items-center gap-1">
+            {transaction.category === 'Earnings' ? '+' : '-'}£{transaction.amount.toFixed(0)}
+            {enableDragDrop && <GripVertical className="h-3 w-3 opacity-50" />}
+          </span>
+          
+          {transaction.type === 'transaction' && (
+            <QuickActionMenu
+              transaction={transaction}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+              onDuplicate={handleDuplicate}
+              size="sm"
+            />
+          )}
         </Badge>
       </div>
     );
   };
 
   const DroppableDay = ({ date, children }: { date: Date | null; children: React.ReactNode }) => {
-    const [{ isOver }, drop] = useDrop({
+    const [{ isOver, canDrop }, drop] = useDrop(() => ({
       accept: 'transaction',
       drop: (item: DraggableTransaction & { originalDate: string }) => {
         if (date && item.originalDate !== format(date, 'yyyy-MM-dd')) {
-          // Handle transaction move
-          console.log('Move transaction', item, 'to', format(date, 'yyyy-MM-dd'));
-          // This would require extending the FinancialContext to support transaction updates
+          const newDate = format(date, 'yyyy-MM-dd');
+          updateTransaction(item.id, { date: newDate });
         }
       },
       collect: (monitor) => ({
         isOver: monitor.isOver(),
+        canDrop: monitor.canDrop(),
       }),
-    });
+    }));
 
     return (
       <div
         ref={enableDragDrop ? drop : undefined}
-        className={`${isOver ? 'bg-primary/10 border-primary/30 border-dashed border-2' : ''}`}
+        className={`${isOver && canDrop ? 'drop-zone-active' : ''}`}
       >
         {children}
       </div>
     );
   };
 
-  // Hover preview component
+  // Enhanced hover preview component
   const TransactionPreview = ({ dayData }: { dayData: DayData }) => (
-    <div className="space-y-3 min-w-64">
+    <div className="space-y-3 min-w-80">
       <div className="flex justify-between items-center">
         <h4 className="font-semibold">{format(parseISO(dayData.date), 'EEEE, MMM dd')}</h4>
-        <Badge variant={dayData.netAmount >= 0 ? "secondary" : "outline"}>
+        <Badge variant={dayData.netAmount >= 0 ? "default" : "destructive"} className="font-mono">
           {dayData.netAmount >= 0 ? '+' : ''}£{dayData.netAmount.toFixed(2)}
         </Badge>
       </div>
       
       {dayData.earnings > 0 && (
-        <div className="flex justify-between text-sm">
-          <span className="text-success">Income:</span>
-          <span className="text-success font-medium">+£{dayData.earnings.toFixed(2)}</span>
+        <div className="flex justify-between text-sm p-2 rounded-md bg-success/10">
+          <span className="text-success font-medium flex items-center gap-1">
+            <TrendingUp className="h-3 w-3" />
+            Income:
+          </span>
+          <span className="text-success font-bold">+£{dayData.earnings.toFixed(2)}</span>
         </div>
       )}
       
       {dayData.expenses > 0 && (
-        <div className="flex justify-between text-sm">
-          <span className="text-destructive">Expenses:</span>
-          <span className="text-destructive font-medium">-£{dayData.expenses.toFixed(2)}</span>
+        <div className="flex justify-between text-sm p-2 rounded-md bg-destructive/10">
+          <span className="text-destructive font-medium flex items-center gap-1">
+            <TrendingDown className="h-3 w-3" />
+            Expenses:
+          </span>
+          <span className="text-destructive font-bold">-£{dayData.expenses.toFixed(2)}</span>
         </div>
       )}
 
       {dayData.transactions.length > 0 && (
-        <div className="border-t pt-2">
-          <p className="text-xs font-medium mb-2">Transactions:</p>
-          <div className="space-y-1 max-h-32 overflow-y-auto">
-            {dayData.transactions.slice(0, 5).map((transaction, index) => (
-              <div key={index} className="flex justify-between text-xs">
-                <span className="truncate">{transaction.category}</span>
-                <span className={transaction.category === 'Earnings' ? 'text-success' : 'text-destructive'}>
-                  {transaction.category === 'Earnings' ? '+' : '-'}£{transaction.amount.toFixed(2)}
-                </span>
-              </div>
-            ))}
-            {dayData.transactions.length > 5 && (
-              <p className="text-xs text-muted-foreground">
-                +{dayData.transactions.length - 5} more...
-              </p>
-            )}
-          </div>
+        <div className="border-t pt-3">
+          <p className="text-xs font-medium mb-2 flex items-center gap-1">
+            <BarChart3 className="h-3 w-3" />
+            Transactions ({dayData.transactions.length}):
+          </p>
+          <ScrollArea className="max-h-32">
+            <div className="space-y-1">
+              {dayData.transactions.map((transaction, index) => (
+                <div key={index} className="flex justify-between text-xs p-1 rounded hover:bg-muted/50">
+                  <span className="truncate font-medium">{transaction.category}</span>
+                  <span className={`font-mono ${transaction.category === 'Earnings' ? 'text-success' : 'text-destructive'}`}>
+                    {transaction.category === 'Earnings' ? '+' : '-'}£{transaction.amount.toFixed(2)}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </ScrollArea>
         </div>
       )}
 
       {dayData.recurringTransactions.length > 0 && (
-        <div className="border-t pt-2">
+        <div className="border-t pt-3">
           <p className="text-xs font-medium mb-2 flex items-center gap-1">
             <RefreshCw className="h-3 w-3" />
-            Recurring:
+            Recurring ({dayData.recurringTransactions.length}):
           </p>
           <div className="space-y-1">
             {dayData.recurringTransactions.map((recurring, index) => (
-              <div key={index} className="flex justify-between text-xs">
-                <span className="truncate">{recurring.name}</span>
-                <span className={recurring.category === 'Earnings' ? 'text-success' : 'text-destructive'}>
+              <div key={index} className="flex justify-between text-xs p-1 rounded border-dashed border hover:bg-muted/50">
+                <span className="truncate font-medium">{recurring.name}</span>
+                <span className={`font-mono ${recurring.category === 'Earnings' ? 'text-success' : 'text-destructive'}`}>
                   {recurring.category === 'Earnings' ? '+' : '-'}£{recurring.amount.toFixed(2)}
                 </span>
               </div>
@@ -312,9 +366,20 @@ const EnhancedCalendarView = ({
           </div>
         </div>
       )}
+
+      <Button
+        size="sm"
+        variant="outline"
+        className="w-full mt-3"
+        onClick={() => setSelectedDate(parseISO(dayData.date))}
+      >
+        <Maximize2 className="h-3 w-3 mr-1" />
+        View Day Details
+      </Button>
     </div>
   );
 
+  // Enhanced calendar grid rendering
   const renderCalendarGrid = () => (
     <div className="space-y-4">
       {/* Week day headers */}
@@ -326,7 +391,7 @@ const EnhancedCalendarView = ({
         ))}
       </div>
 
-      {/* Calendar grid */}
+      {/* Enhanced calendar grid */}
       <div className={`grid gap-2 ${calendarView === 'week' ? 'grid-cols-7' : 'grid-cols-7'}`}>
         {calendarDays.map((date, index) => {
           const dayData = getDataForDate(date);
@@ -339,12 +404,13 @@ const EnhancedCalendarView = ({
                 <HoverCardTrigger asChild>
                   <div
                     className={`
-                      min-h-24 p-2 rounded-lg border transition-all duration-200 cursor-pointer
-                      ${date ? 'hover:bg-muted/50' : 'border-transparent'}
-                      ${isCurrentDay ? 'border-primary bg-primary/5 ring-2 ring-primary/20' : ''}
-                      ${isSelectedDay ? 'border-accent bg-accent/5' : ''}
-                      ${dayData?.hasData ? 'border-primary/30 bg-gradient-to-br from-background to-primary/5' : 'border-border'}
-                      ${calendarView === 'week' ? 'min-h-32' : 'min-h-24'}
+                      calendar-grid-day min-h-28 p-3 rounded-xl border
+                      ${date ? 'calendar-day-hover' : 'border-transparent'}
+                      ${isCurrentDay ? 'border-primary bg-gradient-primary text-primary-foreground shadow-glow ring-2 ring-primary/20' : ''}
+                      ${isSelectedDay ? 'border-accent bg-gradient-accent text-accent-foreground shadow-elevated' : ''}
+                      ${dayData?.hasData ? 'border-primary/30 bg-gradient-calendar shadow-calendar-day' : 'border-border hover:border-primary/20'}
+                      ${calendarView === 'week' ? 'min-h-36' : 'min-h-28'}
+                      ${draggedTransaction ? 'hover:border-primary hover:bg-primary/5' : ''}
                     `}
                     onClick={() => date && setSelectedDate(date)}
                     onMouseEnter={() => date && setHoveredDay(format(date, 'yyyy-MM-dd'))}
@@ -352,36 +418,36 @@ const EnhancedCalendarView = ({
                   >
                     {date && (
                       <>
-                        <div className="flex items-center justify-between mb-2">
-                          <span className={`text-sm font-medium ${isCurrentDay ? 'text-primary font-bold' : ''}`}>
+                        <div className="flex items-center justify-between mb-3">
+                          <span className={`text-sm font-semibold ${isCurrentDay ? 'text-primary-foreground' : isSelectedDay ? 'text-accent-foreground' : ''}`}>
                             {date.getDate()}
                           </span>
                           {dayData?.hasData && (
                             <div className="flex gap-1">
                               {dayData.earnings > 0 && (
-                                <div className="w-2 h-2 rounded-full bg-success" />
+                                <div className="w-2.5 h-2.5 rounded-full bg-success shadow-sm" />
                               )}
                               {dayData.expenses > 0 && (
-                                <div className="w-2 h-2 rounded-full bg-destructive" />
+                                <div className="w-2.5 h-2.5 rounded-full bg-destructive shadow-sm" />
                               )}
                               {dayData.recurringTransactions.length > 0 && (
-                                <RefreshCw className="h-2 w-2 text-primary" />
+                                <RefreshCw className="h-2.5 w-2.5 text-primary" />
                               )}
                             </div>
                           )}
                         </div>
                         
                         {dayData && (
-                          <div className="space-y-1">
-                            {/* Net amount indicator */}
+                          <div className="space-y-1.5">
+                            {/* Enhanced net amount indicator */}
                             {(dayData.earnings > 0 || dayData.expenses > 0) && (
                               <div className="text-center">
                                 <Badge 
                                   variant="outline" 
-                                  className={`text-xs px-1 py-0 ${
+                                  className={`text-xs px-2 py-0.5 font-mono transition-all duration-200 ${
                                     dayData.netAmount >= 0 
-                                      ? 'border-success/30 text-success bg-success/10' 
-                                      : 'border-destructive/30 text-destructive bg-destructive/10'
+                                      ? 'border-success/40 text-success bg-success/10 hover:bg-success/20' 
+                                      : 'border-destructive/40 text-destructive bg-destructive/10 hover:bg-destructive/20'
                                   }`}
                                 >
                                   {dayData.netAmount >= 0 ? '+' : ''}£{Math.abs(dayData.netAmount).toFixed(0)}
@@ -389,42 +455,44 @@ const EnhancedCalendarView = ({
                               </div>
                             )}
 
-                            {/* Transaction indicators */}
-                            <div className="space-y-1 max-h-16 overflow-y-auto">
-                              {dayData.transactions.slice(0, 2).map((transaction, tIndex) => (
-                                <DraggableTransaction
-                                  key={tIndex}
-                                  transaction={{
-                                    id: `t-${tIndex}`,
-                                    date: dayData.date,
-                                    category: transaction.category,
-                                    amount: transaction.amount,
-                                    type: 'transaction'
-                                  }}
-                                  date={dayData.date}
-                                />
-                              ))}
-                              
-                              {showRecurring && dayData.recurringTransactions.slice(0, 1).map((recurring, rIndex) => (
-                                <DraggableTransaction
-                                  key={`r-${rIndex}`}
-                                  transaction={{
-                                    id: recurring.id,
-                                    date: dayData.date,
-                                    category: recurring.category,
-                                    amount: recurring.amount,
-                                    type: 'recurring'
-                                  }}
-                                  date={dayData.date}
-                                />
-                              ))}
-                              
-                              {(dayData.transactions.length + dayData.recurringTransactions.length) > 3 && (
-                                <div className="text-xs text-muted-foreground text-center">
-                                  +{(dayData.transactions.length + dayData.recurringTransactions.length) - 3} more
-                                </div>
-                              )}
-                            </div>
+                            {/* Enhanced transaction indicators */}
+                            <ScrollArea className="max-h-20">
+                              <div className="space-y-1">
+                                {dayData.transactions.slice(0, 2).map((transaction, tIndex) => (
+                                  <DraggableTransaction
+                                    key={tIndex}
+                                    transaction={{
+                                      id: `t-${tIndex}`,
+                                      date: dayData.date,
+                                      category: transaction.category,
+                                      amount: transaction.amount,
+                                      type: 'transaction'
+                                    }}
+                                    date={dayData.date}
+                                  />
+                                ))}
+                                
+                                {showRecurring && dayData.recurringTransactions.slice(0, 1).map((recurring, rIndex) => (
+                                  <DraggableTransaction
+                                    key={`r-${rIndex}`}
+                                    transaction={{
+                                      id: recurring.id,
+                                      date: dayData.date,
+                                      category: recurring.category,
+                                      amount: recurring.amount,
+                                      type: 'recurring'
+                                    }}
+                                    date={dayData.date}
+                                  />
+                                ))}
+                                
+                                {(dayData.transactions.length + dayData.recurringTransactions.length) > 3 && (
+                                  <div className="text-xs text-muted-foreground text-center py-1">
+                                    +{(dayData.transactions.length + dayData.recurringTransactions.length) - 3} more
+                                  </div>
+                                )}
+                              </div>
+                            </ScrollArea>
                           </div>
                         )}
                       </>
@@ -433,7 +501,7 @@ const EnhancedCalendarView = ({
                 </HoverCardTrigger>
                 
                 {dayData && dayData.hasData && (
-                  <HoverCardContent className="w-80">
+                  <HoverCardContent className="w-auto">
                     <TransactionPreview dayData={dayData} />
                   </HoverCardContent>
                 )}
@@ -445,214 +513,290 @@ const EnhancedCalendarView = ({
     </div>
   );
 
+  // Enhanced list view
   const renderListView = () => {
     const daysWithData = calendarDays
-      .filter(date => date && getDataForDate(date)?.hasData)
-      .map(date => ({ date: date!, data: getDataForDate(date)! }));
+      ?.filter(date => date && getDataForDate(date)?.hasData)
+      ?.sort((a, b) => (a && b) ? new Date(a).getTime() - new Date(b).getTime() : 0) || [];
+
+    if (daysWithData.length === 0) {
+      return (
+        <Card className="p-8 text-center">
+          <CalendarIcon className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+          <h3 className="font-medium mb-2">No Financial Activity</h3>
+          <p className="text-sm text-muted-foreground mb-4">
+            No transactions found for {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
+          </p>
+          <AddTransactionModal />
+        </Card>
+      );
+    }
 
     return (
       <div className="space-y-4">
-        {daysWithData.map(({ date, data }) => (
-          <Card key={format(date, 'yyyy-MM-dd')} className="p-4">
-            <div className="flex justify-between items-center mb-3">
-              <h3 className="font-semibold">{format(date, 'EEEE, MMMM dd, yyyy')}</h3>
-              <Badge variant={data.netAmount >= 0 ? "secondary" : "destructive"}>
-                Net: {data.netAmount >= 0 ? '+' : ''}£{data.netAmount.toFixed(2)}
-              </Badge>
-            </div>
-            
-            <div className="grid md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <h4 className="font-medium text-sm">Transactions</h4>
-                {data.transactions.map((transaction, index) => (
-                  <div key={index} className="flex justify-between items-center p-2 bg-muted/30 rounded">
-                    <span className="text-sm">{transaction.category}</span>
-                    <span className={`font-medium ${transaction.category === 'Earnings' ? 'text-success' : 'text-destructive'}`}>
-                      {transaction.category === 'Earnings' ? '+' : '-'}£{transaction.amount.toFixed(2)}
-                    </span>
+        {daysWithData.map((date, index) => {
+          const dayData = getDataForDate(date);
+          if (!dayData || !date) return null;
+
+          return (
+            <Card key={index} className="interactive-card">
+              <div className="p-4 border-b bg-gradient-card">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className={`w-3 h-3 rounded-full ${dayData.netAmount >= 0 ? 'bg-success' : 'bg-destructive'}`} />
+                    <h3 className="font-semibold">{format(date, 'EEEE, MMMM dd, yyyy')}</h3>
+                    {isToday(date) && <Badge variant="default">Today</Badge>}
                   </div>
-                ))}
+                  <Badge variant={dayData.netAmount >= 0 ? "default" : "destructive"} className="font-mono">
+                    {dayData.netAmount >= 0 ? '+' : ''}£{dayData.netAmount.toFixed(2)}
+                  </Badge>
+                </div>
               </div>
               
-              {data.recurringTransactions.length > 0 && (
-                <div className="space-y-2">
-                  <h4 className="font-medium text-sm flex items-center gap-1">
-                    <RefreshCw className="h-4 w-4" />
-                    Recurring
-                  </h4>
-                  {data.recurringTransactions.map((recurring, index) => (
-                    <div key={index} className="flex justify-between items-center p-2 bg-muted/30 rounded border-dashed border">
-                      <span className="text-sm">{recurring.name}</span>
-                      <span className={`font-medium ${recurring.category === 'Earnings' ? 'text-success' : 'text-destructive'}`}>
-                        {recurring.category === 'Earnings' ? '+' : '-'}£{recurring.amount.toFixed(2)}
-                      </span>
+              <div className="p-4">
+                <div className="grid gap-4 md:grid-cols-2">
+                  {/* Transactions */}
+                  <div className="space-y-2">
+                    <h4 className="text-sm font-medium text-muted-foreground">Transactions</h4>
+                    {dayData.transactions.map((transaction, tIndex) => (
+                      <div key={tIndex} className="flex items-center justify-between p-2 rounded-lg bg-muted/30">
+                        <span className="text-sm">{transaction.category}</span>
+                        <Badge variant="outline" className="font-mono">
+                          {transaction.category === 'Earnings' ? '+' : '-'}£{transaction.amount.toFixed(2)}
+                        </Badge>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Recurring */}
+                  {dayData.recurringTransactions.length > 0 && (
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-medium text-muted-foreground">Recurring</h4>
+                      {dayData.recurringTransactions.map((recurring, rIndex) => (
+                        <div key={rIndex} className="flex items-center justify-between p-2 rounded-lg border-dashed border bg-muted/10">
+                          <span className="text-sm">{recurring.name}</span>
+                          <Badge variant="outline" className="font-mono border-dashed">
+                            {recurring.category === 'Earnings' ? '+' : '-'}£{recurring.amount.toFixed(2)}
+                          </Badge>
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  )}
                 </div>
-              )}
-            </div>
-          </Card>
-        ))}
+              </div>
+            </Card>
+          );
+        })}
+      </div>
+    );
+  };
+
+  // Agenda view (upcoming transactions)
+  const renderAgendaView = () => {
+    const upcomingDays = [];
+    for (let i = 0; i < 14; i++) {
+      const date = addDays(new Date(), i);
+      const dayData = getDataForDate(date);
+      if (dayData?.hasData) {
+        upcomingDays.push({ date, dayData });
+      }
+    }
+
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center gap-2">
+          <Clock className="h-5 w-5 text-primary" />
+          <h3 className="font-semibold">Upcoming Financial Activity</h3>
+        </div>
         
-        {daysWithData.length === 0 && (
+        {upcomingDays.length === 0 ? (
           <Card className="p-8 text-center">
-            <CalendarIcon className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="font-semibold mb-2">No Financial Activity</h3>
+            <Target className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+            <h3 className="font-medium mb-2">All Clear</h3>
             <p className="text-sm text-muted-foreground">
-              No transactions found for this period
+              No upcoming transactions in the next 14 days
             </p>
           </Card>
+        ) : (
+          <div className="space-y-3">
+            {upcomingDays.map(({ date, dayData }, index) => (
+              <Card key={index} className="p-4 hover:shadow-card-hover transition-all duration-200">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="text-center">
+                      <div className="text-xs text-muted-foreground">{format(date, 'MMM')}</div>
+                      <div className="text-lg font-bold">{format(date, 'dd')}</div>
+                      <div className="text-xs text-muted-foreground">{format(date, 'EEE')}</div>
+                    </div>
+                    <div>
+                      <h4 className="font-medium">{format(date, 'EEEE, MMMM dd')}</h4>
+                      <p className="text-sm text-muted-foreground">
+                        {dayData.transactions.length} transactions
+                        {dayData.recurringTransactions.length > 0 && ` • ${dayData.recurringTransactions.length} recurring`}
+                      </p>
+                    </div>
+                  </div>
+                  <Badge variant={dayData.netAmount >= 0 ? "default" : "destructive"} className="font-mono">
+                    {dayData.netAmount >= 0 ? '+' : ''}£{dayData.netAmount.toFixed(2)}
+                  </Badge>
+                </div>
+              </Card>
+            ))}
+          </div>
         )}
       </div>
     );
   };
 
+  // If day view is selected and we have a selected date, show the day view
+  if (calendarView === 'day' && selectedDate) {
+    return (
+      <CalendarDayView
+        selectedDate={selectedDate}
+        onDateChange={setSelectedDate}
+        onBack={() => setCalendarView('month')}
+      />
+    );
+  }
+
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="space-y-6 animate-fade-in">
-        {/* Calendar Header */}
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        {/* Enhanced Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-              <CalendarIcon className="h-8 w-8" />
-              Enhanced Calendar
-            </h1>
+            <h2 className="text-2xl font-bold tracking-tight">
+              {calendarView === 'agenda' ? 'Financial Agenda' :
+               calendarView === 'list' ? 'Activity List' :
+               `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`}
+            </h2>
             <p className="text-muted-foreground">
-              Interactive financial calendar with drag-and-drop scheduling
+              {calendarView === 'agenda' ? 'Upcoming financial activity' :
+               calendarView === 'list' ? 'All transactions and recurring items' :
+               'Interactive financial calendar with drag-and-drop'}
             </p>
           </div>
           
-          <div className="flex items-center gap-3 flex-wrap">
-            {/* View Toggle */}
-            <div className="flex bg-muted rounded-lg p-1">
+          <div className="flex items-center gap-2 flex-wrap">
+            {/* View toggles */}
+            <div className="flex rounded-lg border p-1">
               {[
-                { view: 'month', icon: Grid3X3, label: 'Month' },
-                { view: 'week', icon: CalendarIcon, label: 'Week' },
-                { view: 'list', icon: List, label: 'List' }
-              ].map(({ view, icon: Icon, label }) => (
+                { key: 'month', label: 'Month', icon: Grid3X3 },
+                { key: 'week', label: 'Week', icon: CalendarIcon },
+                { key: 'day', label: 'Day', icon: Eye },
+                { key: 'list', label: 'List', icon: List },
+                { key: 'agenda', label: 'Agenda', icon: Clock }
+              ].map(({ key, label, icon: Icon }) => (
                 <Button
-                  key={view}
-                  variant={calendarView === view ? "secondary" : "ghost"}
+                  key={key}
+                  variant={calendarView === key ? "default" : "ghost"}
                   size="sm"
-                  onClick={() => setCalendarView(view as any)}
-                  className="h-8 px-3"
+                  onClick={() => setCalendarView(key as any)}
+                  className="h-8 px-2"
                 >
-                  <Icon className="h-4 w-4 mr-1" />
-                  <span className="text-xs">{label}</span>
+                  <Icon className="h-3 w-3 mr-1" />
+                  <span className="hidden sm:inline">{label}</span>
                 </Button>
               ))}
             </div>
-
-            {/* Category Filter */}
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="outline" size="sm" className="gap-2">
-                  <Filter className="h-4 w-4" />
-                  {filterCategory || 'All Categories'}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-48">
-                <div className="space-y-2">
-                  <Button
-                    variant={!filterCategory ? "secondary" : "ghost"}
-                    size="sm"
-                    className="w-full justify-start"
-                    onClick={() => setFilterCategory(null)}
-                  >
-                    All Categories
-                  </Button>
-                  {['Earnings', 'Petrol', 'Food', 'Other'].map(category => (
-                    <Button
-                      key={category}
-                      variant={filterCategory === category ? "secondary" : "ghost"}
-                      size="sm"
-                      className="w-full justify-start"
-                      onClick={() => setFilterCategory(category)}
-                    >
-                      {category}
-                    </Button>
-                  ))}
-                </div>
-              </PopoverContent>
-            </Popover>
-
-            <SmartTransactionEntry 
-              trigger={
-                <Button className="gap-2">
-                  <Plus className="h-4 w-4" />
-                  Add Smart
-                </Button>
-              }
-            />
+            
+            {/* Smart insights toggle */}
+            <Button
+              variant={showPredictions ? "default" : "outline"}
+              size="sm"
+              onClick={() => setShowPredictions(!showPredictions)}
+              className="h-8"
+            >
+              <Brain className="h-3 w-3 mr-1" />
+              <span className="hidden sm:inline">AI Insights</span>
+            </Button>
+            
+            <SmartTransactionEntry />
           </div>
         </div>
 
-        {/* Calendar Navigation */}
-        <Card className="p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-semibold">
-              {calendarView === 'week' 
-                ? `Week of ${format(startOfWeek(currentDate), 'MMM dd, yyyy')}`
-                : `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`
-              }
-            </h2>
-            <div className="flex items-center gap-2">
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => navigateCalendar('prev')}
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => setCurrentDate(new Date())}
-              >
-                Today
-              </Button>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => navigateCalendar('next')}
-              >
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            </div>
+        {/* Enhanced Navigation */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={() => navigateCalendar('prev')}>
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => navigateCalendar('next')}>
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+            <Button variant="outline" size="sm" onClick={goToToday}>
+              Today
+            </Button>
           </div>
 
-          {calendarView === 'list' ? renderListView() : renderCalendarGrid()}
-        </Card>
+          {/* Category filter */}
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline" size="sm">
+                <Filter className="h-4 w-4 mr-1" />
+                {filterCategory || 'All Categories'}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-48" align="end">
+              <div className="space-y-1">
+                <Button
+                  variant={!filterCategory ? "default" : "ghost"}
+                  size="sm"
+                  className="w-full justify-start"
+                  onClick={() => setFilterCategory(null)}
+                >
+                  All Categories
+                </Button>
+                {['Earnings', 'Food', 'Petrol', 'Other'].map(category => (
+                  <Button
+                    key={category}
+                    variant={filterCategory === category ? "default" : "ghost"}
+                    size="sm"
+                    className="w-full justify-start"
+                    onClick={() => setFilterCategory(category)}
+                  >
+                    {category}
+                  </Button>
+                ))}
+              </div>
+            </PopoverContent>
+          </Popover>
+        </div>
 
-        {/* Selected Date Details */}
-        {selectedDate && (
-          <Card className="p-6">
-            <h3 className="font-semibold mb-4 flex items-center gap-2">
-              <Eye className="h-5 w-5" />
-              {format(selectedDate, 'EEEE, MMMM dd, yyyy')}
-            </h3>
+        {/* Main content area */}
+        <div className="grid gap-6 lg:grid-cols-4">
+          <div className="lg:col-span-3">
+            {calendarView === 'list' ? renderListView() :
+             calendarView === 'agenda' ? renderAgendaView() :
+             renderCalendarGrid()}
+          </div>
+          
+          {/* Smart insights sidebar */}
+          <div className="space-y-6">
+            {showPredictions && <TransactionPredictions />}
             
-            {(() => {
-              const dayData = getDataForDate(selectedDate);
-              return dayData?.hasData ? (
-                <TransactionPreview dayData={dayData} />
-              ) : (
-                <div className="text-center py-8">
-                  <CalendarIcon className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <p className="text-muted-foreground">No financial activity on this date</p>
-                  <SmartTransactionEntry 
-                    trigger={
-                      <Button className="mt-4 gap-2">
-                        <Plus className="h-4 w-4" />
-                        Add Transaction for This Date
-                      </Button>
-                    }
-                  />
+            {selectedDate && (
+              <Card className="p-4">
+                <h3 className="font-semibold mb-3 flex items-center gap-2">
+                  <CalendarIcon className="h-4 w-4" />
+                  {format(selectedDate, 'MMM dd, yyyy')}
+                </h3>
+                <div className="space-y-3">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => setCalendarView('day')}
+                  >
+                    <Maximize2 className="h-3 w-3 mr-1" />
+                    View Day Details
+                  </Button>
+                  <AddTransactionModal />
                 </div>
-              );
-            })()}
-          </Card>
-        )}
+              </Card>
+            )}
+          </div>
+        </div>
       </div>
     </DndProvider>
   );

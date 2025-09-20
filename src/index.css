@@ -49,16 +49,25 @@ All colors MUST be HSL.
     --chart-4: 0 0% 45%;
     --chart-5: 142 71% 45%;
 
-    /* Clean professional tokens */
+    /* Enhanced gradient system */
     --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%), hsl(217 91% 70%));
     --gradient-success: linear-gradient(135deg, hsl(142 71% 45%), hsl(142 71% 55%));
     --gradient-card: linear-gradient(135deg, hsl(0 0% 100%), hsl(0 0% 98%));
     --gradient-accent: linear-gradient(135deg, hsl(262 83% 58%), hsl(262 83% 68%));
+    --gradient-calendar: linear-gradient(135deg, hsl(217 91% 60% / 0.05), hsl(217 91% 70% / 0.1));
+    --gradient-hover: linear-gradient(135deg, hsl(217 91% 60% / 0.1), hsl(217 91% 70% / 0.15));
     
+    /* Enhanced shadow system */
     --shadow-card: 0 1px 3px 0 hsl(0 0% 0% / 0.1);
     --shadow-card-hover: 0 4px 12px 0 hsl(0 0% 0% / 0.15);
     --shadow-elevated: 0 8px 25px 0 hsl(0 0% 0% / 0.15);
     --shadow-glow: 0 0 0 1px hsl(217 91% 60% / 0.2), 0 4px 12px 0 hsl(217 91% 60% / 0.15);
+    --shadow-calendar-day: 0 2px 8px 0 hsl(0 0% 0% / 0.08);
+    --shadow-calendar-hover: 0 4px 16px 0 hsl(0 0% 0% / 0.12);
+    
+    /* Animation variables */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
     --radius: 0.5rem;
 
@@ -121,16 +130,20 @@ All colors MUST be HSL.
     --chart-4: 0 0% 63%;
     --chart-5: 142 71% 55%;
 
-    /* Dark mode tokens */
+    /* Enhanced dark mode tokens */
     --gradient-primary: linear-gradient(135deg, hsl(217 91% 70%), hsl(217 91% 80%));
     --gradient-success: linear-gradient(135deg, hsl(142 71% 55%), hsl(142 71% 65%));
     --gradient-card: linear-gradient(135deg, hsl(0 0% 0%), hsl(0 0% 4%));
     --gradient-accent: linear-gradient(135deg, hsl(262 83% 68%), hsl(262 83% 78%));
+    --gradient-calendar: linear-gradient(135deg, hsl(217 91% 70% / 0.08), hsl(217 91% 80% / 0.12));
+    --gradient-hover: linear-gradient(135deg, hsl(217 91% 70% / 0.12), hsl(217 91% 80% / 0.18));
     
     --shadow-card: 0 1px 3px 0 hsl(0 0% 0% / 0.5);
     --shadow-card-hover: 0 4px 12px 0 hsl(0 0% 0% / 0.7);
     --shadow-elevated: 0 8px 25px 0 hsl(0 0% 0% / 0.8);
     --shadow-glow: 0 0 0 1px hsl(217 91% 70% / 0.3), 0 4px 12px 0 hsl(217 91% 70% / 0.2);
+    --shadow-calendar-day: 0 2px 8px 0 hsl(0 0% 0% / 0.3);
+    --shadow-calendar-hover: 0 4px 16px 0 hsl(0 0% 0% / 0.4);
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -149,5 +162,53 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  /* Calendar specific animations */
+  .calendar-day-enter {
+    @apply animate-scale-in;
+  }
+  
+  .calendar-day-hover {
+    @apply transition-all duration-200 hover:scale-105;
+    box-shadow: var(--shadow-card);
+  }
+  
+  .calendar-day-hover:hover {
+    box-shadow: var(--shadow-calendar-hover);
+  }
+  
+  .transaction-item {
+    @apply transition-all duration-200 hover:shadow-card-hover hover:-translate-y-0.5;
+  }
+  
+  .smart-prediction {
+    @apply animate-fade-in;
+    animation-delay: calc(var(--index, 0) * 100ms);
+  }
+  
+  /* Enhanced interactive elements */
+  .interactive-card {
+    @apply transition-all duration-300 hover:shadow-elevated hover:scale-[1.02];
+  }
+  
+  .calendar-grid-day {
+    @apply transition-all duration-200 cursor-pointer;
+  }
+  
+  .calendar-grid-day:hover {
+    background: var(--gradient-hover);
+    box-shadow: var(--shadow-calendar-hover);
+  }
+  
+  .drag-preview {
+    @apply opacity-80 scale-95 rotate-3;
+  }
+  
+  .drop-zone-active {
+    @apply bg-primary/10 border-primary/30 border-dashed border-2;
+    @apply animate-pulse;
   }
 }
