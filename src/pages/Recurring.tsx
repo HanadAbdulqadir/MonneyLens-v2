@@ -10,6 +10,8 @@ import { Plus, RefreshCw, Edit, Trash2, Play, Pause } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import AdvancedRecurringScheduler from "@/components/AdvancedRecurringScheduler";
+import UpcomingRecurringWidget from "@/components/UpcomingRecurringWidget";
 
 const Recurring = () => {
   const { recurringTransactions, addRecurringTransaction, updateRecurringTransaction, deleteRecurringTransaction, addTransaction, currency } = useFinancial();
@@ -228,6 +230,16 @@ const Recurring = () => {
                   required
                 />
               </div>
+
+              {/* Advanced Scheduling Option */}
+              <div className="flex justify-center pt-2">
+                <AdvancedRecurringScheduler 
+                  onScheduleCreate={(schedule) => {
+                    console.log('Advanced schedule created:', schedule);
+                    // This could be extended to handle advanced scheduling
+                  }}
+                />
+              </div>
               
               <div className="flex justify-end gap-2 pt-4">
                 <Button type="button" variant="outline" onClick={() => setIsOpen(false)}>
@@ -294,6 +306,9 @@ const Recurring = () => {
           </div>
         </Card>
       </div>
+
+      {/* Upcoming Recurring Widget */}
+      <UpcomingRecurringWidget />
 
       {/* Active Recurring Transactions */}
       {activeRecurring.length > 0 && (
