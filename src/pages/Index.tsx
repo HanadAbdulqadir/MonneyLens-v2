@@ -10,6 +10,9 @@ import FloatingActionButtons from "@/components/FloatingActionButtons";
 import FinancialHealthScore from "@/components/FinancialHealthScore";
 import QuickInsightsGrid from "@/components/QuickInsightsGrid";
 import RecentActivityFeed from "@/components/RecentActivityFeed";
+import DebtOverview from "@/components/DebtOverview";
+import GoalsOverview from "@/components/GoalsOverview";
+import BudgetOverview from "@/components/BudgetOverview";
 
 const Index = () => {
   return (
@@ -39,6 +42,13 @@ const Index = () => {
 
       {/* Quick Insights Grid */}
       <QuickInsightsGrid />
+
+      {/* Key Financial Areas - Debts, Goals, Budget */}
+      <div className="grid gap-6 lg:grid-cols-3">
+        <DebtOverview />
+        <GoalsOverview />
+        <BudgetOverview />
+      </div>
       
       {/* Main Content Grid */}
       <div className="grid gap-6 lg:grid-cols-4">
