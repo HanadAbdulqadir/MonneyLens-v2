@@ -109,6 +109,16 @@ const AdvancedAnalyticsDashboard = ({ className }: AdvancedAnalyticsDashboardPro
     return { start, end };
   }, [timeRange]);
 
+  // Helper function to calculate volatility
+  const calculateVolatility = (values: number[]) => {
+    if (values.length < 2) return 0;
+    
+    const mean = values.reduce((sum, val) => sum + val, 0) / values.length;
+    const variance = values.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / values.length;
+    
+    return Math.sqrt(variance);
+  };
+
   // Advanced analytics calculations
   const analytics = useMemo(() => {
     const filteredTransactions = transactions.filter(t => {
@@ -244,16 +254,6 @@ const AdvancedAnalyticsDashboard = ({ className }: AdvancedAnalyticsDashboardPro
       timeRange: `${format(dateRange.start, 'MMM dd')} - ${format(dateRange.end, 'MMM dd')}`
     };
   }, [transactions, dateRange, timeRange]);
-
-  // Helper function to calculate volatility
-  const calculateVolatility = (values: number[]) => {
-    if (values.length < 2) return 0;
-    
-    const mean = values.reduce((sum, val) => sum + val, 0) / values.length;
-    const variance = values.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / values.length;
-    
-    return Math.sqrt(variance);
-  };
 
   // Chart data preparations
   const categoryChartData = Object.entries(analytics.categoryBreakdown).map(([name, value]) => ({
