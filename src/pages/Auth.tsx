@@ -72,6 +72,8 @@ export default function Auth() {
       if (error) {
         if (error.message.includes("Invalid login credentials")) {
           setError("Invalid email or password. Please check your credentials and try again.");
+        } else if (error.message.includes("Email not confirmed")) {
+          setError("Please check your email and click the confirmation link before signing in. If you don't see the email, check your spam folder.");
         } else {
           setError(error.message);
         }
