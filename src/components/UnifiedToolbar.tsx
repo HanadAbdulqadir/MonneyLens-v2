@@ -76,37 +76,37 @@ const UnifiedToolbar: React.FC<UnifiedToolbarProps> = ({
 
   return (
     <TooltipProvider>
-      <div className="fixed bottom-4 left-4 z-50">
+      <div className="fixed bottom-4 left-4 z-40">
         <Card className={`bg-background/95 backdrop-blur-sm border shadow-lg transition-all duration-300 ${
-          isMinimized ? 'w-12 h-12' : 'w-auto h-auto'
+          isMinimized ? 'w-12 h-12' : 'w-56'
         }`}>
           {/* Toolbar Header */}
           <div className="flex items-center justify-between p-2 border-b bg-muted/30">
             <div className="flex items-center gap-2">
-              {!isMinimized && (
+              {!isMinimized ? (
                 <>
                   <Zap className="h-3 w-3 text-primary" />
                   <span className="text-xs font-medium">Quick Tools</span>
                 </>
+              ) : (
+                <Zap className="h-3 w-3 text-primary mx-auto" />
               )}
             </div>
-            <Button
-              size="sm"
-              variant="ghost"
-              className="h-5 w-5 p-0 hover:bg-muted"
-              onClick={() => setIsMinimized(!isMinimized)}
-            >
-              {isMinimized ? (
-                <Maximize2 className="h-2.5 w-2.5" />
-              ) : (
+            {!isMinimized && (
+              <Button
+                size="sm"
+                variant="ghost"
+                className="h-5 w-5 p-0 hover:bg-muted"
+                onClick={() => setIsMinimized(!isMinimized)}
+              >
                 <Minimize2 className="h-2.5 w-2.5" />
-              )}
-            </Button>
+              </Button>
+            )}
           </div>
 
           {/* Toolbar Content */}
           {!isMinimized && (
-            <div className="p-2 space-y-2 animate-fade-in">
+            <div className="p-3 space-y-3 animate-fade-in">
               {/* Primary Tools */}
               <div className="space-y-1">
                 {primaryTools.map((tool) => {
@@ -117,13 +117,13 @@ const UnifiedToolbar: React.FC<UnifiedToolbarProps> = ({
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="w-full justify-start gap-2 h-8 px-2 hover:bg-primary/10 hover:text-primary transition-colors"
+                          className="w-full justify-start gap-3 h-9 px-3 hover:bg-primary/10 hover:text-primary transition-colors text-left"
                           onClick={tool.action}
                         >
-                          <Icon className="h-3 w-3" />
-                          <span className="text-xs font-medium">{tool.label}</span>
+                          <Icon className="h-4 w-4 flex-shrink-0" />
+                          <span className="text-sm font-medium flex-1">{tool.label}</span>
                           {tool.shortcut && (
-                            <Badge variant="outline" className="ml-auto text-[10px] px-1 py-0">
+                            <Badge variant="outline" className="text-[10px] px-1.5 py-0.5 ml-auto">
                               {tool.shortcut}
                             </Badge>
                           )}
@@ -141,7 +141,7 @@ const UnifiedToolbar: React.FC<UnifiedToolbarProps> = ({
               <Separator />
 
               {/* Secondary Tools */}
-              <div className="grid grid-cols-2 gap-1">
+              <div className="grid grid-cols-2 gap-2">
                 {secondaryTools.map((tool) => {
                   const Icon = tool.icon;
                   return (
@@ -150,10 +150,11 @@ const UnifiedToolbar: React.FC<UnifiedToolbarProps> = ({
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="h-8 p-1 hover:bg-muted transition-colors"
+                          className="h-9 justify-center gap-2 hover:bg-muted transition-colors"
                           onClick={tool.action}
                         >
-                          <Icon className="h-3 w-3" />
+                          <Icon className="h-3.5 w-3.5" />
+                          <span className="text-xs font-medium">{tool.label}</span>
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent side="right" className="text-xs">
@@ -166,12 +167,22 @@ const UnifiedToolbar: React.FC<UnifiedToolbarProps> = ({
               </div>
 
               {/* Status indicator */}
-              <div className="pt-1 border-t">
-                <div className="flex items-center justify-center gap-1">
-                  <div className="w-1.5 h-1.5 rounded-full bg-success animate-pulse"></div>
-                  <span className="text-[10px] text-muted-foreground">Ready</span>
+              <div className="pt-2 border-t">
+                <div className="flex items-center justify-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-success animate-pulse"></div>
+                  <span className="text-xs text-muted-foreground font-medium">System Ready</span>
                 </div>
               </div>
+            </div>
+          )}
+
+          {/* Minimized Click Area */}
+          {isMinimized && (
+            <div 
+              className="absolute inset-0 cursor-pointer flex items-center justify-center"
+              onClick={() => setIsMinimized(false)}
+            >
+              <Maximize2 className="h-3 w-3 text-muted-foreground" />
             </div>
           )}
         </Card>

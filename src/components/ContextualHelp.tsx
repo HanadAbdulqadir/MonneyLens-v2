@@ -170,7 +170,7 @@ const ContextualHelp = () => {
   const Icon = currentTip.icon;
 
   return (
-    <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 animate-fade-in">
+    <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-40 animate-fade-in">
       <Card className="bg-background/95 backdrop-blur-sm border shadow-lg max-w-md">
         <div className="p-4">
           <div className="flex items-start gap-3">
