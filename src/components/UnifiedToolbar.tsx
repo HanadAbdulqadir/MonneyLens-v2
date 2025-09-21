@@ -49,14 +49,14 @@ const UnifiedToolbar: React.FC<UnifiedToolbarProps> = ({
       label: 'Accessibility',
       shortcut: 'Alt+A',
       action: onAccessibilityOpen,
-      category: 'accessibility'
+      category: 'primary'
     },
     {
       id: 'tour',
       icon: Play,
       label: 'Take Tour',
       action: onTourOpen,
-      category: 'help'
+      category: 'primary'
     },
     {
       id: 'shortcuts',
@@ -64,15 +64,15 @@ const UnifiedToolbar: React.FC<UnifiedToolbarProps> = ({
       label: 'Shortcuts',
       shortcut: '?',
       action: () => {
-        // Will show shortcuts help
+        // Show shortcuts help via command palette
         onCommandPaletteOpen();
       },
-      category: 'help'
+      category: 'secondary'
     }
   ];
 
   const primaryTools = tools.filter(t => t.category === 'primary');
-  const secondaryTools = tools.filter(t => t.category !== 'primary');
+  const secondaryTools = tools.filter(t => t.category === 'secondary');
 
   return (
     <TooltipProvider>
@@ -141,30 +141,40 @@ const UnifiedToolbar: React.FC<UnifiedToolbarProps> = ({
               <Separator />
 
               {/* Secondary Tools */}
-              <div className="grid grid-cols-2 gap-2">
-                {secondaryTools.map((tool) => {
-                  const Icon = tool.icon;
-                  return (
-                    <Tooltip key={tool.id}>
-                      <TooltipTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-9 justify-center gap-2 hover:bg-muted transition-colors"
-                          onClick={tool.action}
-                        >
-                          <Icon className="h-3.5 w-3.5" />
-                          <span className="text-xs font-medium">{tool.label}</span>
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent side="right" className="text-xs">
-                        <p>{tool.label}</p>
-                        {tool.shortcut && <p className="text-muted-foreground">{tool.shortcut}</p>}
-                      </TooltipContent>
-                    </Tooltip>
-                  );
-                })}
-              </div>
+              {secondaryTools.length > 0 && (
+                <>
+                  <Separator />
+                  <div className="grid grid-cols-1 gap-2">
+                    {secondaryTools.map((tool) => {
+                      const Icon = tool.icon;
+                      return (
+                        <Tooltip key={tool.id}>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-8 justify-start gap-3 hover:bg-muted transition-colors"
+                              onClick={tool.action}
+                            >
+                              <Icon className="h-3.5 w-3.5" />
+                              <span className="text-xs font-medium">{tool.label}</span>
+                              {tool.shortcut && (
+                                <Badge variant="outline" className="text-[10px] px-1.5 py-0.5 ml-auto">
+                                  {tool.shortcut}
+                                </Badge>
+                              )}
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent side="right" className="text-xs">
+                            <p>{tool.label}</p>
+                            {tool.shortcut && <p className="text-muted-foreground">{tool.shortcut}</p>}
+                          </TooltipContent>
+                        </Tooltip>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
 
               {/* Status indicator */}
               <div className="pt-2 border-t">

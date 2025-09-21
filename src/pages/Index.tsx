@@ -35,8 +35,20 @@ const Index = () => {
   const [isTourOpen, setIsTourOpen] = useState(false);
 
   const handleCommandPaletteOpen = () => setIsCommandPaletteOpen(true);
-  const handleAccessibilityOpen = () => setIsAccessibilityOpen(true);
-  const handleTourOpen = () => setIsTourOpen(true);
+  const handleAccessibilityOpen = () => {
+    // Directly trigger the accessibility dialog
+    const accessibilityButton = document.querySelector('[title="Accessibility Settings (Alt+A)"]') as HTMLButtonElement;
+    if (accessibilityButton) {
+      accessibilityButton.click();
+    }
+  };
+  const handleTourOpen = () => {
+    // Directly trigger the tour dialog
+    const tourButton = document.querySelector('[title="Take the tour again"]') as HTMLButtonElement;
+    if (tourButton) {
+      tourButton.click();
+    }
+  };
 
   return (
     <div className="space-y-8 animate-fade-in">
@@ -49,8 +61,8 @@ const Index = () => {
         onTourOpen={handleTourOpen}
       />
       
-      {/* Legacy components - hidden but functional */}
-      <div className="hidden">
+      {/* Legacy components - kept functional but hidden */}
+      <div className="opacity-0 pointer-events-none absolute -z-10">
         <AccessibilityEnhancer />
         <UserOnboarding />
       </div>
