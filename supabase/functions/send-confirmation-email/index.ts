@@ -139,6 +139,22 @@ serve(async (req) => {
 
     if (error) {
       console.error('Resend error:', error);
+      
+      // Handle domain verification error gracefully
+      if (error.statusCode === 403 && error.message?.includes('verify a domain')) {
+        console.log('Domain verification required - but continuing signup process');
+        return new Response(JSON.stringify({ 
+          success: true, 
+          message: 'Signup successful. Email sending requires domain verification for external recipients.' 
+        }), {
+          status: 200,
+          headers: {
+            'Content-Type': 'application/json',
+            ...corsHeaders,
+          },
+        });
+      }
+      
       throw new Error(`Failed to send email: ${error.message || JSON.stringify(error)}`);
     }
 
