@@ -130,7 +130,10 @@ const UnifiedToolbar: React.FC<UnifiedToolbarProps> = ({
                           variant="ghost"
                           size="sm"
                           className="w-full justify-start gap-3 h-9 px-3 hover:bg-primary/10 hover:text-primary transition-colors text-left"
-                          onClick={tool.action}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            tool.action();
+                          }}
                         >
                           <Icon className="h-4 w-4 flex-shrink-0" />
                           <span className="text-sm font-medium flex-1">{tool.label}</span>
@@ -166,7 +169,10 @@ const UnifiedToolbar: React.FC<UnifiedToolbarProps> = ({
                               variant="ghost"
                               size="sm"
                               className="h-8 justify-start gap-3 hover:bg-muted transition-colors"
-                              onClick={tool.action}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                tool.action();
+                              }}
                             >
                               <Icon className="h-3.5 w-3.5" />
                               <span className="text-xs font-medium">{tool.label}</span>
