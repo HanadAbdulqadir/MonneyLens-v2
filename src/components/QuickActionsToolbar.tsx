@@ -135,13 +135,14 @@ const QuickActionsToolbar = () => {
   return (
     <TooltipProvider>
       {/* Quick Stats Bar */}
-      <Card className={`fixed bottom-4 right-4 z-40 bg-background/95 backdrop-blur-sm border shadow-lg transition-all duration-300 ${
-        isMinimized ? 'w-16 h-16 rounded-full shadow-xl hover:shadow-2xl' : 'w-80'
-      }`}>
+      <Card className={`bg-background/95 backdrop-blur-sm border shadow-lg transition-all duration-300 cursor-pointer ${
+        isMinimized ? 'w-16 h-16 rounded-full shadow-xl hover:shadow-2xl hover:scale-105' : 'w-80'
+      }`}
+      onClick={isMinimized ? () => setIsMinimized(false) : undefined}>
         
         {/* Toolbar Header */}
         <div className={`flex items-center justify-between p-3 border-b bg-muted/30 ${
-          isMinimized ? 'border-b-0 bg-transparent p-0 justify-center h-16' : ''
+          isMinimized ? 'border-b-0 bg-transparent p-0 justify-center h-16 rounded-full hover:bg-primary/10' : ''
         }`}>
           <div className="flex items-center gap-2">
             {!isMinimized ? (
@@ -150,9 +151,8 @@ const QuickActionsToolbar = () => {
                 <h3 className="text-sm font-medium">Quick Actions</h3>
               </>
             ) : (
-              <div className="relative flex items-center justify-center w-full h-full group">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <Wallet className="h-6 w-6 text-primary transition-all duration-300 group-hover:scale-110 group-hover:text-primary relative z-10" />
+              <div className="relative flex items-center justify-center w-full h-full">
+                <Wallet className="h-6 w-6 text-primary transition-all duration-300 hover:scale-110" />
                 <div className="absolute -top-1 -right-1 w-3 h-3 bg-success rounded-full animate-pulse opacity-60" />
               </div>
             )}
@@ -239,26 +239,7 @@ const QuickActionsToolbar = () => {
           </div>
         )}
 
-        {/* Minimized Click Area */}
-        {isMinimized && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div 
-                className="absolute inset-0 cursor-pointer flex items-center justify-center group rounded-full hover:bg-primary/5 transition-all duration-300"
-                onClick={() => setIsMinimized(false)}
-              >
-                <div className="absolute inset-2 border border-primary/20 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              </div>
-            </TooltipTrigger>
-            <TooltipContent side="left" className="text-xs">
-              <p className="font-medium">Quick Actions</p>
-              <p className="text-muted-foreground">
-                Income: £{stats.income.toFixed(0)} • Spent: £{stats.expenses.toFixed(0)}
-              </p>
-              <p className="text-muted-foreground">Click to expand</p>
-            </TooltipContent>
-          </Tooltip>
-        )}
+        {/* Minimized Click Area - Remove this since card itself is clickable now */}
       </Card>
 
       {/* Quick Add Dialog */}

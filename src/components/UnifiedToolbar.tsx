@@ -83,12 +83,13 @@ const UnifiedToolbar: React.FC<UnifiedToolbarProps> = ({
           <UserOnboarding />
         </div>
         
-        <Card className={`bg-background/95 backdrop-blur-sm border shadow-lg transition-all duration-300 ${
-          isMinimized ? 'w-14 h-14 rounded-full shadow-xl hover:shadow-2xl' : 'w-56'
-        }`}>
+        <Card className={`bg-background/95 backdrop-blur-sm border shadow-lg transition-all duration-300 cursor-pointer ${
+          isMinimized ? 'w-16 h-16 rounded-full shadow-xl hover:shadow-2xl hover:scale-105' : 'w-56'
+        }`}
+        onClick={isMinimized ? () => setIsMinimized(false) : undefined}>
           {/* Toolbar Header */}
           <div className={`flex items-center justify-between p-2 border-b bg-muted/30 ${
-            isMinimized ? 'border-b-0 bg-transparent p-0 justify-center h-14' : ''
+            isMinimized ? 'border-b-0 bg-transparent p-0 justify-center h-16 rounded-full hover:bg-primary/10' : ''
           }`}>
             <div className="flex items-center gap-2">
               {!isMinimized ? (
@@ -97,9 +98,8 @@ const UnifiedToolbar: React.FC<UnifiedToolbarProps> = ({
                   <span className="text-xs font-medium">Quick Tools</span>
                 </>
               ) : (
-                <div className="relative flex items-center justify-center w-full h-full group">
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  <Zap className="h-5 w-5 text-primary transition-all duration-300 group-hover:scale-110 group-hover:text-primary relative z-10" />
+                <div className="relative flex items-center justify-center w-full h-full">
+                  <Zap className="h-6 w-6 text-primary transition-all duration-300 hover:scale-110" />
                   <div className="absolute -top-1 -right-1 w-3 h-3 bg-primary rounded-full animate-pulse opacity-60" />
                 </div>
               )}
@@ -198,23 +198,7 @@ const UnifiedToolbar: React.FC<UnifiedToolbarProps> = ({
             </div>
           )}
 
-          {/* Minimized Click Area */}
-          {isMinimized && (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div 
-                  className="absolute inset-0 cursor-pointer flex items-center justify-center group rounded-full hover:bg-primary/5 transition-all duration-300"
-                  onClick={() => setIsMinimized(false)}
-                >
-                  <div className="absolute inset-2 border border-primary/20 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                </div>
-              </TooltipTrigger>
-            <TooltipContent side="right" className="text-xs">
-                <p className="font-medium">Quick Tools</p>
-                <p className="text-muted-foreground">Click to expand • {primaryTools.length} tools available</p>
-              </TooltipContent>
-            </Tooltip>
-          )}
+          {/* Minimized Click Area - Remove this since card itself is clickable now */}
         </Card>
       </div>
     </TooltipProvider>
