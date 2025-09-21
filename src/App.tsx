@@ -10,7 +10,6 @@ import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { AppSidebar } from "@/components/AppSidebar";
 import QuickActionsToolbar from "@/components/QuickActionsToolbar";
 import NotificationSystem from "@/components/NotificationSystem";
-import VisualizationPreferences from "@/components/VisualizationPreferences";
 import DataImporter from "@/components/DataImporter";
 import AdvancedSearch from "@/components/AdvancedSearch";
 import OfflineSupport from "@/components/OfflineSupport";
@@ -58,7 +57,6 @@ function AppContent() {
                 {/* Header Actions */}
                 <div className="flex items-center gap-3">
                   <NotificationSystem />
-                  <VisualizationPreferences />
                   <DataImporter />
                 </div>
               </div>
