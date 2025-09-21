@@ -26,19 +26,13 @@ import { useState } from "react";
 const Index = () => {
   // Initialize keyboard shortcuts
   useKeyboardShortcuts();
-  
-  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
-
-  const handleCommandPaletteOpen = () => setIsCommandPaletteOpen(true);
 
   return (
     <div className="space-y-8 animate-fade-in">
       {/* Unified System Components */}
       <CommandPalette />
       <ContextualHelp />
-      <UnifiedToolbar 
-        onCommandPaletteOpen={handleCommandPaletteOpen}
-      />
+      <UnifiedToolbar />
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>

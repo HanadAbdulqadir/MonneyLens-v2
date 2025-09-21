@@ -23,13 +23,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-interface UnifiedToolbarProps {
-  onCommandPaletteOpen: () => void;
-}
+interface UnifiedToolbarProps {}
 
-const UnifiedToolbar: React.FC<UnifiedToolbarProps> = ({
-  onCommandPaletteOpen
-}) => {
+const UnifiedToolbar: React.FC<UnifiedToolbarProps> = () => {
   const [isMinimized, setIsMinimized] = useState(false);
   const [showAccessibility, setShowAccessibility] = useState(false);
   const [showTour, setShowTour] = useState(false);
@@ -40,7 +36,15 @@ const UnifiedToolbar: React.FC<UnifiedToolbarProps> = ({
       icon: Command,
       label: 'Command Palette',
       shortcut: 'Ctrl+K',
-      action: onCommandPaletteOpen,
+      action: () => {
+        // Trigger the same keyboard event that CommandPalette listens for
+        const event = new KeyboardEvent('keydown', {
+          key: 'k',
+          ctrlKey: true,
+          bubbles: true
+        });
+        window.dispatchEvent(event);
+      },
       category: 'primary'
     },
     {
@@ -65,7 +69,12 @@ const UnifiedToolbar: React.FC<UnifiedToolbarProps> = ({
       shortcut: '?',
       action: () => {
         // Show shortcuts help via command palette
-        onCommandPaletteOpen();
+        const event = new KeyboardEvent('keydown', {
+          key: 'k',
+          ctrlKey: true,
+          bubbles: true
+        });
+        window.dispatchEvent(event);
       },
       category: 'secondary'
     }
