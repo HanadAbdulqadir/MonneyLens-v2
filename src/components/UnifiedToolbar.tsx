@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import AccessibilityEnhancer from "@/components/AccessibilityEnhancer";
+import UserOnboarding from "@/components/UserOnboarding";
 import { 
   Command, 
   Accessibility, 
@@ -23,16 +25,14 @@ import {
 
 interface UnifiedToolbarProps {
   onCommandPaletteOpen: () => void;
-  onAccessibilityOpen: () => void;
-  onTourOpen: () => void;
 }
 
 const UnifiedToolbar: React.FC<UnifiedToolbarProps> = ({
-  onCommandPaletteOpen,
-  onAccessibilityOpen,
-  onTourOpen
+  onCommandPaletteOpen
 }) => {
   const [isMinimized, setIsMinimized] = useState(false);
+  const [showAccessibility, setShowAccessibility] = useState(false);
+  const [showTour, setShowTour] = useState(false);
 
   const tools = [
     {
@@ -48,14 +48,14 @@ const UnifiedToolbar: React.FC<UnifiedToolbarProps> = ({
       icon: Accessibility,
       label: 'Accessibility',
       shortcut: 'Alt+A',
-      action: onAccessibilityOpen,
+      action: () => setShowAccessibility(true),
       category: 'primary'
     },
     {
       id: 'tour',
       icon: Play,
       label: 'Take Tour',
-      action: onTourOpen,
+      action: () => setShowTour(true),
       category: 'primary'
     },
     {
@@ -77,6 +77,12 @@ const UnifiedToolbar: React.FC<UnifiedToolbarProps> = ({
   return (
     <TooltipProvider>
       <div className="fixed bottom-4 left-4 z-40">
+        {/* Hidden components for accessibility and tour */}
+        <div className="opacity-0 pointer-events-none absolute -z-10">
+          <AccessibilityEnhancer />
+          <UserOnboarding />
+        </div>
+        
         <Card className={`bg-background/95 backdrop-blur-sm border shadow-lg transition-all duration-300 ${
           isMinimized ? 'w-12 h-12' : 'w-56'
         }`}>

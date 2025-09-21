@@ -8,7 +8,6 @@ import AddTransactionModal from "@/components/AddTransactionModal";
 import StartingPointModal from "@/components/StartingPointModal";
 import SmartNotifications from "@/components/SmartNotifications";
 import PersonalizedOverview from "@/components/PersonalizedOverview";
-import FloatingActionButtons from "@/components/FloatingActionButtons";
 import FinancialHealthScore from "@/components/FinancialHealthScore";
 import QuickInsightsGrid from "@/components/QuickInsightsGrid";
 import RecentActivityFeed from "@/components/RecentActivityFeed";
@@ -21,8 +20,6 @@ import UpcomingRecurringWidget from "@/components/UpcomingRecurringWidget";
 import CommandPalette from "@/components/CommandPalette";
 import UnifiedToolbar from "@/components/UnifiedToolbar";
 import ContextualHelp from "@/components/ContextualHelp";
-import AccessibilityEnhancer from "@/components/AccessibilityEnhancer";
-import UserOnboarding from "@/components/UserOnboarding";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { useState } from "react";
 
@@ -31,24 +28,8 @@ const Index = () => {
   useKeyboardShortcuts();
   
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
-  const [isAccessibilityOpen, setIsAccessibilityOpen] = useState(false);
-  const [isTourOpen, setIsTourOpen] = useState(false);
 
   const handleCommandPaletteOpen = () => setIsCommandPaletteOpen(true);
-  const handleAccessibilityOpen = () => {
-    // Directly trigger the accessibility dialog
-    const accessibilityButton = document.querySelector('[title="Accessibility Settings (Alt+A)"]') as HTMLButtonElement;
-    if (accessibilityButton) {
-      accessibilityButton.click();
-    }
-  };
-  const handleTourOpen = () => {
-    // Directly trigger the tour dialog
-    const tourButton = document.querySelector('[title="Take the tour again"]') as HTMLButtonElement;
-    if (tourButton) {
-      tourButton.click();
-    }
-  };
 
   return (
     <div className="space-y-8 animate-fade-in">
@@ -57,15 +38,7 @@ const Index = () => {
       <ContextualHelp />
       <UnifiedToolbar 
         onCommandPaletteOpen={handleCommandPaletteOpen}
-        onAccessibilityOpen={handleAccessibilityOpen}
-        onTourOpen={handleTourOpen}
       />
-      
-      {/* Legacy components - kept functional but hidden */}
-      <div className="opacity-0 pointer-events-none absolute -z-10">
-        <AccessibilityEnhancer />
-        <UserOnboarding />
-      </div>
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -122,11 +95,6 @@ const Index = () => {
       {/* Financial Health Score - Bottom Section */}
       <div className="max-w-4xl mx-auto">
         <FinancialHealthScore />
-      </div>
-
-      {/* Floating Action Buttons - Replaced with UnifiedToolbar but kept for compatibility */}
-      <div className="hidden">
-        <FloatingActionButtons />
       </div>
     </div>
   );
