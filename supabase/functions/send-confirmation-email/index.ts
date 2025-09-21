@@ -1,9 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Webhook } from "https://esm.sh/standardwebhooks@1.0.0";
 import { Resend } from "npm:resend@4.0.0";
-import { renderAsync } from "npm:@react-email/components@0.0.22";
-import React from "npm:react@18.3.1";
-import { ConfirmationEmail } from "./_templates/confirmation-email.tsx";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -96,16 +93,106 @@ serve(async (req) => {
     
     console.log('Generating confirmation URL:', confirmationUrl);
 
-    // Render the email template
-    console.log('Rendering email template...');
-    const html = await renderAsync(
-      React.createElement(ConfirmationEmail, {
-        displayName,
-        confirmationUrl,
-        supportEmail: "support@moneylens.app"
-      })
-    );
-    console.log('Email template rendered successfully');
+    // Create simple HTML email template
+    console.log('Creating email template...');
+    const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Welcome to MoneyLens - Confirm Your Account</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #f8fafc; margin: 0; padding: 20px; }
+    .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); overflow: hidden; }
+    .header { background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); padding: 32px 24px; text-align: center; }
+    .logo { color: #ffffff; font-size: 32px; font-weight: bold; margin: 0; }
+    .tagline { color: #ffffff; font-size: 14px; margin: 8px 0 0 0; opacity: 0.9; }
+    .content { padding: 32px 24px; }
+    .title { color: #1e293b; font-size: 24px; font-weight: bold; margin: 0 0 24px 0; text-align: center; }
+    .text { color: #475569; font-size: 16px; line-height: 24px; margin: 16px 0; }
+    .button-container { text-align: center; margin: 32px 0; }
+    .button { background-color: #3b82f6; border-radius: 8px; color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; display: inline-block; padding: 14px 28px; box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3); }
+    .features { margin: 32px 0; padding: 24px; background-color: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; }
+    .feature { display: flex; margin: 16px 0; align-items: flex-start; }
+    .feature-icon { font-size: 24px; margin-right: 16px; }
+    .feature-title { color: #1e293b; font-size: 16px; font-weight: 600; margin: 0 0 4px 0; }
+    .feature-desc { color: #64748b; font-size: 14px; margin: 0; }
+    .footer { text-align: center; padding: 24px; color: #64748b; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1 class="logo">MoneyLens</h1>
+      <p class="tagline">Your Personal Finance Companion</p>
+    </div>
+    
+    <div class="content">
+      <h2 class="title">Welcome to MoneyLens, ${displayName}!</h2>
+      
+      <p class="text">
+        Thank you for joining MoneyLens, the smart way to manage your personal finances. 
+        You're just one click away from taking control of your financial future.
+      </p>
+
+      <p class="text">
+        To complete your account setup and start your journey towards better financial health, 
+        please confirm your email address by clicking the button below:
+      </p>
+
+      <div class="button-container">
+        <a href="${confirmationUrl}" class="button">Confirm Your Account</a>
+      </div>
+
+      <div class="features">
+        <h3 style="color: #1e293b; font-size: 20px; font-weight: 600; margin: 0 0 16px 0;">What you can do with MoneyLens:</h3>
+        
+        <div class="feature">
+          <div class="feature-icon">📊</div>
+          <div>
+            <div class="feature-title">Track Transactions</div>
+            <div class="feature-desc">Monitor your income and expenses with ease</div>
+          </div>
+        </div>
+
+        <div class="feature">
+          <div class="feature-icon">🎯</div>
+          <div>
+            <div class="feature-title">Set Financial Goals</div>
+            <div class="feature-desc">Plan and achieve your financial objectives</div>
+          </div>
+        </div>
+
+        <div class="feature">
+          <div class="feature-icon">📈</div>
+          <div>
+            <div class="feature-title">Analyze Spending</div>
+            <div class="feature-desc">Get insights into your spending patterns</div>
+          </div>
+        </div>
+
+        <div class="feature">
+          <div class="feature-icon">💳</div>
+          <div>
+            <div class="feature-title">Manage Debts</div>
+            <div class="feature-desc">Track and plan your debt payments</div>
+          </div>
+        </div>
+      </div>
+
+      <p class="text">
+        If you didn't create an account with MoneyLens, you can safely ignore this email.
+      </p>
+    </div>
+
+    <div class="footer">
+      <p>Need help? Contact us at <a href="mailto:support@moneylens.app" style="color: #3b82f6;">support@moneylens.app</a></p>
+      <p>MoneyLens - Making Personal Finance Simple</p>
+      <p style="color: #94a3b8; font-size: 12px; margin-top: 16px;">© 2025 MoneyLens. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>`;
+    console.log('Email template created successfully');
 
     // Send the email
     console.log('Sending email to:', user.email);
