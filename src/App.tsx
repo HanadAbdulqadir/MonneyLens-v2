@@ -12,7 +12,6 @@ import QuickActionsToolbar from "@/components/QuickActionsToolbar";
 import NotificationSystem from "@/components/NotificationSystem";
 import DataImporter from "@/components/DataImporter";
 import AdvancedSearch from "@/components/AdvancedSearch";
-import OfflineSupport from "@/components/OfflineSupport";
 import Index from "./pages/Index";
 import Analytics from "./pages/Analytics";
 import Transactions from "./pages/Transactions";
@@ -81,7 +80,6 @@ function AppContent() {
             {/* Enhanced UX Components */}
             <QuickActionsToolbar />
             <AdvancedSearch />
-            <OfflineSupport />
           </main>
         </div>
         
