@@ -56,13 +56,13 @@ const AdvancedSearch = ({ onResultsChange, compact = false }: AdvancedSearchProp
   const searchResults = useMemo(() => {
     let results = [...transactions];
 
-    // Text search (would search description if available)
+    // Text search
     if (filters.query.trim()) {
       const query = filters.query.toLowerCase();
       results = results.filter(transaction => 
         transaction.category.toLowerCase().includes(query) ||
-        transaction.date.includes(query) ||
-        transaction.week.toLowerCase().includes(query)
+        (transaction.description && transaction.description.toLowerCase().includes(query)) ||
+        transaction.date.includes(query)
       );
     }
 
@@ -170,9 +170,9 @@ const AdvancedSearch = ({ onResultsChange, compact = false }: AdvancedSearchProp
   // Export search results
   const exportResults = () => {
     const csvContent = [
-      'Date,Category,Amount,Week',
+      'Date,Category,Amount,Description',
       ...searchResults.map(t => 
-        `${t.date},${t.category},${t.amount},${t.week}`
+        `${t.date},${t.category},${t.amount},"${t.description || ''}"`
       )
     ].join('\n');
 
@@ -254,7 +254,7 @@ const AdvancedSearch = ({ onResultsChange, compact = false }: AdvancedSearchProp
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search by category, date, or week..."
+            placeholder="Search by category, description, or date..."
             value={filters.query}
             onChange={(e) => setFilters(prev => ({ ...prev, query: e.target.value }))}
             className="pl-10"
