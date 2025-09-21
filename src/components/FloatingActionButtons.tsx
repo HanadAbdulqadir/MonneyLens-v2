@@ -64,7 +64,7 @@ const FloatingActionButtons = () => {
 
   return (
     <TooltipProvider>
-      <div className="fixed top-4 right-4 z-50">
+      <div className="fixed bottom-4 right-4 z-50">
         <Card className={`bg-background/95 backdrop-blur-sm border shadow-lg transition-all duration-300 ${
           isMinimized ? 'w-12 h-12' : 'w-64 h-auto'
         }`}>
