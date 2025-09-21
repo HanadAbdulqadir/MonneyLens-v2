@@ -16,14 +16,26 @@ import {
   Clock,
   Bookmark,
   Command,
-  X
+  X,
+  Minimize2,
+  Maximize2,
+  TrendingUp,
+  TrendingDown,
+  Wallet
 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const QuickActionsToolbar = () => {
   const { toast } = useToast();
   const { transactions, addTransaction } = useFinancial();
   const [isOpen, setIsOpen] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false);
   const [quickAddData, setQuickAddData] = useState({
     amount: '',
     category: 'Food'
@@ -121,67 +133,132 @@ const QuickActionsToolbar = () => {
   }, [isOpen]);
 
   return (
-    <>
+    <TooltipProvider>
       {/* Quick Stats Bar */}
-      <Card className="fixed top-20 right-6 z-40 p-3 bg-background/95 backdrop-blur-sm border shadow-lg min-w-[300px]">
-        <div className="flex items-center justify-between mb-2">
-          <h3 className="text-sm font-medium flex items-center gap-2">
-            <Zap className="h-4 w-4 text-primary" />
-            Quick Actions
-          </h3>
-          <Badge variant="outline" className="text-xs">
-            This Month
-          </Badge>
-        </div>
+      <Card className={`fixed bottom-4 right-4 z-40 bg-background/95 backdrop-blur-sm border shadow-lg transition-all duration-300 ${
+        isMinimized ? 'w-16 h-16 rounded-full shadow-xl hover:shadow-2xl' : 'w-80'
+      }`}>
         
-        {/* Quick Stats */}
-        <div className="grid grid-cols-3 gap-2 mb-3 text-xs">
-          <div className="text-center">
-            <div className="text-success font-medium">£{stats.income.toFixed(0)}</div>
-            <div className="text-muted-foreground">Income</div>
+        {/* Toolbar Header */}
+        <div className={`flex items-center justify-between p-3 border-b bg-muted/30 ${
+          isMinimized ? 'border-b-0 bg-transparent p-0 justify-center h-16' : ''
+        }`}>
+          <div className="flex items-center gap-2">
+            {!isMinimized ? (
+              <>
+                <Zap className="h-4 w-4 text-primary" />
+                <h3 className="text-sm font-medium">Quick Actions</h3>
+              </>
+            ) : (
+              <div className="relative flex items-center justify-center w-full h-full group">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <Wallet className="h-6 w-6 text-primary transition-all duration-300 group-hover:scale-110 group-hover:text-primary relative z-10" />
+                <div className="absolute -top-1 -right-1 w-3 h-3 bg-success rounded-full animate-pulse opacity-60" />
+              </div>
+            )}
           </div>
-          <div className="text-center">
-            <div className="text-destructive font-medium">£{stats.expenses.toFixed(0)}</div>
-            <div className="text-muted-foreground">Spent</div>
-          </div>
-          <div className="text-center">
-            <div className={`font-medium ${stats.net >= 0 ? 'text-success' : 'text-destructive'}`}>
-              £{Math.abs(stats.net).toFixed(0)}
+          {!isMinimized && (
+            <div className="flex items-center gap-2">
+              <Badge variant="outline" className="text-xs">
+                This Month
+              </Badge>
+              <Button
+                size="sm"
+                variant="ghost"
+                className="h-6 w-6 p-0 hover:bg-muted"
+                onClick={() => setIsMinimized(!isMinimized)}
+              >
+                <Minimize2 className="h-3 w-3" />
+              </Button>
             </div>
-            <div className="text-muted-foreground">
-              {stats.net >= 0 ? 'Saved' : 'Over'}
-            </div>
-          </div>
+          )}
         </div>
 
-        {/* Quick Action Buttons */}
-        <div className="grid grid-cols-2 gap-2">
-          <Button 
-            size="sm" 
-            onClick={() => setIsOpen(true)}
-            className="gap-1 text-xs h-8"
-            title="Quick Add Transaction (Ctrl+K)"
-          >
-            <Plus className="h-3 w-3" />
-            Add
-          </Button>
-          
-          <Button 
-            size="sm" 
-            variant="outline" 
-            onClick={exportData}
-            className="gap-1 text-xs h-8"
-            title="Export Data"
-          >
-            <Download className="h-3 w-3" />
-            Export
-          </Button>
-        </div>
+        {/* Expanded Content */}
+        {!isMinimized && (
+          <div className="p-3 space-y-3 animate-fade-in">
+            {/* Quick Stats */}
+            <div className="grid grid-cols-3 gap-3 text-xs">
+              <div className="text-center p-2 rounded-lg bg-success/10">
+                <div className="flex items-center justify-center gap-1 mb-1">
+                  <TrendingUp className="h-3 w-3 text-success" />
+                  <div className="text-success font-medium">£{stats.income.toFixed(0)}</div>
+                </div>
+                <div className="text-muted-foreground">Income</div>
+              </div>
+              <div className="text-center p-2 rounded-lg bg-destructive/10">
+                <div className="flex items-center justify-center gap-1 mb-1">
+                  <TrendingDown className="h-3 w-3 text-destructive" />
+                  <div className="text-destructive font-medium">£{stats.expenses.toFixed(0)}</div>
+                </div>
+                <div className="text-muted-foreground">Spent</div>
+              </div>
+              <div className="text-center p-2 rounded-lg bg-muted/50">
+                <div className={`flex items-center justify-center gap-1 mb-1 font-medium ${stats.net >= 0 ? 'text-success' : 'text-destructive'}`}>
+                  <Wallet className="h-3 w-3" />
+                  <div>£{Math.abs(stats.net).toFixed(0)}</div>
+                </div>
+                <div className="text-muted-foreground">
+                  {stats.net >= 0 ? 'Saved' : 'Over'}
+                </div>
+              </div>
+            </div>
 
-        {/* Keyboard shortcut hint */}
-        <div className="mt-2 text-xs text-muted-foreground text-center">
-          Press <kbd className="px-1 py-0.5 bg-muted border rounded text-xs">Ctrl+K</kbd> for quick add
-        </div>
+            {/* Quick Action Buttons */}
+            <div className="grid grid-cols-2 gap-2">
+              <Button 
+                size="sm" 
+                onClick={() => setIsOpen(true)}
+                className="gap-2 text-xs h-9 hover:bg-primary/10 hover:text-primary transition-colors"
+                title="Quick Add Transaction (Ctrl+K)"
+              >
+                <Plus className="h-3 w-3" />
+                Add Transaction
+              </Button>
+              
+              <Button 
+                size="sm" 
+                variant="outline" 
+                onClick={exportData}
+                className="gap-2 text-xs h-9 hover:bg-muted transition-colors"
+                title="Export Data"
+              >
+                <Download className="h-3 w-3" />
+                Export CSV
+              </Button>
+            </div>
+
+            {/* Keyboard shortcut hint */}
+            <div className="pt-2 border-t">
+              <div className="flex items-center justify-center gap-2">
+                <div className="text-xs text-muted-foreground">
+                  Press <kbd className="px-1.5 py-0.5 bg-muted border rounded text-xs font-mono">Ctrl+K</kbd> for quick add
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Minimized Click Area */}
+        {isMinimized && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div 
+                className="absolute inset-0 cursor-pointer flex items-center justify-center group rounded-full hover:bg-primary/5 transition-all duration-300"
+                onClick={() => setIsMinimized(false)}
+              >
+                <div className="absolute inset-2 border border-primary/20 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </div>
+            </TooltipTrigger>
+            <TooltipContent side="left" className="text-xs">
+              <p className="font-medium">Quick Actions</p>
+              <p className="text-muted-foreground">
+                Income: £{stats.income.toFixed(0)} • Spent: £{stats.expenses.toFixed(0)}
+              </p>
+              <p className="text-muted-foreground">Click to expand</p>
+            </TooltipContent>
+          </Tooltip>
+        )}
       </Card>
 
       {/* Quick Add Dialog */}
@@ -264,7 +341,7 @@ const QuickActionsToolbar = () => {
           </div>
         </DialogContent>
       </Dialog>
-    </>
+    </TooltipProvider>
   );
 };
 
