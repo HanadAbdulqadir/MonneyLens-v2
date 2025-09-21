@@ -155,10 +155,21 @@ export const CategorySelector: React.FC<CategorySelectorProps> = ({
       if (error) throw error;
       
       setCategories(prev => [...prev, data]);
+      
+      // Reset form
+      const categoryName = customCategoryName.trim();
       setCustomCategoryName('');
       setCustomCategoryColor('#3B82F6');
       setCustomCategoryIcon('Plus');
-      toast({ title: "Success", description: `${customCategoryName} category created!` });
+      
+      // Close dialog and show success
+      setShowQuickAdd(false);
+      toast({ title: "Success", description: `${categoryName} category created!` });
+      
+      // Auto-select the new category if callback provided
+      if (onCategorySelect) {
+        onCategorySelect(categoryName);
+      }
     } catch (error) {
       console.error('Error creating category:', error);
       toast({ title: "Error", description: "Failed to create category" });
