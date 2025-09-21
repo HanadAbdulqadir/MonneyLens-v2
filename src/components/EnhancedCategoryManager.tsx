@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -33,6 +34,9 @@ const EnhancedCategoryManager = () => {
   const { transactions } = useFinancial();
   const { toast } = useToast();
   
+  // Local state for tags
+  const [tags, setTags] = useState<{ id: string; name: string; color: string; created_at: string }[]>([]);
+  
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTimeRange, setSelectedTimeRange] = useState("month");
   const [viewType, setViewType] = useState("overview");
@@ -41,6 +45,25 @@ const EnhancedCategoryManager = () => {
   const [newCategoryDialog, setNewCategoryDialog] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState("");
   const [newCategoryColor, setNewCategoryColor] = useState("#3B82F6");
+  
+  // Load tags from database
+  useEffect(() => {
+    const loadTags = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('tags')
+          .select('*')
+          .order('created_at', { ascending: true });
+        
+        if (error) throw error;
+        if (data) setTags(data);
+      } catch (error) {
+        console.error('Error loading tags:', error);
+      }
+    };
+    
+    loadTags();
+  }, []);
   
   // Category budgets (in a real app, these would come from context/database)
   const [categoryBudgets] = useState<CategoryBudget[]>([
@@ -435,13 +458,28 @@ const EnhancedCategoryManager = () => {
                       return;
                     }
                     
-                    toast({ 
-                      title: "Authentication Required", 
-                      description: "Please sign in to create custom categories. For now, you can use the default categories." 
-                    });
-                    setNewCategoryDialog(false);
-                    setNewCategoryName("");
-                    setNewCategoryColor("#3B82F6");
+                    try {
+                      const { data, error } = await supabase
+                        .from('tags')
+                        .insert({
+                          name: newCategoryName.trim(),
+                          color: newCategoryColor,
+                          user_id: (await supabase.auth.getUser()).data.user?.id
+                        })
+                        .select()
+                        .single();
+                      
+                      if (error) throw error;
+                      
+                      setTags(prev => [...prev, data]);
+                      toast({ title: "Success", description: "Category created successfully!" });
+                      setNewCategoryDialog(false);
+                      setNewCategoryName("");
+                      setNewCategoryColor("#3B82F6");
+                    } catch (error) {
+                      console.error('Error creating category:', error);
+                      toast({ title: "Error", description: "Failed to create category. Please try again." });
+                    }
                   }}>
                     Add Category
                   </Button>
