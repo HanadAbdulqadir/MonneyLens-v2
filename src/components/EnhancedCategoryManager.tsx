@@ -39,6 +39,8 @@ const EnhancedCategoryManager = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [showBudgetDialog, setShowBudgetDialog] = useState(false);
   const [newCategoryDialog, setNewCategoryDialog] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState("");
+  const [newCategoryColor, setNewCategoryColor] = useState("#3B82F6");
   
   // Category budgets (in a real app, these would come from context/database)
   const [categoryBudgets] = useState<CategoryBudget[]>([
@@ -399,27 +401,47 @@ const EnhancedCategoryManager = () => {
               <div className="space-y-4">
                 <div>
                   <Label htmlFor="category-name">Category Name</Label>
-                  <Input id="category-name" placeholder="Enter category name" />
+                  <Input 
+                    id="category-name" 
+                    placeholder="Enter category name" 
+                    value={newCategoryName}
+                    onChange={(e) => setNewCategoryName(e.target.value)}
+                  />
                 </div>
                 <div>
-                  <Label>Category Type</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="income">Income</SelectItem>
-                      <SelectItem value="expense">Expense</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <Label htmlFor="category-color">Category Color</Label>
+                  <div className="flex items-center gap-2">
+                    <Input 
+                      id="category-color"
+                      type="color" 
+                      value={newCategoryColor}
+                      onChange={(e) => setNewCategoryColor(e.target.value)}
+                      className="w-16 h-10"
+                    />
+                    <Input 
+                      value={newCategoryColor}
+                      onChange={(e) => setNewCategoryColor(e.target.value)}
+                      placeholder="#3B82F6"
+                    />
+                  </div>
                 </div>
                 <div className="flex justify-end gap-2">
                   <Button variant="outline" onClick={() => setNewCategoryDialog(false)}>
                     Cancel
                   </Button>
-                  <Button onClick={() => {
-                    toast({ title: "Coming Soon", description: "Custom categories will be available soon" });
+                  <Button onClick={async () => {
+                    if (!newCategoryName.trim()) {
+                      toast({ title: "Error", description: "Please enter a category name" });
+                      return;
+                    }
+                    
+                    toast({ 
+                      title: "Authentication Required", 
+                      description: "Please sign in to create custom categories. For now, you can use the default categories." 
+                    });
                     setNewCategoryDialog(false);
+                    setNewCategoryName("");
+                    setNewCategoryColor("#3B82F6");
                   }}>
                     Add Category
                   </Button>

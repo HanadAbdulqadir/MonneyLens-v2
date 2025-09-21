@@ -53,6 +53,14 @@ interface DbDebtPayment {
   created_at: string;
 }
 
+interface DbTag {
+  id: string;
+  user_id: string;
+  name: string;
+  color: string;
+  created_at: string;
+}
+
 interface DbDailyEntry {
   id: string;
   user_id: string;
@@ -127,6 +135,13 @@ export interface DailyEntry {
   balance: number;
 }
 
+export interface Tag {
+  id: string;
+  name: string;
+  color: string;
+  created_at: string;
+}
+
 interface FinancialContextType {
   // Data
   transactions: Transaction[];
@@ -168,6 +183,57 @@ interface FinancialContextType {
   updateCategoryFilter: (filter: string) => Promise<void>;
   setCategoryFilter: (filter: string) => Promise<void>; // Alias
   
+  // Tag methods
+  const addTag = async (tagData: Omit<Tag, 'id' | 'created_at'>) => {
+    if (!user) throw new Error('User not authenticated');
+    
+    const { data, error } = await supabase
+      .from('tags')
+      .insert({
+        name: tagData.name,
+        color: tagData.color,
+        user_id: user.id
+      })
+      .select()
+      .single();
+    
+    if (error) throw error;
+    
+    const newTag = dbTagToApp(data);
+    setTags(prev => [...prev, newTag]);
+  };
+
+  const updateTag = async (id: string, tagData: Partial<Omit<Tag, 'id' | 'created_at'>>) => {
+    if (!user) throw new Error('User not authenticated');
+    
+    const { data, error } = await supabase
+      .from('tags')
+      .update(tagData)
+      .eq('id', id)
+      .eq('user_id', user.id)
+      .select()
+      .single();
+    
+    if (error) throw error;
+    
+    const updatedTag = dbTagToApp(data);
+    setTags(prev => prev.map(tag => tag.id === id ? updatedTag : tag));
+  };
+
+  const deleteTag = async (id: string) => {
+    if (!user) throw new Error('User not authenticated');
+    
+    const { error } = await supabase
+      .from('tags')
+      .delete()
+      .eq('id', id)
+      .eq('user_id', user.id);
+    
+    if (error) throw error;
+    
+    setTags(prev => prev.filter(tag => tag.id !== id));
+  };
+
   // Backward compatibility methods
   addRecurringTransaction: (transaction: any) => Promise<void>;
   updateRecurringTransaction: (id: string, transaction: any) => Promise<void>;
@@ -187,6 +253,7 @@ export function FinancialProvider({ children }: { children: ReactNode }) {
   const [goals, setGoals] = useState<FinancialGoal[]>([]);
   const [debts, setDebts] = useState<Debt[]>([]);
   const [dailyData, setDailyData] = useState<DailyEntry[]>([]);
+  const [monthlyStartingPoint, setMonthlyStartingPoint] = useState(0);
   const [monthlyStartingPoint, setMonthlyStartingPoint] = useState(0);
   const [currency, setCurrency] = useState('USD');
   const [isDarkMode, setIsDarkMode] = useState(false);
