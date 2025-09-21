@@ -633,24 +633,24 @@ const CommandPalette = () => {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="sm:max-w-[600px] p-0 overflow-hidden">
+      <DialogContent className="sm:max-w-[600px] p-0 overflow-hidden bg-background border-border">
         {/* Search Input */}
-        <div className="flex items-center border-b px-4 py-3">
-          <Search className="mr-2 h-4 w-4 shrink-0" />
+        <div className="flex items-center border-b border-border px-4 py-3 bg-background">
+          <Search className="mr-2 h-4 w-4 shrink-0 text-muted-foreground" />
           <Input
             placeholder="Type a command or search..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="border-0 p-0 text-sm placeholder:text-muted-foreground focus-visible:ring-0"
+            className="border-0 p-0 text-sm placeholder:text-muted-foreground focus-visible:ring-0 bg-transparent"
             autoFocus
           />
-          <Badge variant="secondary" className="ml-auto text-xs">
+          <Badge variant="secondary" className="ml-auto text-xs bg-muted text-muted-foreground">
             Ctrl+K
           </Badge>
         </div>
 
         {/* Commands List */}
-        <div className="max-h-[400px] overflow-y-auto">
+        <div className="max-h-[400px] overflow-y-auto bg-background">
           {Object.keys(groupedCommands).length === 0 ? (
             <div className="p-4 text-center text-sm text-muted-foreground">
               No commands found for "{search}"
@@ -672,12 +672,14 @@ const CommandPalette = () => {
                         <Button
                           key={command.id}
                           variant="ghost"
-                          className={`w-full justify-start gap-3 h-auto p-3 text-left ${
-                            isSelected ? 'bg-accent' : ''
+                          className={`w-full justify-start gap-3 h-auto p-3 text-left transition-colors ${
+                            isSelected ? 'bg-primary/10 text-primary' : 'text-foreground hover:bg-muted hover:text-foreground'
                           }`}
                           onClick={() => executeCommand(command)}
                         >
-                          <Icon className="h-4 w-4 shrink-0" />
+                          <Icon className={`h-4 w-4 shrink-0 ${
+                            isSelected ? 'text-primary' : 'text-muted-foreground'
+                          }`} />
                           <div className="flex-1 min-w-0">
                             <div className="text-sm font-medium">{command.title}</div>
                             {command.subtitle && (
@@ -685,7 +687,7 @@ const CommandPalette = () => {
                             )}
                           </div>
                           {command.shortcut && (
-                            <Badge variant="outline" className="text-xs">
+                            <Badge variant="outline" className="text-xs border-border">
                               {command.shortcut}
                             </Badge>
                           )}
@@ -700,7 +702,7 @@ const CommandPalette = () => {
         </div>
 
         {/* Footer */}
-        <div className="border-t px-4 py-2 text-xs text-muted-foreground">
+        <div className="border-t border-border px-4 py-2 text-xs text-muted-foreground bg-muted/30">
           <div className="flex items-center justify-between">
             <span>Navigate with ↑↓ • Select with Enter • Close with Esc</span>
             <span>{filteredCommands.length} commands</span>
