@@ -17,15 +17,15 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 0%;
 
-    --primary: 217 91% 60%;
+    --primary: 210 14% 24%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 217 91% 70%;
+    --primary-glow: 210 14% 34%;
 
-    --secondary: 0 0% 96%;
-    --secondary-foreground: 0 0% 9%;
+    --secondary: 0 0% 98%;
+    --secondary-foreground: 0 0% 20%;
 
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 45%;
+    --muted: 0 0% 97%;
+    --muted-foreground: 0 0% 50%;
 
     --accent: 210 11% 71%;
     --accent-foreground: 0 0% 9%;
@@ -33,9 +33,9 @@ All colors MUST be HSL.
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 89%;
-    --input: 0 0% 89%;
-    --ring: 217 91% 60%;
+    --border: 0 0% 93%;
+    --input: 0 0% 97%;
+    --ring: 210 14% 24%;
 
     --success: 142 71% 45%;
     --success-foreground: 0 0% 100%;
@@ -43,19 +43,19 @@ All colors MUST be HSL.
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
 
-    --chart-1: 217 91% 60%;
-    --chart-2: 0 84% 60%;
-    --chart-3: 262 83% 58%;
-    --chart-4: 0 0% 45%;
-    --chart-5: 142 71% 45%;
+    --chart-1: 210 14% 24%;
+    --chart-2: 197 71% 52%;
+    --chart-3: 142 69% 58%;
+    --chart-4: 43 96% 56%;
+    --chart-5: 0 72% 51%;
 
     /* Enhanced gradient system */
-    --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%), hsl(217 91% 70%));
-    --gradient-success: linear-gradient(135deg, hsl(142 71% 45%), hsl(142 71% 55%));
-    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%), hsl(0 0% 98%));
-    --gradient-accent: linear-gradient(135deg, hsl(262 83% 58%), hsl(262 83% 68%));
-    --gradient-calendar: linear-gradient(135deg, hsl(217 91% 60% / 0.05), hsl(217 91% 70% / 0.1));
-    --gradient-hover: linear-gradient(135deg, hsl(217 91% 60% / 0.1), hsl(217 91% 70% / 0.15));
+    --gradient-primary: linear-gradient(135deg, hsl(210 14% 24%), hsl(210 14% 34%));
+    --gradient-success: linear-gradient(135deg, hsl(142 69% 58%), hsl(142 69% 68%));
+    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%), hsl(0 0% 99%));
+    --gradient-accent: linear-gradient(135deg, hsl(210 11% 71%), hsl(210 11% 81%));
+    --gradient-calendar: linear-gradient(135deg, hsl(210 14% 24% / 0.03), hsl(210 14% 34% / 0.06));
+    --gradient-hover: linear-gradient(135deg, hsl(210 14% 24% / 0.05), hsl(210 14% 34% / 0.08));
     
     /* Enhanced shadow system */
     --shadow-card: 0 1px 3px 0 hsl(0 0% 0% / 0.1);
@@ -98,15 +98,15 @@ All colors MUST be HSL.
     --popover: 0 0% 4%;
     --popover-foreground: 0 0% 100%;
 
-    --primary: 217 91% 70%;
-    --primary-foreground: 0 0% 0%;
-    --primary-glow: 217 91% 80%;
+    --primary: 210 14% 89%;
+    --primary-foreground: 0 0% 9%;
+    --primary-glow: 210 14% 94%;
 
-    --secondary: 0 0% 9%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 0 0% 10%;
+    --secondary-foreground: 0 0% 95%;
 
-    --muted: 0 0% 9%;
-    --muted-foreground: 0 0% 63%;
+    --muted: 0 0% 8%;
+    --muted-foreground: 0 0% 65%;
 
     --accent: 210 11% 46%;
     --accent-foreground: 0 0% 98%;
@@ -114,9 +114,9 @@ All colors MUST be HSL.
     --destructive: 0 84% 70%;
     --destructive-foreground: 0 0% 0%;
 
-    --border: 0 0% 15%;
-    --input: 0 0% 15%;
-    --ring: 217 91% 70%;
+    --border: 0 0% 16%;
+    --input: 0 0% 12%;
+    --ring: 210 14% 89%;
 
     --success: 142 71% 55%;
     --success-foreground: 0 0% 0%;
@@ -124,11 +124,11 @@ All colors MUST be HSL.
     --warning: 38 92% 60%;
     --warning-foreground: 0 0% 0%;
 
-    --chart-1: 217 91% 70%;
-    --chart-2: 0 84% 70%;
-    --chart-3: 262 83% 68%;
-    --chart-4: 0 0% 63%;
-    --chart-5: 142 71% 55%;
+    --chart-1: 210 14% 89%;
+    --chart-2: 197 71% 73%;
+    --chart-3: 142 69% 76%;
+    --chart-4: 43 96% 74%;
+    --chart-5: 0 72% 70%;
 
     /* Enhanced dark mode tokens */
     --gradient-primary: linear-gradient(135deg, hsl(217 91% 70%), hsl(217 91% 80%));
@@ -161,11 +161,29 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground min-h-screen font-sans antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    letter-spacing: -0.011em;
   }
 }
 
 @layer components {
+  /* Professional card styling */
+  .card {
+    @apply bg-card text-card-foreground rounded-lg border shadow-card;
+    backdrop-filter: blur(8px);
+  }
+
+  .card:hover {
+    @apply shadow-card-hover;
+    transition: box-shadow 0.2s ease-in-out;
+  }
+
+  /* Professional button enhancements */
+  .btn-professional {
+    @apply px-6 py-2.5 text-sm font-medium tracking-tight;
+    transition: all 0.15s ease-in-out;
+  }
   /* Calendar specific animations */
   .calendar-day-enter {
     @apply animate-scale-in;
