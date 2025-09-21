@@ -3,6 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { 
@@ -87,6 +90,9 @@ export const CategorySelector: React.FC<CategorySelectorProps> = ({
 }) => {
   const [categories, setCategories] = useState<any[]>([]);
   const [showQuickAdd, setShowQuickAdd] = useState(false);
+  const [customCategoryName, setCustomCategoryName] = useState('');
+  const [customCategoryColor, setCustomCategoryColor] = useState('#3B82F6');
+  const [customCategoryIcon, setCustomCategoryIcon] = useState('Plus');
   const { toast } = useToast();
 
   useEffect(() => {
@@ -128,6 +134,41 @@ export const CategorySelector: React.FC<CategorySelectorProps> = ({
       toast({ title: "Error", description: "Failed to add category" });
     }
   };
+
+  const createCustomCategory = async () => {
+    if (!customCategoryName.trim()) {
+      toast({ title: "Error", description: "Please enter a category name" });
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('tags')
+        .insert({
+          name: customCategoryName.trim(),
+          color: customCategoryColor,
+          user_id: (await supabase.auth.getUser()).data.user?.id
+        })
+        .select()
+        .single();
+      
+      if (error) throw error;
+      
+      setCategories(prev => [...prev, data]);
+      setCustomCategoryName('');
+      setCustomCategoryColor('#3B82F6');
+      setCustomCategoryIcon('Plus');
+      toast({ title: "Success", description: `${customCategoryName} category created!` });
+    } catch (error) {
+      console.error('Error creating category:', error);
+      toast({ title: "Error", description: "Failed to create category" });
+    }
+  };
+
+  const colorOptions = [
+    '#3B82F6', '#EF4444', '#10B981', '#F59E0B', '#8B5CF6', 
+    '#EC4899', '#06B6D4', '#84CC16', '#F97316', '#6366F1'
+  ];
 
   const allCategories = [
     ...categories.map(cat => ({ ...cat, isCustom: true })),
@@ -177,44 +218,91 @@ export const CategorySelector: React.FC<CategorySelectorProps> = ({
           </DialogTrigger>
           <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Quick Add Categories</DialogTitle>
+              <DialogTitle>Add Categories</DialogTitle>
             </DialogHeader>
             
-            <div className="space-y-4">
-              {Object.entries(defaultCategories).map(([groupName, categoryList]) => (
-                <div key={groupName}>
-                  <h4 className="font-medium capitalize mb-2 text-sm text-muted-foreground">
-                    {groupName}
-                  </h4>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                    {categoryList.map((category) => {
-                      const IconComponent = iconMap[category.icon];
-                      const isAdded = categories.some(cat => cat.name === category.name);
-                      
-                      return (
-                        <Button
-                          key={category.name}
-                          variant={isAdded ? "secondary" : "outline"}
-                          size="sm"
-                          className="justify-start gap-2 h-auto p-2"
-                          onClick={() => !isAdded && addQuickCategory(category)}
-                          disabled={isAdded}
-                        >
-                          <div 
-                            className="p-1 rounded"
-                            style={{ backgroundColor: `${category.color}20`, color: category.color }}
+            <Tabs defaultValue="quick-add" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="quick-add">Quick Add</TabsTrigger>
+                <TabsTrigger value="create-custom">Create Custom</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="quick-add" className="space-y-4">
+                {Object.entries(defaultCategories).map(([groupName, categoryList]) => (
+                  <div key={groupName}>
+                    <h4 className="font-medium capitalize mb-2 text-sm text-muted-foreground">
+                      {groupName}
+                    </h4>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                      {categoryList.map((category) => {
+                        const IconComponent = iconMap[category.icon];
+                        const isAdded = categories.some(cat => cat.name === category.name);
+                        
+                        return (
+                          <Button
+                            key={category.name}
+                            variant={isAdded ? "secondary" : "outline"}
+                            size="sm"
+                            className="justify-start gap-2 h-auto p-2"
+                            onClick={() => !isAdded && addQuickCategory(category)}
+                            disabled={isAdded}
                           >
-                            <IconComponent className="h-3 w-3" />
-                          </div>
-                          <span className="text-xs">{category.name}</span>
-                          {isAdded && <CheckCircle className="h-3 w-3 ml-auto" />}
-                        </Button>
-                      );
-                    })}
+                            <div 
+                              className="p-1 rounded"
+                              style={{ backgroundColor: `${category.color}20`, color: category.color }}
+                            >
+                              <IconComponent className="h-3 w-3" />
+                            </div>
+                            <span className="text-xs">{category.name}</span>
+                            {isAdded && <CheckCircle className="h-3 w-3 ml-auto" />}
+                          </Button>
+                        );
+                      })}
+                    </div>
                   </div>
+                ))}
+              </TabsContent>
+              
+              <TabsContent value="create-custom" className="space-y-4">
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="category-name">Category Name</Label>
+                    <Input
+                      id="category-name"
+                      placeholder="Enter category name"
+                      value={customCategoryName}
+                      onChange={(e) => setCustomCategoryName(e.target.value)}
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label>Category Color</Label>
+                    <div className="flex gap-2 flex-wrap mt-2">
+                      {colorOptions.map((color) => (
+                        <button
+                          key={color}
+                          type="button"
+                          className={`w-8 h-8 rounded-full border-2 ${
+                            customCategoryColor === color ? 'border-foreground' : 'border-muted'
+                          }`}
+                          style={{ backgroundColor: color }}
+                          onClick={() => setCustomCategoryColor(color)}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <Button 
+                    onClick={createCustomCategory}
+                    className="w-full"
+                    disabled={!customCategoryName.trim()}
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Create Category
+                  </Button>
                 </div>
-              ))}
-            </div>
+              </TabsContent>
+            </Tabs>
           </DialogContent>
         </Dialog>
       )}
