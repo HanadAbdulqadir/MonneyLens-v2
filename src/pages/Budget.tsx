@@ -13,18 +13,17 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
+import { supabase } from "@/integrations/supabase/client";
+import { CategorySelector } from "@/components/CategorySelector";
 
 const Budget = () => {
   const { transactions } = useFinancial();
   const { toast } = useToast();
-  const [budgets, setBudgets] = useState({
-    Petrol: 300,
-    Food: 400,
-    Other: 500
-  });
+  const [budgets, setBudgets] = useState<Record<string, number>>({});
+  const [categories, setCategories] = useState<any[]>([]);
   const [editingBudget, setEditingBudget] = useState<string | null>(null);
   const [newAmount, setNewAmount] = useState("");
-  const [sliderBudgets, setSliderBudgets] = useState(budgets);
+  const [sliderBudgets, setSliderBudgets] = useState<Record<string, number>>({});
   const [showRecommendations, setShowRecommendations] = useState(false);
   const [isAddingCategory, setIsAddingCategory] = useState(false);
   const [newCategoryData, setNewCategoryData] = useState({
@@ -33,7 +32,43 @@ const Budget = () => {
     usePreset: false
   });
 
-  // Common budget categories
+  // Load categories from database
+  useEffect(() => {
+    loadCategories();
+  }, []);
+
+  const loadCategories = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('tags')
+        .select('*')
+        .order('name');
+      
+      if (error) throw error;
+      setCategories(data || []);
+      
+      // Initialize budgets for existing categories if not already set
+      if (data && data.length > 0) {
+        const existingBudgets = { ...budgets };
+        let hasNewCategories = false;
+        
+        data.forEach(category => {
+          if (!existingBudgets[category.name]) {
+            existingBudgets[category.name] = 500; // Default budget
+            hasNewCategories = true;
+          }
+        });
+        
+        if (hasNewCategories) {
+          setBudgets(existingBudgets);
+        }
+      }
+    } catch (error) {
+      console.error('Error loading categories:', error);
+    }
+  };
+
+  // Common budget categories for fallback
   const commonCategories = [
     'Groceries', 'Transportation', 'Entertainment', 'Shopping', 'Bills', 
     'Healthcare', 'Education', 'Travel', 'Subscriptions', 'Insurance',
@@ -148,14 +183,14 @@ const Budget = () => {
   };
 
   // Add new budget category
-  const handleAddCategory = () => {
+  const handleAddCategory = async () => {
     const categoryName = newCategoryData.name.trim();
     const budgetAmount = parseFloat(newCategoryData.budget);
 
     if (!categoryName || isNaN(budgetAmount) || budgetAmount <= 0) {
       toast({
         title: "Error",
-        description: "Please enter a valid category name and budget amount",
+        description: "Please select a category and enter a valid budget amount",
         variant: "destructive"
       });
       return;
@@ -164,7 +199,7 @@ const Budget = () => {
     if (budgets.hasOwnProperty(categoryName)) {
       toast({
         title: "Error",
-        description: "This category already exists",
+        description: "This category already has a budget set",
         variant: "destructive"
       });
       return;
@@ -174,9 +209,12 @@ const Budget = () => {
     setNewCategoryData({ name: '', budget: '', usePreset: false });
     setIsAddingCategory(false);
     
+    // Refresh categories to make sure we have the latest data
+    await loadCategories();
+    
     toast({
       title: "Success",
-      description: `${categoryName} category added with £${budgetAmount} budget`,
+      description: `Budget of £${budgetAmount} set for ${categoryName}`,
     });
   };
 
@@ -197,17 +235,8 @@ const Budget = () => {
     
     toast({
       title: "Success",
-      description: `${category} category removed`,
+      description: `${category} budget removed`,
     });
-  };
-
-  // Handle preset category selection
-  const handlePresetSelect = (categoryName: string) => {
-    setNewCategoryData(prev => ({
-      ...prev,
-      name: categoryName,
-      usePreset: true
-    }));
   };
 
   const handleUpdateBudget = (category: string) => {
@@ -287,24 +316,21 @@ const Budget = () => {
                 <DialogTitle>Add New Budget Category</DialogTitle>
               </DialogHeader>
               <div className="space-y-6">
-                {/* Quick Presets */}
+                {/* Use CategorySelector for existing categories or create new ones */}
                 <div>
-                  <Label className="text-sm font-medium mb-3 block">Quick Add Common Categories</Label>
-                  <div className="grid grid-cols-3 gap-2">
-                    {commonCategories
-                      .filter(cat => !budgets.hasOwnProperty(cat))
-                      .slice(0, 9)
-                      .map((category) => (
-                      <Button
-                        key={category}
-                        variant="outline"
-                        size="sm"
-                        className="text-xs h-8"
-                        onClick={() => handlePresetSelect(category)}
-                      >
-                        {category}
-                      </Button>
-                    ))}
+                  <Label className="text-sm font-medium mb-3 block">Select from Your Categories</Label>
+                  <div className="space-y-4">
+                    <CategorySelector 
+                      value={newCategoryData.name}
+                      onCategorySelect={(category) => setNewCategoryData(prev => ({ ...prev, name: category }))}
+                      showCreateNew={true}
+                    />
+                    
+                    {categories.length === 0 && (
+                      <div className="text-center py-4 text-muted-foreground text-sm">
+                        No categories found. Create some categories first using the + button above.
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -313,33 +339,25 @@ const Budget = () => {
                     <span className="w-full border-t" />
                   </div>
                   <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-background px-2 text-muted-foreground">Or create custom</span>
+                    <span className="bg-background px-2 text-muted-foreground">Set Budget Amount</span>
                   </div>
                 </div>
 
-                {/* Custom Category Form */}
+                {/* Budget Amount Input */}
                 <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="category-name">Category Name</Label>
-                    <Input
-                      id="category-name"
-                      value={newCategoryData.name}
-                      onChange={(e) => setNewCategoryData(prev => ({ ...prev, name: e.target.value }))}
-                      placeholder="e.g., Entertainment, Gym, etc."
-                    />
-                  </div>
-                  
-                  <div>
-                    <Label htmlFor="category-budget">Monthly Budget (£)</Label>
-                    <Input
-                      id="category-budget"
-                      type="number"
-                      step="0.01"
-                      value={newCategoryData.budget}
-                      onChange={(e) => setNewCategoryData(prev => ({ ...prev, budget: e.target.value }))}
-                      placeholder="0.00"
-                    />
-                  </div>
+                  {newCategoryData.name && (
+                    <div>
+                      <Label htmlFor="category-budget">Monthly Budget for "{newCategoryData.name}" (£)</Label>
+                      <Input
+                        id="category-budget"
+                        type="number"
+                        step="0.01"
+                        value={newCategoryData.budget}
+                        onChange={(e) => setNewCategoryData(prev => ({ ...prev, budget: e.target.value }))}
+                        placeholder="0.00"
+                      />
+                    </div>
+                  )}
                 </div>
                 
                 <div className="flex justify-end gap-2 pt-4">
@@ -352,8 +370,11 @@ const Budget = () => {
                   >
                     Cancel
                   </Button>
-                  <Button onClick={handleAddCategory}>
-                    Add Category
+                  <Button 
+                    onClick={handleAddCategory}
+                    disabled={!newCategoryData.name || !newCategoryData.budget}
+                  >
+                    Set Budget
                   </Button>
                 </div>
               </div>
