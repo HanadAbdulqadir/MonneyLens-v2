@@ -76,7 +76,7 @@ const UnifiedToolbar: React.FC<UnifiedToolbarProps> = ({
 
   return (
     <TooltipProvider>
-      <div className="fixed bottom-4 right-20 z-40">
+      <div className="fixed bottom-28 right-4 z-40">
         {/* Hidden components for accessibility and tour */}
         <div className="opacity-0 pointer-events-none absolute -z-10">
           <AccessibilityEnhancer />
@@ -209,7 +209,7 @@ const UnifiedToolbar: React.FC<UnifiedToolbarProps> = ({
                   <div className="absolute inset-2 border border-primary/20 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
               </TooltipTrigger>
-              <TooltipContent side="right" className="text-xs">
+            <TooltipContent side="right" className="text-xs">
                 <p className="font-medium">Quick Tools</p>
                 <p className="text-muted-foreground">Click to expand • {primaryTools.length} tools available</p>
               </TooltipContent>
