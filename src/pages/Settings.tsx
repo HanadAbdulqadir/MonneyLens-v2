@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 import ThemeToggle from "@/components/ThemeToggle";
 import CurrencySelector from "@/components/CurrencySelector";
+import ThemePreferences from "@/components/ThemePreferences";
 
 const Settings = () => {
   const { monthlyStartingPoint, setMonthlyStartingPoint, dailyData, transactions, currency } = useFinancial();
@@ -324,34 +325,8 @@ const Settings = () => {
         </div>
       </Card>
 
-      {/* Appearance */}
-      <Card className="p-6">
-        <div className="flex items-center gap-3 mb-6">
-          <Palette className="h-5 w-5 text-primary" />
-          <h2 className="text-xl font-semibold">Appearance</h2>
-        </div>
-        
-        <div className="space-y-4">
-          <div>
-            <Label className="text-sm font-medium">Theme Presets</Label>
-            <p className="text-sm text-muted-foreground mb-3">Choose your preferred appearance</p>
-            <div className="grid grid-cols-2 gap-3">
-              <Button variant="outline" className="h-auto p-4" disabled>
-                <div className="text-center">
-                  <div className="w-8 h-8 bg-gradient-to-r from-slate-900 to-slate-700 rounded-full mx-auto mb-2" />
-                  <p className="text-xs">Professional</p>
-                </div>
-              </Button>
-              <Button variant="outline" className="h-auto p-4" disabled>
-                <div className="text-center">
-                  <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full mx-auto mb-2" />
-                  <p className="text-xs">Colorful</p>
-                </div>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </Card>
+      {/* Theme & Appearance */}
+      <ThemePreferences />
     </div>
   );
 };
