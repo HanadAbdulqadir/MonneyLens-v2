@@ -35,7 +35,7 @@ const BalanceCard = () => {
         <div className="grid grid-cols-4 gap-3 pt-4 border-t border-primary-foreground/20">
           <div className="text-center">
             <p className="text-xs text-primary-foreground/80">Starting</p>
-            <p className="font-semibold text-blue-200">£{monthlyStartingPoint.toFixed(0)}</p>
+            <p className="font-semibold text-blue-200">£{(monthlyStartingPoint || 0).toFixed(0)}</p>
           </div>
           <div className="text-center">
             <p className="text-xs text-primary-foreground/80">Earnings</p>

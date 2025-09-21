@@ -151,7 +151,7 @@ const PersonalizedOverview = () => {
                 highlights.spendingChange >= 0 ? 'text-destructive' : 'text-success'
               }`}>
                 {highlights.spendingChangePercent >= 0 ? '+' : ''}
-                {highlights.spendingChangePercent.toFixed(0)}%
+                {(highlights.spendingChangePercent || 0).toFixed(0)}%
               </span>
             </div>
             <p className="text-xs text-muted-foreground">vs last week</p>
@@ -206,9 +206,9 @@ const PersonalizedOverview = () => {
               </div>
               <p className="text-sm text-muted-foreground">
                 {highlights.spendingChangePercent > 20 ? 
-                  `You've spent ${highlights.spendingChangePercent.toFixed(0)}% more than last week. Consider reviewing your ${highlights.mostUsedCategory.category} expenses.` :
+                  `You've spent ${(highlights.spendingChangePercent || 0).toFixed(0)}% more than last week. Consider reviewing your ${highlights.mostUsedCategory.category} expenses.` :
                  highlights.spendingChangePercent < -10 ?
-                  `Excellent! You've reduced spending by ${Math.abs(highlights.spendingChangePercent).toFixed(0)}% compared to last week.` :
+                  `Excellent! You've reduced spending by ${Math.abs(highlights.spendingChangePercent || 0).toFixed(0)}% compared to last week.` :
                   `Your spending is consistent with last week's pattern. Keep it up!`
                 }
               </p>
