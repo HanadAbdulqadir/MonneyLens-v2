@@ -21,7 +21,41 @@ import {
   Calculator,
   FileText,
   HelpCircle,
-  Command
+  Command,
+  Tags,
+  Repeat,
+  DollarSign,
+  Upload,
+  Download,
+  Moon,
+  Sun,
+  Accessibility,
+  Filter,
+  BarChart3,
+  Zap,
+  Clock,
+  AlertCircle,
+  CheckCircle,
+  Eye,
+  EyeOff,
+  Shuffle,
+  Import,
+  Archive,
+  Bell,
+  BellOff,
+  Bookmark,
+  BookmarkPlus,
+  Copy,
+  Edit,
+  Trash2,
+  Home,
+  Users,
+  Globe,
+  Shield,
+  Key,
+  Database,
+  ScanLine,
+  Compass
 } from "lucide-react";
 
 interface Command {
@@ -31,7 +65,7 @@ interface Command {
   icon: React.ElementType;
   action: () => void;
   keywords: string[];
-  category: 'navigation' | 'actions' | 'tools' | 'help';
+  category: 'navigation' | 'actions' | 'tools' | 'help' | 'manage' | 'view' | 'import' | 'settings';
   shortcut?: string;
 }
 
@@ -99,6 +133,42 @@ const CommandPalette = () => {
       keywords: ['settings', 'preferences', 'configuration'],
       category: 'navigation'
     },
+    {
+      id: 'nav-categories',
+      title: 'Go to Categories',
+      subtitle: 'Manage spending categories',
+      icon: Tags,
+      action: () => navigate('/categories'),
+      keywords: ['categories', 'tags', 'organize'],
+      category: 'navigation'
+    },
+    {
+      id: 'nav-recurring',
+      title: 'Go to Recurring',
+      subtitle: 'Manage recurring transactions',
+      icon: Repeat,
+      action: () => navigate('/recurring'),
+      keywords: ['recurring', 'subscriptions', 'repeat'],
+      category: 'navigation'
+    },
+    {
+      id: 'nav-debts',
+      title: 'Go to Debts',
+      subtitle: 'Track your debts',
+      icon: AlertCircle,
+      action: () => navigate('/debts'),
+      keywords: ['debts', 'loans', 'credit'],
+      category: 'navigation'
+    },
+    {
+      id: 'nav-calendar',
+      title: 'Go to Calendar',
+      subtitle: 'View transactions by date',
+      icon: Calendar,
+      action: () => navigate('/calendar'),
+      keywords: ['calendar', 'schedule', 'dates'],
+      category: 'navigation'
+    },
 
     // Action Commands
     {
@@ -149,6 +219,178 @@ const CommandPalette = () => {
       category: 'actions',
       shortcut: 'Ctrl+I'
     },
+    {
+      id: 'action-add-category',
+      title: 'Add New Category',
+      subtitle: 'Create a spending category',
+      icon: Tags,
+      action: () => {
+        navigate('/categories');
+        toast({
+          title: "Categories",
+          description: "Navigate to categories to create new ones",
+        });
+      },
+      keywords: ['category', 'new', 'create', 'organize'],
+      category: 'actions'
+    },
+    {
+      id: 'action-add-goal',
+      title: 'Add Financial Goal',
+      subtitle: 'Set a new savings goal',
+      icon: Target,
+      action: () => {
+        navigate('/goals');
+        toast({
+          title: "Goals",
+          description: "Navigate to goals to create new ones",
+        });
+      },
+      keywords: ['goal', 'savings', 'target', 'plan'],
+      category: 'actions'
+    },
+    {
+      id: 'action-add-recurring',
+      title: 'Add Recurring Transaction',
+      subtitle: 'Set up automatic transactions',
+      icon: Repeat,
+      action: () => {
+        navigate('/recurring');
+        toast({
+          title: "Recurring",
+          description: "Navigate to recurring transactions",
+        });
+      },
+      keywords: ['recurring', 'automatic', 'subscription', 'repeat'],
+      category: 'actions'
+    },
+    {
+      id: 'action-quick-search',
+      title: 'Search Transactions',
+      subtitle: 'Find specific transactions',
+      icon: Search,
+      action: () => {
+        navigate('/transactions');
+        toast({
+          title: "Search",
+          description: "Navigate to transactions to search",
+        });
+      },
+      keywords: ['search', 'find', 'filter', 'transactions'],
+      category: 'actions',
+      shortcut: 'Ctrl+F'
+    },
+
+    // Management Commands
+    {
+      id: 'manage-categories',
+      title: 'Manage Categories',
+      subtitle: 'Edit spending categories',
+      icon: Tags,
+      action: () => navigate('/categories'),
+      keywords: ['manage', 'categories', 'edit', 'organize'],
+      category: 'manage'
+    },
+    {
+      id: 'manage-recurring',
+      title: 'Manage Recurring',
+      subtitle: 'Edit recurring transactions',
+      icon: Repeat,
+      action: () => navigate('/recurring'),
+      keywords: ['manage', 'recurring', 'subscriptions', 'automatic'],
+      category: 'manage'
+    },
+    {
+      id: 'manage-goals',
+      title: 'Manage Goals',
+      subtitle: 'Track financial goals',
+      icon: Flag,
+      action: () => navigate('/goals'),
+      keywords: ['manage', 'goals', 'savings', 'targets'],
+      category: 'manage'
+    },
+    {
+      id: 'manage-debts',
+      title: 'Manage Debts',
+      subtitle: 'Track debt payments',
+      icon: AlertCircle,
+      action: () => navigate('/debts'),
+      keywords: ['manage', 'debts', 'loans', 'credit'],
+      category: 'manage'
+    },
+
+    // View Commands
+    {
+      id: 'view-analytics',
+      title: 'View Analytics',
+      subtitle: 'Detailed financial insights',
+      icon: BarChart3,
+      action: () => navigate('/analytics'),
+      keywords: ['view', 'analytics', 'insights', 'reports'],
+      category: 'view'
+    },
+    {
+      id: 'view-calendar',
+      title: 'Calendar View',
+      subtitle: 'See transactions by date',
+      icon: Calendar,
+      action: () => navigate('/calendar'),
+      keywords: ['view', 'calendar', 'schedule', 'timeline'],
+      category: 'view'
+    },
+    {
+      id: 'view-budget',
+      title: 'Budget Overview',
+      subtitle: 'Check budget status',
+      icon: Target,
+      action: () => navigate('/budget'),
+      keywords: ['view', 'budget', 'spending', 'limits'],
+      category: 'view'
+    },
+
+    // Import/Export Commands
+    {
+      id: 'import-csv',
+      title: 'Import CSV',
+      subtitle: 'Import transactions from CSV',
+      icon: Upload,
+      action: () => {
+        toast({
+          title: "CSV Import",
+          description: "CSV import feature coming soon...",
+        });
+      },
+      keywords: ['import', 'csv', 'upload', 'transactions'],
+      category: 'import'
+    },
+    {
+      id: 'export-csv',
+      title: 'Export to CSV',
+      subtitle: 'Download transactions as CSV',
+      icon: Download,
+      action: () => {
+        toast({
+          title: "CSV Export",
+          description: "Exporting transactions...",
+        });
+      },
+      keywords: ['export', 'csv', 'download', 'backup'],
+      category: 'import'
+    },
+    {
+      id: 'export-pdf',
+      title: 'Export Report',
+      subtitle: 'Generate PDF report',
+      icon: FileText,
+      action: () => {
+        toast({
+          title: "PDF Report",
+          description: "Generating financial report...",
+        });
+      },
+      keywords: ['export', 'pdf', 'report', 'summary'],
+      category: 'import'
+    },
 
     // Tool Commands
     {
@@ -161,19 +403,92 @@ const CommandPalette = () => {
           title: "Calculator",
           description: "Opening calculator...",
         });
-        // Could open a calculator modal
       },
       keywords: ['calculator', 'calculate', 'math'],
       category: 'tools'
     },
     {
-      id: 'tool-export',
-      title: 'Export Data',
-      subtitle: 'Download your financial data',
-      icon: FileText,
-      action: () => navigate('/settings'),
-      keywords: ['export', 'download', 'backup', 'data'],
+      id: 'tool-currency',
+      title: 'Currency Converter',
+      subtitle: 'Convert between currencies',
+      icon: DollarSign,
+      action: () => {
+        toast({
+          title: "Currency Converter",
+          description: "Currency converter coming soon...",
+        });
+      },
+      keywords: ['currency', 'convert', 'exchange', 'rates'],
       category: 'tools'
+    },
+    {
+      id: 'tool-insights',
+      title: 'Financial Insights',
+      subtitle: 'Get AI-powered insights',
+      icon: Zap,
+      action: () => {
+        toast({
+          title: "Insights",
+          description: "Analyzing your financial data...",
+        });
+      },
+      keywords: ['insights', 'ai', 'analysis', 'recommendations'],
+      category: 'tools'
+    },
+
+    // Settings Commands
+    {
+      id: 'settings-theme',
+      title: 'Toggle Theme',
+      subtitle: 'Switch between light/dark mode',
+      icon: Moon,
+      action: () => {
+        const themeToggle = document.querySelector('[data-theme-toggle]') as HTMLButtonElement;
+        if (themeToggle) {
+          themeToggle.click();
+        } else {
+          toast({
+            title: "Theme",
+            description: "Theme toggle not found",
+          });
+        }
+      },
+      keywords: ['theme', 'dark', 'light', 'mode'],
+      category: 'settings',
+      shortcut: 'Ctrl+Shift+T'
+    },
+    {
+      id: 'settings-accessibility',
+      title: 'Accessibility Settings',
+      subtitle: 'Adjust accessibility options',
+      icon: Accessibility,
+      action: () => {
+        const accessButton = document.querySelector('[title="Accessibility Settings (Alt+A)"]') as HTMLButtonElement;
+        if (accessButton) {
+          accessButton.click();
+        }
+      },
+      keywords: ['accessibility', 'a11y', 'contrast', 'screen reader'],
+      category: 'settings',
+      shortcut: 'Alt+A'
+    },
+    {
+      id: 'settings-notifications',
+      title: 'Notification Settings',
+      subtitle: 'Manage notification preferences',
+      icon: Bell,
+      action: () => navigate('/settings'),
+      keywords: ['notifications', 'alerts', 'reminders'],
+      category: 'settings'
+    },
+    {
+      id: 'settings-currency',
+      title: 'Currency Settings',
+      subtitle: 'Change default currency',
+      icon: DollarSign,
+      action: () => navigate('/settings'),
+      keywords: ['currency', 'money', 'locale', 'format'],
+      category: 'settings'
     },
 
     // Help Commands
@@ -202,6 +517,34 @@ const CommandPalette = () => {
       },
       keywords: ['shortcuts', 'keyboard', 'hotkeys'],
       category: 'help'
+    },
+    {
+      id: 'help-accessibility',
+      title: 'Accessibility Help',
+      subtitle: 'Learn about accessibility features',
+      icon: Accessibility,
+      action: () => {
+        toast({
+          title: "Accessibility Features",
+          description: "Alt+A: Accessibility Settings, Screen reader support, High contrast mode",
+        });
+      },
+      keywords: ['help', 'accessibility', 'a11y', 'support'],
+      category: 'help'
+    },
+    {
+      id: 'help-support',
+      title: 'Get Support',
+      subtitle: 'Contact support or view docs',
+      icon: HelpCircle,
+      action: () => {
+        toast({
+          title: "Support",
+          description: "Visit our help center for more information",
+        });
+      },
+      keywords: ['help', 'support', 'contact', 'docs'],
+      category: 'help'
     }
   ];
 
@@ -221,9 +564,13 @@ const CommandPalette = () => {
 
   const categoryLabels = {
     navigation: 'Navigation',
-    actions: 'Actions',
+    actions: 'Quick Actions',
+    manage: 'Manage',
+    view: 'Views',
+    import: 'Import/Export',
     tools: 'Tools',
-    help: 'Help'
+    settings: 'Settings',
+    help: 'Help & Support'
   };
 
   const executeCommand = useCallback((command: Command) => {
