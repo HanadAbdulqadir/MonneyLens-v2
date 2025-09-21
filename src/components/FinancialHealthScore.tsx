@@ -7,112 +7,181 @@ import { Shield, TrendingUp, Target, AlertTriangle, CheckCircle } from "lucide-r
 const FinancialHealthScore = () => {
   const { transactions, goals, debts, getCurrentBalance } = useFinancial();
 
+  // Check if there's enough data to calculate a meaningful score
+  const hasMinimumData = () => {
+    const hasTransactions = transactions && transactions.length > 0;
+    const hasBalance = getCurrentBalance() !== 0;
+    const hasGoalsOrDebts = (goals && goals.length > 0) || (debts && debts.length > 0);
+    
+    // Need at least some transactions OR balance OR goals/debts to calculate a score
+    return hasTransactions || hasBalance || hasGoalsOrDebts;
+  };
+
   const calculateHealthScore = () => {
     let score = 0;
     const factors = [];
 
     // Emergency Fund Factor (30 points)
     const currentBalance = getCurrentBalance();
-    const monthlyExpenses = transactions
-      .filter(t => t.category !== 'Earnings')
-      .reduce((sum, t) => sum + t.amount, 0) / Math.max(1, transactions.length / 30); // Rough monthly estimate
+    const monthlyExpenses = transactions && transactions.length > 0 
+      ? Math.abs(transactions
+          .filter(t => t.category !== 'Earnings' && t.amount < 0)
+          .reduce((sum, t) => sum + t.amount, 0)) / Math.max(1, transactions.length / 30)
+      : 0;
 
-    const emergencyFundRatio = currentBalance / (monthlyExpenses * 3); // 3 months emergency fund
-    if (emergencyFundRatio >= 1) {
-      score += 30;
-      factors.push({ name: "Emergency Fund", score: 30, status: "excellent", description: "3+ months of expenses saved" });
-    } else if (emergencyFundRatio >= 0.5) {
-      score += 20;
-      factors.push({ name: "Emergency Fund", score: 20, status: "good", description: "Building emergency fund" });
+    if (transactions.length === 0 && currentBalance === 0) {
+      factors.push({ name: "Emergency Fund", score: 0, status: "needs work", description: "No financial data available" });
     } else {
-      score += 10;
-      factors.push({ name: "Emergency Fund", score: 10, status: "needs work", description: "Need more emergency savings" });
+      const emergencyFundRatio = monthlyExpenses > 0 ? currentBalance / (monthlyExpenses * 3) : currentBalance > 0 ? 1 : 0;
+      if (emergencyFundRatio >= 1) {
+        score += 30;
+        factors.push({ name: "Emergency Fund", score: 30, status: "excellent", description: "3+ months of expenses saved" });
+      } else if (emergencyFundRatio >= 0.5) {
+        score += 20;
+        factors.push({ name: "Emergency Fund", score: 20, status: "good", description: "Building emergency fund" });
+      } else if (currentBalance > 0) {
+        score += 10;
+        factors.push({ name: "Emergency Fund", score: 10, status: "needs work", description: "Need more emergency savings" });
+      } else {
+        factors.push({ name: "Emergency Fund", score: 0, status: "needs work", description: "No emergency fund" });
+      }
     }
 
     // Debt Management Factor (25 points)
-    const activeDebts = debts.filter(d => d.remainingAmount > 0);
+    const activeDebts = debts ? debts.filter(d => d.remainingAmount > 0) : [];
     const totalDebt = activeDebts.reduce((sum, d) => sum + d.remainingAmount, 0);
-    const debtToIncomeRatio = totalDebt / Math.max(currentBalance, 1);
 
-    if (totalDebt === 0) {
+    if (!debts || debts.length === 0) {
+      // If no debt data is available, don't award full points
+      score += 15;
+      factors.push({ name: "Debt Management", score: 15, status: "good", description: "No debt data available" });
+    } else if (totalDebt === 0) {
       score += 25;
       factors.push({ name: "Debt Management", score: 25, status: "excellent", description: "Debt-free!" });
-    } else if (debtToIncomeRatio < 0.3) {
-      score += 20;
-      factors.push({ name: "Debt Management", score: 20, status: "good", description: "Manageable debt levels" });
-    } else if (debtToIncomeRatio < 0.6) {
-      score += 10;
-      factors.push({ name: "Debt Management", score: 10, status: "needs work", description: "High debt levels" });
     } else {
-      score += 5;
-      factors.push({ name: "Debt Management", score: 5, status: "critical", description: "Critical debt situation" });
+      const debtToIncomeRatio = totalDebt / Math.max(currentBalance, 1);
+      if (debtToIncomeRatio < 0.3) {
+        score += 20;
+        factors.push({ name: "Debt Management", score: 20, status: "good", description: "Manageable debt levels" });
+      } else if (debtToIncomeRatio < 0.6) {
+        score += 10;
+        factors.push({ name: "Debt Management", score: 10, status: "needs work", description: "High debt levels" });
+      } else {
+        score += 5;
+        factors.push({ name: "Debt Management", score: 5, status: "critical", description: "Critical debt situation" });
+      }
     }
 
     // Savings Goals Factor (20 points)
-    const activeGoals = goals.filter(g => !g.isCompleted);
-    const goalProgress = activeGoals.reduce((sum, g) => (g.currentAmount / g.targetAmount), 0) / Math.max(activeGoals.length, 1);
+    const activeGoals = goals ? goals.filter(g => !g.isCompleted) : [];
 
-    if (activeGoals.length > 0 && goalProgress >= 0.7) {
-      score += 20;
-      factors.push({ name: "Savings Goals", score: 20, status: "excellent", description: "On track with goals" });
-    } else if (activeGoals.length > 0 && goalProgress >= 0.4) {
-      score += 15;
-      factors.push({ name: "Savings Goals", score: 15, status: "good", description: "Making progress on goals" });
-    } else if (activeGoals.length > 0) {
-      score += 10;
-      factors.push({ name: "Savings Goals", score: 10, status: "needs work", description: "Goals need attention" });
+    if (!goals || goals.length === 0) {
+      factors.push({ name: "Savings Goals", score: 0, status: "needs work", description: "No goals set yet" });
     } else {
-      score += 5;
-      factors.push({ name: "Savings Goals", score: 5, status: "needs work", description: "No active goals set" });
+      const goalProgress = activeGoals.reduce((sum, g) => (g.currentAmount / g.targetAmount), 0) / Math.max(activeGoals.length, 1);
+      
+      if (activeGoals.length > 0 && goalProgress >= 0.7) {
+        score += 20;
+        factors.push({ name: "Savings Goals", score: 20, status: "excellent", description: "On track with goals" });
+      } else if (activeGoals.length > 0 && goalProgress >= 0.4) {
+        score += 15;
+        factors.push({ name: "Savings Goals", score: 15, status: "good", description: "Making progress on goals" });
+      } else if (activeGoals.length > 0) {
+        score += 10;
+        factors.push({ name: "Savings Goals", score: 10, status: "needs work", description: "Goals need attention" });
+      } else {
+        score += 5;
+        factors.push({ name: "Savings Goals", score: 5, status: "needs work", description: "No active goals set" });
+      }
     }
 
     // Spending Consistency Factor (15 points)
-    const last7DaysSpending = transactions
-      .filter(t => {
-        const transactionDate = new Date(t.date);
-        const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-        return transactionDate >= sevenDaysAgo && t.category !== 'Earnings';
-      })
-      .reduce((sum, t) => sum + t.amount, 0);
-
-    const previous7DaysSpending = transactions
-      .filter(t => {
-        const transactionDate = new Date(t.date);
-        const fourteenDaysAgo = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000);
-        const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-        return transactionDate >= fourteenDaysAgo && transactionDate < sevenDaysAgo && t.category !== 'Earnings';
-      })
-      .reduce((sum, t) => sum + t.amount, 0);
-
-    const spendingVariation = Math.abs(last7DaysSpending - previous7DaysSpending) / Math.max(previous7DaysSpending, 1);
-
-    if (spendingVariation < 0.2) {
-      score += 15;
-      factors.push({ name: "Spending Consistency", score: 15, status: "excellent", description: "Consistent spending habits" });
-    } else if (spendingVariation < 0.4) {
-      score += 10;
-      factors.push({ name: "Spending Consistency", score: 10, status: "good", description: "Fairly consistent spending" });
+    if (!transactions || transactions.length < 14) { // Need at least 2 weeks of data
+      factors.push({ name: "Spending Consistency", score: 0, status: "needs work", description: "Need more transaction history" });
     } else {
-      score += 5;
-      factors.push({ name: "Spending Consistency", score: 5, status: "needs work", description: "Irregular spending patterns" });
+      const last7DaysSpending = Math.abs(transactions
+        .filter(t => {
+          const transactionDate = new Date(t.date);
+          const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+          return transactionDate >= sevenDaysAgo && t.category !== 'Earnings' && t.amount < 0;
+        })
+        .reduce((sum, t) => sum + t.amount, 0));
+
+      const previous7DaysSpending = Math.abs(transactions
+        .filter(t => {
+          const transactionDate = new Date(t.date);
+          const fourteenDaysAgo = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000);
+          const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+          return transactionDate >= fourteenDaysAgo && transactionDate < sevenDaysAgo && t.category !== 'Earnings' && t.amount < 0;
+        })
+        .reduce((sum, t) => sum + t.amount, 0));
+
+      const spendingVariation = previous7DaysSpending > 0 
+        ? Math.abs(last7DaysSpending - previous7DaysSpending) / previous7DaysSpending 
+        : 0;
+
+      if (spendingVariation < 0.2) {
+        score += 15;
+        factors.push({ name: "Spending Consistency", score: 15, status: "excellent", description: "Consistent spending habits" });
+      } else if (spendingVariation < 0.4) {
+        score += 10;
+        factors.push({ name: "Spending Consistency", score: 10, status: "good", description: "Fairly consistent spending" });
+      } else {
+        score += 5;
+        factors.push({ name: "Spending Consistency", score: 5, status: "needs work", description: "Irregular spending patterns" });
+      }
     }
 
     // Payment Timeliness Factor (10 points)
-    const overdueDebts = activeDebts.filter(d => {
-      const dueDate = new Date(d.dueDate);
-      return dueDate < new Date();
-    });
-
-    if (overdueDebts.length === 0) {
-      score += 10;
-      factors.push({ name: "Payment Timeliness", score: 10, status: "excellent", description: "All payments on time" });
+    if (!debts || debts.length === 0) {
+      factors.push({ name: "Payment Timeliness", score: 5, status: "good", description: "No debt payments to track" });
+      score += 5;
     } else {
-      score += 0;
-      factors.push({ name: "Payment Timeliness", score: 0, status: "critical", description: `${overdueDebts.length} overdue payment${overdueDebts.length > 1 ? 's' : ''}` });
+      const overdueDebts = activeDebts.filter(d => {
+        const dueDate = new Date(d.dueDate);
+        return dueDate < new Date();
+      });
+
+      if (overdueDebts.length === 0) {
+        score += 10;
+        factors.push({ name: "Payment Timeliness", score: 10, status: "excellent", description: "All payments on time" });
+      } else {
+        factors.push({ name: "Payment Timeliness", score: 0, status: "critical", description: `${overdueDebts.length} overdue payment${overdueDebts.length > 1 ? 's' : ''}` });
+      }
     }
 
     return { score: Math.min(score, 100), factors };
   };
+
+  // If there's not enough data, show a different state
+  if (!hasMinimumData()) {
+    return (
+      <Card className="p-6 bg-gradient-to-br from-card to-muted/30 border-2 border-dashed">
+        <div className="text-center space-y-4">
+          <div className="p-3 rounded-full bg-muted/50 w-fit mx-auto">
+            <Shield className="h-8 w-8 text-muted-foreground" />
+          </div>
+          <div>
+            <h3 className="font-bold text-lg mb-2">Financial Health Score</h3>
+            <p className="text-muted-foreground mb-4">
+              Add some financial data to see your health score
+            </p>
+            <div className="text-sm text-muted-foreground space-y-2">
+              <p>To calculate your financial health score, we need:</p>
+              <ul className="text-left max-w-md mx-auto space-y-1">
+                <li>• Some transaction history</li>
+                <li>• Current balance information</li>
+                <li>• Financial goals or debt information</li>
+              </ul>
+            </div>
+          </div>
+          <Badge variant="outline" className="text-muted-foreground">
+            Insufficient Data
+          </Badge>
+        </div>
+      </Card>
+    );
+  }
 
   const { score, factors } = calculateHealthScore();
 
