@@ -11,7 +11,6 @@ import TransactionAnalytics from "@/components/TransactionAnalytics";
 import EnhancedTransactionList from "@/components/EnhancedTransactionList";
 import TransactionInsights from "@/components/TransactionInsights";
 import DataFilter, { FilterState } from "@/components/DataFilter";
-import ResponsiveLayout, { ResponsiveGrid } from "@/components/ResponsiveLayout";
 import LoadingState from "@/components/LoadingState";
 import { useToast } from "@/hooks/use-toast";
 import { format, parseISO, subDays, isWithinInterval, startOfDay, endOfDay } from "date-fns";
@@ -150,25 +149,20 @@ const Transactions = () => {
   };
 
   return (
-    <ResponsiveLayout className="space-y-6 animate-fade-in">
-      {/* Enhanced Header */}
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Enhanced Transactions</h1>
-          <p className="text-muted-foreground">
-            Advanced transaction management with analytics and insights
-          </p>
-          <div className="flex items-center gap-4 mt-2">
-            <span className="text-sm text-muted-foreground">
-              {filteredTransactions.length} of {transactions.length} transactions
-            </span>
-            <span className="text-sm font-medium">
+    <div className="space-y-4 animate-fade-in max-w-7xl mx-auto px-4">
+      {/* Compact Header */}
+      <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+        <div className="flex-1">
+          <h1 className="text-2xl font-bold tracking-tight">Transactions</h1>
+          <div className="flex items-center gap-4 mt-1 text-sm text-muted-foreground">
+            <span>{filteredTransactions.length} of {transactions.length} transactions</span>
+            <span className="font-medium">
               Total: £{filteredTransactions.reduce((sum, t) => sum + Math.abs(t.amount), 0).toFixed(2)}
             </span>
           </div>
         </div>
         
-        <div className="flex items-center gap-3 flex-wrap">
+        <div className="flex items-center gap-2 flex-wrap">
           <Button
             variant="outline"
             onClick={() => setShowAnalytics(!showAnalytics)}
@@ -177,9 +171,7 @@ const Transactions = () => {
             <BarChart3 className="h-4 w-4 mr-2" />
             {showAnalytics ? 'Hide' : 'Show'} Analytics
           </Button>
-          
           <CSVImportModal />
-          
           <Button
             variant="outline"
             onClick={handleExportTransactions}
@@ -189,43 +181,45 @@ const Transactions = () => {
             <Download className="h-4 w-4 mr-2" />
             {isLoading ? 'Exporting...' : 'Export'}
           </Button>
-          
           <SmartTransactionEntry />
           <AddTransactionModal />
         </div>
       </div>
 
-      {/* Smart Search */}
-      <SmartTransactionSearch 
-        onSearch={setSearchQuery}
-        onFilterChange={setSearchFilters}
-        placeholder="Search transactions, amounts, categories..."
-      />
+      {/* Integrated Search and Filters */}
+      <Card className="p-4">
+        <div className="space-y-3">
+          <SmartTransactionSearch 
+            onSearch={setSearchQuery}
+            onFilterChange={setSearchFilters}
+            placeholder="Search transactions, amounts, categories..."
+          />
+          <DataFilter 
+            onFiltersChange={handleFiltersChange}
+            showTimeRange={true}
+            showCategories={true}
+            showAmountRange={true}
+            compact={true}
+          />
+        </div>
+      </Card>
 
-      {/* Advanced Data Filter */}
-      <DataFilter 
-        onFiltersChange={handleFiltersChange}
-        showTimeRange={true}
-        showCategories={true}
-        showAmountRange={true}
-        compact={false}
-      />
-
-      {/* Analytics Section */}
+      {/* Analytics Section - Conditional */}
       {showAnalytics && (
-        <div className="space-y-6">
-          <ResponsiveGrid columns={{ sm: 1 }} gap={6}>
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
+          <div className="xl:col-span-2">
             <TransactionAnalytics 
               filteredTransactions={filteredTransactions} 
               timeRange={filters.timeRange}
             />
-          </ResponsiveGrid>
-          
-          <TransactionInsights filteredTransactions={filteredTransactions} />
+          </div>
+          <div className="xl:col-span-1">
+            <TransactionInsights filteredTransactions={filteredTransactions} />
+          </div>
         </div>
       )}
 
-      {/* Enhanced Transaction List */}
+      {/* Transaction List */}
       {isLoading ? (
         <LoadingState type="table" title="Loading transactions..." />
       ) : (
@@ -234,7 +228,7 @@ const Transactions = () => {
           onFiltersChange={handleFiltersChange}
         />
       )}
-    </ResponsiveLayout>
+    </div>
   );
 };
 
