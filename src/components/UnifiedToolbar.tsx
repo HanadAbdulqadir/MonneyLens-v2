@@ -76,7 +76,7 @@ const UnifiedToolbar: React.FC<UnifiedToolbarProps> = ({
 
   return (
     <TooltipProvider>
-      <div className="fixed bottom-4 left-4 z-40">
+      <div className="fixed bottom-4 right-20 z-40">
         {/* Hidden components for accessibility and tour */}
         <div className="opacity-0 pointer-events-none absolute -z-10">
           <AccessibilityEnhancer />

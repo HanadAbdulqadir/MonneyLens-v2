@@ -135,7 +135,7 @@ const QuickActionsToolbar = () => {
   return (
     <TooltipProvider>
       {/* Quick Stats Bar */}
-      <Card className={`fixed bottom-4 right-4 z-40 bg-background/95 backdrop-blur-sm border shadow-lg transition-all duration-300 ${
+      <Card className={`fixed bottom-4 right-24 z-40 bg-background/95 backdrop-blur-sm border shadow-lg transition-all duration-300 ${
         isMinimized ? 'w-16 h-16 rounded-full shadow-xl hover:shadow-2xl' : 'w-80'
       }`}>
         
