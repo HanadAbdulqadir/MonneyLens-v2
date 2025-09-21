@@ -10,7 +10,11 @@ import {
   Minimize2,
   Smartphone,
   Tablet,
-  Monitor
+  Monitor,
+  Square,
+  Columns2,
+  Columns3,
+  Grid2X2
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -85,18 +89,25 @@ const ResponsiveLayout = ({
             <div className="flex items-center gap-4">
               {enableGridToggle && (
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium text-muted-foreground">Grid:</span>
+                  <span className="text-sm font-medium text-muted-foreground">Layout:</span>
                   <div className="flex bg-background rounded-lg p-1 border">
-                    {([1, 2, 3, 4] as GridSize[]).map((size) => (
+                    {[
+                      { size: 1 as GridSize, icon: Square, label: 'Single Column' },
+                      { size: 2 as GridSize, icon: Columns2, label: 'Two Columns' },
+                      { size: 3 as GridSize, icon: Columns3, label: 'Three Columns' },
+                      { size: 4 as GridSize, icon: Grid2X2, label: 'Four Columns' }
+                    ].map(({ size, icon: Icon, label }) => (
                       <Button
                         key={size}
                         variant={gridSize === size ? "secondary" : "ghost"}
                         size="sm"
                         onClick={() => setGridSize(size)}
-                        className="h-8 w-8 p-0"
+                        className="h-8 px-2 min-w-[2.5rem]"
                         disabled={isMobile && size > 1}
+                        title={label}
                       >
-                        {size}
+                        <Icon className="h-4 w-4" />
+                        <span className="ml-1 hidden lg:inline text-xs">{size}</span>
                       </Button>
                     ))}
                   </div>
@@ -130,7 +141,7 @@ const ResponsiveLayout = ({
 
             <div className="flex items-center gap-2">
               <Badge variant="outline" className="text-xs">
-                {gridSize} column{gridSize > 1 ? 's' : ''} • {devicePreview}
+                {gridSize === 1 ? 'Single' : gridSize === 2 ? 'Two' : gridSize === 3 ? 'Three' : 'Four'} column{gridSize > 1 ? 's' : ''} • {devicePreview}
               </Badge>
               
               <Button
