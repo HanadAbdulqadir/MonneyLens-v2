@@ -155,14 +155,14 @@ const PersonalizedOverview = () => {
               </span>
             </div>
             <p className="text-xs text-muted-foreground">vs last week</p>
-            <p className="text-xs font-medium">£{highlights.thisWeekSpending.toFixed(2)} spent</p>
+            <p className="text-xs font-medium">£{(highlights.thisWeekSpending || 0).toFixed(2)} spent</p>
           </div>
 
           {/* Biggest Expense */}
           <div className="text-center p-3 rounded-lg bg-muted/30">
             <Zap className="h-4 w-4 mx-auto mb-1 text-warning" />
             <p className="text-xs text-muted-foreground">Biggest expense</p>
-            <p className="font-bold text-sm">£{highlights.biggestExpense.amount.toFixed(2)}</p>
+            <p className="font-bold text-sm">£{(highlights.biggestExpense.amount || 0).toFixed(2)}</p>
             <p className="text-xs text-muted-foreground">{highlights.biggestExpense.category}</p>
           </div>
 
@@ -171,7 +171,7 @@ const PersonalizedOverview = () => {
             <Target className="h-4 w-4 mx-auto mb-1 text-primary" />
             <p className="text-xs text-muted-foreground">Top category</p>
             <p className="font-bold text-sm">{highlights.mostUsedCategory.category}</p>
-            <p className="text-xs text-muted-foreground">£{highlights.mostUsedCategory.amount.toFixed(2)}</p>
+            <p className="text-xs text-muted-foreground">£{(highlights.mostUsedCategory.amount || 0).toFixed(2)}</p>
           </div>
 
           {/* Net Worth */}
@@ -179,10 +179,10 @@ const PersonalizedOverview = () => {
             <Award className="h-4 w-4 mx-auto mb-1 text-success" />
             <p className="text-xs text-muted-foreground">Net worth</p>
             <p className={`font-bold text-sm ${monthlyStatus.netWorth >= 0 ? 'text-success' : 'text-destructive'}`}>
-              £{monthlyStatus.netWorth.toFixed(2)}
+              £{(monthlyStatus.netWorth || 0).toFixed(2)}
             </p>
             <p className="text-xs text-muted-foreground">
-              {monthlyStatus.totalDebt > 0 ? `£${monthlyStatus.totalDebt.toFixed(2)} debt` : 'Debt free!'}
+              {monthlyStatus.totalDebt > 0 ? `£${(monthlyStatus.totalDebt || 0).toFixed(2)} debt` : 'Debt free!'}
             </p>
           </div>
         </div>

@@ -15,7 +15,7 @@ const BalanceCard = () => {
         <div className="flex items-center justify-between mb-4">
           <div>
             <p className="text-primary-foreground/80 text-sm font-medium">Current Balance</p>
-            <h2 className="text-3xl font-bold">£{balance.toFixed(2)}</h2>
+            <h2 className="text-3xl font-bold">£{(balance || 0).toFixed(2)}</h2>
           </div>
           <div className="text-right">
             <div className={`flex items-center gap-1 ${isPositiveChange ? 'text-green-200' : 'text-red-200'}`}>
@@ -25,7 +25,7 @@ const BalanceCard = () => {
                 <TrendingDown className="h-4 w-4" />
               )}
               <span className="text-sm font-medium">
-                £{Math.abs(todaysData.netChange).toFixed(2)}
+                £{Math.abs(todaysData.netChange || 0).toFixed(2)}
               </span>
             </div>
             <p className="text-xs text-primary-foreground/60 mt-1">Today's change</p>
@@ -44,13 +44,13 @@ const BalanceCard = () => {
           <div className="text-center">
             <p className="text-xs text-primary-foreground/80">Expenses</p>
             <p className="font-semibold text-red-200">
-              -£{todaysData.expenses.toFixed(2)}
+              -£{(todaysData.expenses || 0).toFixed(2)}
             </p>
           </div>
           <div className="text-center">
             <p className="text-xs text-primary-foreground/80">Net</p>
             <p className={`font-semibold ${isPositiveChange ? 'text-green-200' : 'text-red-200'}`}>
-              {isPositiveChange ? '+' : ''}£{todaysData.netChange.toFixed(2)}
+              {isPositiveChange ? '+' : ''}£{(todaysData.netChange || 0).toFixed(2)}
             </p>
           </div>
         </div>

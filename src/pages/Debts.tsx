@@ -403,15 +403,15 @@ const Debts = () => {
                       <div className="flex-1 space-y-3">
                         <div className="flex justify-between items-center">
                           <span className="text-sm text-muted-foreground">Remaining</span>
-                          <span className="font-semibold text-lg text-destructive">£{debt.remainingAmount.toFixed(2)}</span>
+                          <span className="font-semibold text-lg text-destructive">£{(debt.remainingAmount || 0).toFixed(2)}</span>
                         </div>
                         <div className="flex justify-between items-center">
                           <span className="text-sm text-muted-foreground">Original</span>
-                          <span className="font-semibold text-lg">£{debt.totalAmount.toFixed(2)}</span>
+                          <span className="font-semibold text-lg">£{(debt.totalAmount || 0).toFixed(2)}</span>
                         </div>
                         <div className="flex justify-between items-center">
                           <span className="text-sm text-muted-foreground">Min Payment</span>
-                          <span className="font-semibold text-lg">£{debt.minimumPayment.toFixed(2)}</span>
+                          <span className="font-semibold text-lg">£{(debt.minimumPayment || 0).toFixed(2)}</span>
                         </div>
                       </div>
                     </div>
@@ -440,8 +440,8 @@ const Debts = () => {
                         className="h-3 transition-all duration-700 [&>div]:bg-success"
                       />
                       <div className="flex justify-between text-xs text-muted-foreground">
-                        <span>Paid: £{(debt.totalAmount - debt.remainingAmount).toFixed(0)}</span>
-                        <span>Remaining: £{debt.remainingAmount.toFixed(0)}</span>
+                        <span>Paid: £{((debt.totalAmount || 0) - (debt.remainingAmount || 0)).toFixed(0)}</span>
+                        <span>Remaining: £{(debt.remainingAmount || 0).toFixed(0)}</span>
                       </div>
                     </div>
                     
