@@ -38,8 +38,8 @@ MoneyLens is a comprehensive personal finance tracking application that helps yo
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/HanadAbdulqadir/lets-collaborate-it.git
-cd lets-collaborate-it
+git clone https://github.com/HanadAbdulqadir/MoneyLens.git
+cd MoneyLens
 ```
 
 2. Install dependencies:
