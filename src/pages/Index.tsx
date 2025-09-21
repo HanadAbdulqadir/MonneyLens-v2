@@ -18,10 +18,42 @@ import BudgetOverview from "@/components/BudgetOverview";
 import DataFilter from "@/components/DataFilter";
 import ResponsiveLayout, { ResponsiveGrid } from "@/components/ResponsiveLayout";
 import UpcomingRecurringWidget from "@/components/UpcomingRecurringWidget";
+import CommandPalette from "@/components/CommandPalette";
+import UnifiedToolbar from "@/components/UnifiedToolbar";
+import ContextualHelp from "@/components/ContextualHelp";
+import AccessibilityEnhancer from "@/components/AccessibilityEnhancer";
+import UserOnboarding from "@/components/UserOnboarding";
+import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
+import { useState } from "react";
 
 const Index = () => {
+  // Initialize keyboard shortcuts
+  useKeyboardShortcuts();
+  
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+  const [isAccessibilityOpen, setIsAccessibilityOpen] = useState(false);
+  const [isTourOpen, setIsTourOpen] = useState(false);
+
+  const handleCommandPaletteOpen = () => setIsCommandPaletteOpen(true);
+  const handleAccessibilityOpen = () => setIsAccessibilityOpen(true);
+  const handleTourOpen = () => setIsTourOpen(true);
+
   return (
     <div className="space-y-8 animate-fade-in">
+      {/* Unified System Components */}
+      <CommandPalette />
+      <ContextualHelp />
+      <UnifiedToolbar 
+        onCommandPaletteOpen={handleCommandPaletteOpen}
+        onAccessibilityOpen={handleAccessibilityOpen}
+        onTourOpen={handleTourOpen}
+      />
+      
+      {/* Legacy components - hidden but functional */}
+      <div className="hidden">
+        <AccessibilityEnhancer />
+        <UserOnboarding />
+      </div>
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -80,8 +112,10 @@ const Index = () => {
         <FinancialHealthScore />
       </div>
 
-      {/* Floating Action Buttons */}
-      <FloatingActionButtons />
+      {/* Floating Action Buttons - Replaced with UnifiedToolbar but kept for compatibility */}
+      <div className="hidden">
+        <FloatingActionButtons />
+      </div>
     </div>
   );
 };
