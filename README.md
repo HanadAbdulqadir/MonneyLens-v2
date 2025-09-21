@@ -17,6 +17,40 @@ MoneyLens is a comprehensive personal finance tracking application that helps yo
 - **Dark/Light Mode**: Toggle between themes for comfortable viewing
 - **Data Export/Import**: Backup and restore your financial data
 
+## Screenshots
+
+### Dashboard Overview
+<!-- Add screenshot: src/screenshots/dashboard.png -->
+![Dashboard](src/screenshots/dashboard.png)
+
+### Transactions Management
+<!-- Add screenshot: src/screenshots/transactions.png -->
+![Transactions](src/screenshots/transactions.png)
+
+### Budget Tracking
+<!-- Add screenshot: src/screenshots/budget.png -->
+![Budget](src/screenshots/budget.png)
+
+### Financial Goals
+<!-- Add screenshot: src/screenshots/goals.png -->
+![Goals](src/screenshots/goals.png)
+
+### Debt Management
+<!-- Add screenshot: src/screenshots/debts.png -->
+![Debts](src/screenshots/debts.png)
+
+### Analytics & Reports
+<!-- Add screenshot: src/screenshots/analytics.png -->
+![Analytics](src/screenshots/analytics.png)
+
+### Calendar View
+<!-- Add screenshot: src/screenshots/calendar.png -->
+![Calendar](src/screenshots/calendar.png)
+
+### Settings & Preferences
+<!-- Add screenshot: src/screenshots/settings.png -->
+![Settings](src/screenshots/settings.png)
+
 ## Technologies Used
 
 - **Frontend**: React 18, TypeScript, Vite
