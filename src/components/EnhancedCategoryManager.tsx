@@ -581,10 +581,10 @@ const EnhancedCategoryManager = () => {
               <span className="text-primary font-bold">#</span>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Active Categories</p>
-              <p className="text-2xl font-bold">{categoryStats.length + tags.length}</p>
+              <p className="text-sm text-muted-foreground">Your Categories</p>
+              <p className="text-2xl font-bold">{tags.length}</p>
               <p className="text-xs text-muted-foreground">
-                {tags.length} custom + {categoryStats.length} default
+                All custom categories
               </p>
             </div>
           </div>
@@ -622,16 +622,30 @@ const EnhancedCategoryManager = () => {
               </Card>
             </div>
 
-              {/* Custom Categories Section */}
-              {tags.length > 0 && (
-                <Card className="p-6">
-                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                    <Plus className="h-5 w-5 text-primary" />
-                    Your Custom Categories
-                  </h3>
+              {/* Your Categories Section */}
+              <Card className="p-6">
+                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  <Plus className="h-5 w-5 text-primary" />
+                  Your Categories
+                  {tags.length === 0 && (
+                    <Badge variant="outline" className="ml-2">
+                      Get started by adding categories
+                    </Badge>
+                  )}
+                </h3>
+                
+                {tags.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <div className="mb-4">
+                      <Plus className="h-12 w-12 mx-auto opacity-50" />
+                    </div>
+                    <p className="mb-2">No categories created yet</p>
+                    <p className="text-sm">Start by adding your first category using the "Add Category" button above</p>
+                  </div>
+                ) : (
                   <div className="grid gap-3">
                     {tags.map(tag => (
-                      <div key={tag.id} className="flex items-center gap-3 p-3 rounded-lg border bg-card">
+                      <div key={tag.id} className="flex items-center gap-3 p-3 rounded-lg border bg-card hover:bg-muted/50 transition-colors">
                         <div 
                           className="w-4 h-4 rounded-full border-2 border-white shadow-sm"
                           style={{ backgroundColor: tag.color }}
@@ -648,10 +662,10 @@ const EnhancedCategoryManager = () => {
                       </div>
                     ))}
                   </div>
-                </Card>
-              )}
+                )}
+              </Card>
 
-              {/* Category Details */}
+              {/* Category Usage Details */}
             <div className="space-y-4">
               <Card className="p-6">
                 <h3 className="text-lg font-semibold mb-4">Category Details</h3>
