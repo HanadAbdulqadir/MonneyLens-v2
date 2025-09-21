@@ -234,6 +234,49 @@ All colors MUST be HSL.
     background: var(--gradient-accent);
   }
   
+  /* Category color utilities */
+  .category-icon-bg {
+    @apply bg-primary/10 text-primary p-1 rounded;
+  }
+  
+  .category-primary {
+    color: hsl(var(--primary));
+    background-color: hsl(var(--primary) / 0.1);
+  }
+  
+  .category-success {
+    color: hsl(var(--success));
+    background-color: hsl(var(--success) / 0.1);
+  }
+  
+  .category-warning {
+    color: hsl(var(--warning));
+    background-color: hsl(var(--warning) / 0.1);
+  }
+  
+  .category-destructive {
+    color: hsl(var(--destructive));
+    background-color: hsl(var(--destructive) / 0.1);
+  }
+  
+  .category-accent {
+    color: hsl(var(--accent));
+    background-color: hsl(var(--accent) / 0.1);
+  }
+  
+  /* Chart color utilities */
+  .chart-color-1 { color: hsl(var(--chart-1)); }
+  .chart-color-2 { color: hsl(var(--chart-2)); }
+  .chart-color-3 { color: hsl(var(--chart-3)); }
+  .chart-color-4 { color: hsl(var(--chart-4)); }
+  .chart-color-5 { color: hsl(var(--chart-5)); }
+  
+  .chart-bg-1 { background-color: hsl(var(--chart-1) / 0.1); }
+  .chart-bg-2 { background-color: hsl(var(--chart-2) / 0.1); }
+  .chart-bg-3 { background-color: hsl(var(--chart-3) / 0.1); }
+  .chart-bg-4 { background-color: hsl(var(--chart-4) / 0.1); }
+  .chart-bg-5 { background-color: hsl(var(--chart-5) / 0.1); }
+  
   /* Animation utilities */
   .animate-fade-in {
     animation: fade-in 0.5s ease-out;

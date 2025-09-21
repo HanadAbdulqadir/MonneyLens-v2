@@ -259,9 +259,9 @@ const AdvancedAnalyticsDashboard = ({ className }: AdvancedAnalyticsDashboardPro
   const categoryChartData = Object.entries(analytics.categoryBreakdown).map(([name, value]) => ({
     name,
     value,
-    color: name === 'Food' ? '#f59e0b' : 
-           name === 'Petrol' ? '#3b82f6' : 
-           name === 'Other' ? '#8b5cf6' : '#6b7280'
+    color: name === 'Food' ? 'hsl(var(--chart-1))' : 
+           name === 'Petrol' ? 'hsl(var(--chart-2))' : 
+           name === 'Other' ? 'hsl(var(--chart-3))' : 'hsl(var(--chart-4))'
   }));
 
   const weeklyChartData = Object.entries(analytics.weeklyPattern).map(([day, data]) => ({

@@ -147,9 +147,9 @@ const UnifiedToolbar: React.FC<UnifiedToolbarProps> = () => {
                           <Icon className="h-4 w-4 flex-shrink-0" />
                           <span className="text-sm font-medium flex-1">{tool.label}</span>
                           {tool.shortcut && (
-                            <Badge variant="outline" className="text-[10px] px-1.5 py-0.5 ml-auto">
-                              {tool.shortcut}
-                            </Badge>
+                          <Badge variant="outline" className="text-xs px-1.5 py-0.5 ml-auto">
+                            {tool.shortcut}
+                          </Badge>
                           )}
                         </Button>
                       </TooltipTrigger>
@@ -186,7 +186,7 @@ const UnifiedToolbar: React.FC<UnifiedToolbarProps> = () => {
                               <Icon className="h-3.5 w-3.5" />
                               <span className="text-xs font-medium">{tool.label}</span>
                               {tool.shortcut && (
-                                <Badge variant="outline" className="text-[10px] px-1.5 py-0.5 ml-auto">
+                                <Badge variant="outline" className="text-xs px-1.5 py-0.5 ml-auto">
                                   {tool.shortcut}
                                 </Badge>
                               )}

@@ -134,18 +134,26 @@ const VisualizationPreferences = () => {
   const applyPreferencesToDocument = () => {
     const root = document.documentElement;
     
-    // Chart colors
+    // Use semantic chart colors from the theme by default
+    // This ensures consistency with the overall design system
+    const semanticChartColors = [
+      'hsl(var(--chart-1))',
+      'hsl(var(--chart-2))', 
+      'hsl(var(--chart-3))',
+      'hsl(var(--chart-4))',
+      'hsl(var(--chart-5))'
+    ];
+    
+    // Apply chart colors - prefer semantic colors unless custom is specifically set
     if (preferences.colorScheme === 'custom') {
       Object.entries(preferences.customColors).forEach(([key, color]) => {
         root.style.setProperty(`--chart-${key}`, color);
       });
     } else {
-      const theme = chartThemes.find(t => t.name.toLowerCase() === preferences.colorScheme);
-      if (theme) {
-        theme.colors.forEach((color, index) => {
-          root.style.setProperty(`--chart-${index + 1}`, color);
-        });
-      }
+      // Use semantic colors for consistency
+      semanticChartColors.forEach((color, index) => {
+        root.style.setProperty(`--chart-${index + 1}`, color);
+      });
     }
     
     // Animation settings

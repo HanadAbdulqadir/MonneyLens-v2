@@ -144,7 +144,7 @@ const Categories = () => {
                 className="flex items-center gap-4 p-4 rounded-lg border hover:bg-muted/50 transition-colors"
               >
                 <div 
-                  className="w-4 h-4 rounded-full border-2 border-white shadow-sm"
+                  className="w-4 h-4 rounded-full border-2 border-primary/20 shadow-sm"
                   style={{ backgroundColor: category.color }}
                 />
                 <div className="flex-1">

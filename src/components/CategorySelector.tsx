@@ -17,56 +17,56 @@ import {
   PiggyBank, Scissors, Dumbbell, Calendar
 } from "lucide-react";
 
-// Comprehensive default categories
+// Comprehensive default categories using semantic color tokens
 const defaultCategories = {
   income: [
-    { name: 'Salary', icon: 'DollarSign', color: '#10B981' },
-    { name: 'Freelance', icon: 'Briefcase', color: '#059669' },
-    { name: 'Business', icon: 'Building2', color: '#0891B2' },
-    { name: 'Investment', icon: 'TrendingUp', color: '#7C3AED' },
-    { name: 'Rental Income', icon: 'Home', color: '#DC2626' },
-    { name: 'Bonus', icon: 'Gift', color: '#F59E0B' },
+    { name: 'Salary', icon: 'DollarSign', color: 'hsl(var(--success))' },
+    { name: 'Freelance', icon: 'Briefcase', color: 'hsl(var(--success))' },
+    { name: 'Business', icon: 'Building2', color: 'hsl(var(--primary))' },
+    { name: 'Investment', icon: 'TrendingUp', color: 'hsl(var(--accent))' },
+    { name: 'Rental Income', icon: 'Home', color: 'hsl(var(--destructive))' },
+    { name: 'Bonus', icon: 'Gift', color: 'hsl(var(--warning))' },
   ],
   housing: [
-    { name: 'Rent', icon: 'Home', color: '#DC2626' },
-    { name: 'Utilities', icon: 'Zap', color: '#F59E0B' },
-    { name: 'Home Maintenance', icon: 'Wrench', color: '#8B5CF6' },
-    { name: 'Home Insurance', icon: 'Shield', color: '#3B82F6' },
+    { name: 'Rent', icon: 'Home', color: 'hsl(var(--destructive))' },
+    { name: 'Utilities', icon: 'Zap', color: 'hsl(var(--warning))' },
+    { name: 'Home Maintenance', icon: 'Wrench', color: 'hsl(var(--accent))' },
+    { name: 'Home Insurance', icon: 'Shield', color: 'hsl(var(--primary))' },
   ],
   food: [
-    { name: 'Groceries', icon: 'ShoppingCart', color: '#10B981' },
-    { name: 'Restaurants', icon: 'UtensilsCrossed', color: '#EF4444' },
-    { name: 'Coffee', icon: 'Coffee', color: '#92400E' },
-    { name: 'Takeout', icon: 'Truck', color: '#F97316' },
+    { name: 'Groceries', icon: 'ShoppingCart', color: 'hsl(var(--success))' },
+    { name: 'Restaurants', icon: 'UtensilsCrossed', color: 'hsl(var(--destructive))' },
+    { name: 'Coffee', icon: 'Coffee', color: 'hsl(var(--chart-4))' },
+    { name: 'Takeout', icon: 'Truck', color: 'hsl(var(--warning))' },
   ],
   transportation: [
-    { name: 'Gas', icon: 'Fuel', color: '#F59E0B' },
-    { name: 'Public Transport', icon: 'Train', color: '#3B82F6' },
-    { name: 'Car Payment', icon: 'Car', color: '#7C2D12' },
-    { name: 'Car Maintenance', icon: 'Settings', color: '#6B7280' },
+    { name: 'Gas', icon: 'Fuel', color: 'hsl(var(--warning))' },
+    { name: 'Public Transport', icon: 'Train', color: 'hsl(var(--primary))' },
+    { name: 'Car Payment', icon: 'Car', color: 'hsl(var(--chart-4))' },
+    { name: 'Car Maintenance', icon: 'Settings', color: 'hsl(var(--muted-foreground))' },
   ],
   health: [
-    { name: 'Medical', icon: 'Heart', color: '#EF4444' },
-    { name: 'Pharmacy', icon: 'Pill', color: '#10B981' },
-    { name: 'Dental', icon: 'Smile', color: '#3B82F6' },
+    { name: 'Medical', icon: 'Heart', color: 'hsl(var(--destructive))' },
+    { name: 'Pharmacy', icon: 'Pill', color: 'hsl(var(--success))' },
+    { name: 'Dental', icon: 'Smile', color: 'hsl(var(--primary))' },
   ],
   entertainment: [
-    { name: 'Movies', icon: 'Film', color: '#7C3AED' },
-    { name: 'Streaming', icon: 'Play', color: '#EF4444' },
-    { name: 'Games', icon: 'Gamepad2', color: '#10B981' },
-    { name: 'Books', icon: 'Book', color: '#0891B2' },
+    { name: 'Movies', icon: 'Film', color: 'hsl(var(--accent))' },
+    { name: 'Streaming', icon: 'Play', color: 'hsl(var(--destructive))' },
+    { name: 'Games', icon: 'Gamepad2', color: 'hsl(var(--success))' },
+    { name: 'Books', icon: 'Book', color: 'hsl(var(--primary))' },
   ],
   shopping: [
-    { name: 'Clothing', icon: 'Shirt', color: '#7C2D12' },
-    { name: 'Electronics', icon: 'Smartphone', color: '#6B7280' },
-    { name: 'Personal Care', icon: 'Sparkles', color: '#EC4899' },
+    { name: 'Clothing', icon: 'Shirt', color: 'hsl(var(--chart-4))' },
+    { name: 'Electronics', icon: 'Smartphone', color: 'hsl(var(--muted-foreground))' },
+    { name: 'Personal Care', icon: 'Sparkles', color: 'hsl(var(--accent))' },
   ],
   other: [
-    { name: 'Education', icon: 'GraduationCap', color: '#3B82F6' },
-    { name: 'Travel', icon: 'Plane', color: '#059669' },
-    { name: 'Gym', icon: 'Dumbbell', color: '#EF4444' },
-    { name: 'Subscriptions', icon: 'Calendar', color: '#8B5CF6' },
-    { name: 'Gifts', icon: 'Gift', color: '#F59E0B' },
+    { name: 'Education', icon: 'GraduationCap', color: 'hsl(var(--primary))' },
+    { name: 'Travel', icon: 'Plane', color: 'hsl(var(--success))' },
+    { name: 'Gym', icon: 'Dumbbell', color: 'hsl(var(--destructive))' },
+    { name: 'Subscriptions', icon: 'Calendar', color: 'hsl(var(--accent))' },
+    { name: 'Gifts', icon: 'Gift', color: 'hsl(var(--warning))' },
   ],
 };
 
@@ -91,7 +91,7 @@ export const CategorySelector: React.FC<CategorySelectorProps> = ({
   const [categories, setCategories] = useState<any[]>([]);
   const [showQuickAdd, setShowQuickAdd] = useState(false);
   const [customCategoryName, setCustomCategoryName] = useState('');
-  const [customCategoryColor, setCustomCategoryColor] = useState('#3B82F6');
+  const [customCategoryColor, setCustomCategoryColor] = useState('hsl(var(--primary))');
   const [customCategoryIcon, setCustomCategoryIcon] = useState('Plus');
   const { toast } = useToast();
 
@@ -159,7 +159,7 @@ export const CategorySelector: React.FC<CategorySelectorProps> = ({
       // Reset form
       const categoryName = customCategoryName.trim();
       setCustomCategoryName('');
-      setCustomCategoryColor('#3B82F6');
+      setCustomCategoryColor('hsl(var(--primary))');
       setCustomCategoryIcon('Plus');
       
       // Close dialog and show success
@@ -177,8 +177,16 @@ export const CategorySelector: React.FC<CategorySelectorProps> = ({
   };
 
   const colorOptions = [
-    '#3B82F6', '#EF4444', '#10B981', '#F59E0B', '#8B5CF6', 
-    '#EC4899', '#06B6D4', '#84CC16', '#F97316', '#6366F1'
+    { name: 'Primary', value: 'hsl(var(--primary))' },
+    { name: 'Destructive', value: 'hsl(var(--destructive))' },
+    { name: 'Success', value: 'hsl(var(--success))' },
+    { name: 'Warning', value: 'hsl(var(--warning))' },
+    { name: 'Accent', value: 'hsl(var(--accent))' },
+    { name: 'Chart 1', value: 'hsl(var(--chart-1))' },
+    { name: 'Chart 2', value: 'hsl(var(--chart-2))' },
+    { name: 'Chart 3', value: 'hsl(var(--chart-3))' },
+    { name: 'Chart 4', value: 'hsl(var(--chart-4))' },
+    { name: 'Chart 5', value: 'hsl(var(--chart-5))' },
   ];
 
   const allCategories = [
@@ -196,27 +204,27 @@ export const CategorySelector: React.FC<CategorySelectorProps> = ({
           <SelectValue placeholder="Select category" />
         </SelectTrigger>
         <SelectContent>
-          {allCategories.map((category) => {
-            const IconComponent = iconMap[category.icon] || Plus;
-            return (
-              <SelectItem key={category.name} value={category.name}>
-                <div className="flex items-center gap-2">
-                  <div 
-                    className="p-1 rounded"
-                    style={{ backgroundColor: `${category.color}20`, color: category.color }}
-                  >
-                    <IconComponent className="h-3 w-3" />
+            {allCategories.map((category) => {
+              const IconComponent = iconMap[category.icon] || Plus;
+              return (
+                <SelectItem key={category.name} value={category.name}>
+                  <div className="flex items-center gap-2">
+                    <div 
+                      className="p-1 rounded bg-primary/10 text-primary"
+                      style={{ backgroundColor: `${category.color}20`, color: category.color }}
+                    >
+                      <IconComponent className="h-3 w-3" />
+                    </div>
+                    <span>{category.name}</span>
+                    {category.isCustom && (
+                      <Badge variant="outline" className="text-xs ml-auto">
+                        Custom
+                      </Badge>
+                    )}
                   </div>
-                  <span>{category.name}</span>
-                  {category.isCustom && (
-                    <Badge variant="outline" className="text-xs ml-auto">
-                      Custom
-                    </Badge>
-                  )}
-                </div>
-              </SelectItem>
-            );
-          })}
+                </SelectItem>
+              );
+            })}
         </SelectContent>
       </Select>
 
@@ -259,7 +267,7 @@ export const CategorySelector: React.FC<CategorySelectorProps> = ({
                             disabled={isAdded}
                           >
                             <div 
-                              className="p-1 rounded"
+                              className="p-1 rounded bg-primary/10 text-primary"
                               style={{ backgroundColor: `${category.color}20`, color: category.color }}
                             >
                               <IconComponent className="h-3 w-3" />
@@ -289,15 +297,16 @@ export const CategorySelector: React.FC<CategorySelectorProps> = ({
                   <div>
                     <Label>Category Color</Label>
                     <div className="flex gap-2 flex-wrap mt-2">
-                      {colorOptions.map((color) => (
+                      {colorOptions.map((colorOption) => (
                         <button
-                          key={color}
+                          key={colorOption.name}
                           type="button"
-                          className={`w-8 h-8 rounded-full border-2 ${
-                            customCategoryColor === color ? 'border-foreground' : 'border-muted'
+                          className={`w-8 h-8 rounded-full border-2 transition-all ${
+                            customCategoryColor === colorOption.value ? 'border-foreground scale-110' : 'border-muted hover:border-border'
                           }`}
-                          style={{ backgroundColor: color }}
-                          onClick={() => setCustomCategoryColor(color)}
+                          style={{ backgroundColor: colorOption.value }}
+                          onClick={() => setCustomCategoryColor(colorOption.value)}
+                          title={colorOption.name}
                         />
                       ))}
                     </div>

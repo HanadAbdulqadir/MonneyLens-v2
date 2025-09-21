@@ -282,7 +282,7 @@ const Budget = () => {
           <p className="font-medium text-sm mb-2">{label}</p>
           <div className="space-y-1 text-xs">
             {payload.map((entry: any, index: number) => (
-              <p key={index} className="flex justify-between" style={{ color: entry.color }}>
+              <p key={index} className="flex justify-between text-foreground">
                 <span>{entry.dataKey === 'spent' ? 'Spent:' : 
                        entry.dataKey === 'predicted' ? 'Predicted:' : 
                        entry.dataKey === 'budget' ? 'Budget:' : 'Remaining:'}</span>
