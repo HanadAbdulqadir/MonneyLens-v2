@@ -247,7 +247,7 @@ const UserOnboarding = () => {
         variant="ghost"
         size="sm"
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-20 left-16 z-40 gap-1 bg-background/95 backdrop-blur-sm border shadow-lg h-10 px-3 rounded-full text-xs"
+        className="fixed bottom-4 left-80 z-40 gap-1 bg-background/95 backdrop-blur-sm border shadow-lg h-10 px-3 rounded-full text-xs"
         title="Take the tour again"
       >
         <Play className="h-3 w-3" />

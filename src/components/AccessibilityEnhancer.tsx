@@ -161,7 +161,7 @@ const AccessibilityEnhancer = () => {
         <DialogTrigger asChild>
           <Button
             size="sm"
-            className="fixed bottom-20 left-4 z-50 shadow-lg rounded-full w-10 h-10 p-0 bg-background/95 backdrop-blur-sm border"
+            className="fixed bottom-4 left-64 z-50 shadow-lg rounded-full w-10 h-10 p-0 bg-background/95 backdrop-blur-sm border"
             aria-label="Open accessibility settings"
             title="Accessibility Settings (Alt+A)"
           >
