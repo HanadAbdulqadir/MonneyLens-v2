@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import ThemeToggle from "@/components/ThemeToggle";
 import CurrencySelector from "@/components/CurrencySelector";
 import ThemePreferences from "@/components/ThemePreferences";
+import OfflineSupport from "@/components/OfflineSupport";
 
 const Settings = () => {
   const { monthlyStartingPoint, setMonthlyStartingPoint, dailyData, transactions, currency } = useFinancial();
@@ -327,6 +328,9 @@ const Settings = () => {
 
       {/* Theme & Appearance */}
       <ThemePreferences />
+
+      {/* Offline Support */}
+      <OfflineSupport />
     </div>
   );
 };
