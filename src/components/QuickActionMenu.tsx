@@ -45,21 +45,21 @@ const QuickActionMenu = ({
     onView?.(transaction);
   };
 
-  const iconSize = size === "sm" ? "h-3 w-3" : size === "md" ? "h-4 w-4" : "h-5 w-5";
-  const buttonSize = size === "sm" ? "h-6 w-6 p-0" : size === "md" ? "h-8 w-8 p-0" : "h-10 w-10 p-0";
+  const iconSize = "h-3 w-3"; // Always use smallest size
+  const buttonSize = "h-5 w-5 p-0"; // Much smaller button
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button 
           variant="ghost" 
-          className={`${buttonSize} opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-accent/50`}
+          className={`${buttonSize} opacity-0 group-hover:opacity-75 transition-all duration-150 hover:bg-accent/30 rounded-sm`}
           onClick={(e) => e.stopPropagation()}
         >
           <MoreHorizontal className={iconSize} />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-48">
+      <DropdownMenuContent align="end" className="w-40 text-xs">
         {onView && (
           <DropdownMenuItem onClick={handleView} className="cursor-pointer">
             <Eye className="mr-2 h-4 w-4" />

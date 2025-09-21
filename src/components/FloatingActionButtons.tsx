@@ -63,11 +63,11 @@ const FloatingActionButtons = () => {
 
   return (
     <TooltipProvider>
-      <div className="fixed bottom-6 right-6 z-50">
-        <div className="flex flex-col items-end gap-3">
+      <div className="fixed bottom-4 right-4 z-50">
+        <div className="flex flex-col items-end gap-2">
           {/* Quick Action Buttons */}
           {isExpanded && (
-            <div className="flex flex-col gap-2 animate-fade-in">
+            <div className="flex flex-col gap-1.5 animate-fade-in">
               {quickActions.map((action, index) => {
                 const Icon = action.icon;
                 return (
@@ -75,18 +75,18 @@ const FloatingActionButtons = () => {
                     <TooltipTrigger asChild>
                       <Button
                         size="sm"
-                        className={`h-12 w-12 rounded-full shadow-lg text-white transition-all duration-200 hover:scale-110 animate-scale-in ${action.color}`}
-                        style={{ animationDelay: `${index * 50}ms` }}
+                        className={`h-8 w-8 rounded-full shadow-md text-white transition-all duration-200 hover:scale-105 animate-scale-in ${action.color}`}
+                        style={{ animationDelay: `${index * 30}ms` }}
                         onClick={() => {
                           action.action();
                           setIsExpanded(false);
                         }}
                       >
-                        <Icon className="h-5 w-5" />
+                        <Icon className="h-3.5 w-3.5" />
                       </Button>
                     </TooltipTrigger>
-                    <TooltipContent side="left" className="bg-card border">
-                      <p className="text-sm font-medium">{action.label}</p>
+                    <TooltipContent side="left" className="bg-card border text-xs">
+                      <p className="font-medium">{action.label}</p>
                     </TooltipContent>
                   </Tooltip>
                 );
@@ -98,17 +98,17 @@ const FloatingActionButtons = () => {
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                size="lg"
-                className={`h-14 w-14 rounded-full shadow-xl bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground transition-all duration-300 hover:scale-110 ${
+                size="sm"
+                className={`h-10 w-10 rounded-full shadow-lg bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground transition-all duration-300 hover:scale-105 ${
                   isExpanded ? 'rotate-45' : 'rotate-0'
                 }`}
                 onClick={() => setIsExpanded(!isExpanded)}
               >
-                <Plus className="h-6 w-6" />
+                <Plus className="h-4 w-4" />
               </Button>
             </TooltipTrigger>
-            <TooltipContent side="left" className="bg-card border">
-              <p className="text-sm font-medium">
+            <TooltipContent side="left" className="bg-card border text-xs">
+              <p className="font-medium">
                 {isExpanded ? 'Close menu' : 'Quick actions'}
               </p>
             </TooltipContent>

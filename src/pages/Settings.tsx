@@ -110,9 +110,9 @@ const Settings = () => {
   };
 
   return (
-      <div className="space-y-6 animate-fade-in max-w-4xl">
+    <div className="space-y-6 animate-fade-in max-w-4xl mx-auto px-4">
       <div className="flex items-center justify-between">
-        <div>
+        <div className="space-y-1">
           <h1 className="text-3xl font-bold tracking-tight">
             {userName ? `Settings - ${userName}` : 'Settings'}
           </h1>
@@ -134,9 +134,9 @@ const Settings = () => {
         
         <div className="space-y-6">
           {/* User Name */}
-          <div>
+          <div className="space-y-2">
             <Label htmlFor="user-name">Display Name</Label>
-            <div className="flex gap-3 mt-2">
+            <div className="flex gap-3">
               <Input
                 id="user-name"
                 type="text"
@@ -149,11 +149,12 @@ const Settings = () => {
               <Button 
                 onClick={handleUpdateUserName}
                 disabled={tempUserName === userName}
+                size="sm"
               >
                 {userName ? 'Update' : 'Save'}
               </Button>
             </div>
-            <p className="text-sm text-muted-foreground mt-2">
+            <p className="text-sm text-muted-foreground">
               {userName ? 
                 `Currently set to: ${userName}. This name will appear throughout the app.` :
                 'Set a display name to personalize your experience.'
@@ -163,9 +164,9 @@ const Settings = () => {
 
           <Separator />
 
-          <div>
+          <div className="space-y-2">
             <Label htmlFor="starting-balance">Monthly Starting Balance ({currency})</Label>
-            <div className="flex gap-3 mt-2">
+            <div className="flex gap-3">
               <Input
                 id="starting-balance"
                 type="number"
@@ -174,21 +175,21 @@ const Settings = () => {
                 onChange={(e) => setStartingPoint(e.target.value)}
                 className="flex-1"
               />
-              <Button onClick={handleUpdateStartingPoint}>
+              <Button onClick={handleUpdateStartingPoint} size="sm">
                 Update
               </Button>
             </div>
-            <p className="text-sm text-muted-foreground mt-2">
+            <p className="text-sm text-muted-foreground">
               This will recalculate all your balances based on the new starting point.
             </p>
           </div>
 
           <Separator />
 
-          <div>
-            <Label className="text-sm font-medium mb-3 block">Currency</Label>
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Currency</Label>
             <CurrencySelector />
-            <p className="text-sm text-muted-foreground mt-2">
+            <p className="text-sm text-muted-foreground">
               Change the currency symbol used throughout the app.
             </p>
           </div>
