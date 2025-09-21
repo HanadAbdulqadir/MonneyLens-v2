@@ -11,7 +11,6 @@ import {
   HelpCircle,
   Minimize2,
   Maximize2,
-  X,
   Keyboard,
   Zap
 } from "lucide-react";
@@ -34,9 +33,6 @@ const UnifiedToolbar: React.FC<UnifiedToolbarProps> = ({
   onTourOpen
 }) => {
   const [isMinimized, setIsMinimized] = useState(false);
-  const [isVisible, setIsVisible] = useState(true);
-
-  if (!isVisible) return null;
 
   const tools = [
     {
@@ -94,28 +90,18 @@ const UnifiedToolbar: React.FC<UnifiedToolbarProps> = ({
                 </>
               )}
             </div>
-            <div className="flex items-center gap-1">
-              <Button
-                size="sm"
-                variant="ghost"
-                className="h-5 w-5 p-0 hover:bg-muted"
-                onClick={() => setIsMinimized(!isMinimized)}
-              >
-                {isMinimized ? (
-                  <Maximize2 className="h-2.5 w-2.5" />
-                ) : (
-                  <Minimize2 className="h-2.5 w-2.5" />
-                )}
-              </Button>
-              <Button
-                size="sm"
-                variant="ghost"
-                className="h-5 w-5 p-0 hover:bg-destructive/20 text-destructive"
-                onClick={() => setIsVisible(false)}
-              >
-                <X className="h-2.5 w-2.5" />
-              </Button>
-            </div>
+            <Button
+              size="sm"
+              variant="ghost"
+              className="h-5 w-5 p-0 hover:bg-muted"
+              onClick={() => setIsMinimized(!isMinimized)}
+            >
+              {isMinimized ? (
+                <Maximize2 className="h-2.5 w-2.5" />
+              ) : (
+                <Minimize2 className="h-2.5 w-2.5" />
+              )}
+            </Button>
           </div>
 
           {/* Toolbar Content */}
