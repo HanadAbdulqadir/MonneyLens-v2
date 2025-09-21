@@ -400,15 +400,66 @@ const EnhancedCategoryManager = () => {
         </div>
 
         <div className="flex gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setShowBudgetDialog(true)}
-            className="gap-2"
-          >
-            <Target className="h-4 w-4" />
-            Budgets
-          </Button>
+          <Dialog open={showBudgetDialog} onOpenChange={setShowBudgetDialog}>
+            <DialogContent className="max-w-2xl">
+              <DialogHeader>
+                <DialogTitle>Budget Management</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div className="text-sm text-muted-foreground">
+                  Set monthly spending limits for your categories to track your budget performance.
+                </div>
+                
+                {/* Budget Summary */}
+                <div className="grid gap-4 md:grid-cols-2">
+                  <Card className="p-4">
+                    <div className="flex items-center gap-2">
+                      <Target className="h-5 w-5 text-primary" />
+                      <h4 className="font-semibold">Budget Overview</h4>
+                    </div>
+                    <div className="mt-2 space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span>Total Budget:</span>
+                        <span className="font-medium">
+                          £{categoryBudgets.reduce((sum, b) => sum + b.monthlyLimit, 0).toFixed(2)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span>Total Spent:</span>
+                        <span className="font-medium">£{totalExpenses.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span>Remaining:</span>
+                        <span className={`font-medium ${
+                          (categoryBudgets.reduce((sum, b) => sum + b.monthlyLimit, 0) - totalExpenses) >= 0 
+                            ? 'text-success' : 'text-destructive'
+                        }`}>
+                          £{(categoryBudgets.reduce((sum, b) => sum + b.monthlyLimit, 0) - totalExpenses).toFixed(2)}
+                        </span>
+                      </div>
+                    </div>
+                  </Card>
+                  
+                  <Card className="p-4">
+                    <div className="flex items-center gap-2">
+                      <AlertTriangle className="h-5 w-5 text-warning" />
+                      <h4 className="font-semibold">Budget Alerts</h4>
+                    </div>
+                    <div className="mt-2 text-sm text-muted-foreground">
+                      {budgetChartData.filter(cat => cat.status !== 'safe').length} categories 
+                      need attention this month.
+                    </div>
+                  </Card>
+                </div>
+                
+                <div className="flex justify-end">
+                  <Button variant="outline" onClick={() => setShowBudgetDialog(false)}>
+                    Close
+                  </Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
           
           <Dialog open={newCategoryDialog} onOpenChange={setNewCategoryDialog}>
             <DialogTrigger asChild>
@@ -531,7 +582,10 @@ const EnhancedCategoryManager = () => {
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Active Categories</p>
-              <p className="text-2xl font-bold">{categoryStats.length}</p>
+              <p className="text-2xl font-bold">{categoryStats.length + tags.length}</p>
+              <p className="text-xs text-muted-foreground">
+                {tags.length} custom + {categoryStats.length} default
+              </p>
             </div>
           </div>
         </Card>
@@ -568,7 +622,36 @@ const EnhancedCategoryManager = () => {
               </Card>
             </div>
 
-            {/* Category Details */}
+              {/* Custom Categories Section */}
+              {tags.length > 0 && (
+                <Card className="p-6">
+                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <Plus className="h-5 w-5 text-primary" />
+                    Your Custom Categories
+                  </h3>
+                  <div className="grid gap-3">
+                    {tags.map(tag => (
+                      <div key={tag.id} className="flex items-center gap-3 p-3 rounded-lg border bg-card">
+                        <div 
+                          className="w-4 h-4 rounded-full border-2 border-white shadow-sm"
+                          style={{ backgroundColor: tag.color }}
+                        />
+                        <div className="flex-1">
+                          <p className="font-medium">{tag.name}</p>
+                          <p className="text-xs text-muted-foreground">
+                            Created {new Date(tag.created_at).toLocaleDateString()}
+                          </p>
+                        </div>
+                        <Badge variant="secondary" className="text-xs">
+                          Custom
+                        </Badge>
+                      </div>
+                    ))}
+                  </div>
+                </Card>
+              )}
+
+              {/* Category Details */}
             <div className="space-y-4">
               <Card className="p-6">
                 <h3 className="text-lg font-semibold mb-4">Category Details</h3>
