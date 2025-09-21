@@ -30,7 +30,7 @@ const FinancialHealthScore = () => {
     }
 
     // Debt Management Factor (25 points)
-    const activeDebts = debts.filter(d => d.isActive);
+    const activeDebts = debts.filter(d => d.remainingAmount > 0);
     const totalDebt = activeDebts.reduce((sum, d) => sum + d.remainingAmount, 0);
     const debtToIncomeRatio = totalDebt / Math.max(currentBalance, 1);
 

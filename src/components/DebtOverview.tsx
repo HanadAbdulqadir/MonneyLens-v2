@@ -10,7 +10,7 @@ const DebtOverview = () => {
   const { debts } = useFinancial();
   const navigate = useNavigate();
 
-  const activeDebts = debts.filter(d => d.isActive);
+  const activeDebts = debts.filter(d => d.remainingAmount > 0);
   const totalDebt = activeDebts.reduce((sum, d) => sum + d.remainingAmount, 0);
   const totalOriginalDebt = activeDebts.reduce((sum, d) => sum + d.totalAmount, 0);
   const totalProgress = totalOriginalDebt > 0 ? ((totalOriginalDebt - totalDebt) / totalOriginalDebt) * 100 : 0;
@@ -122,7 +122,7 @@ const DebtOverview = () => {
                 <div className="flex justify-between items-start mb-2">
                   <div className="flex-1">
                     <p className="font-medium text-sm">{debt.name}</p>
-                    <p className="text-xs text-muted-foreground">{debt.category}</p>
+                    <p className="text-xs text-muted-foreground">Debt</p>
                   </div>
                   <div className="text-right">
                     <p className="font-bold text-sm text-destructive">£{debt.remainingAmount.toFixed(0)}</p>

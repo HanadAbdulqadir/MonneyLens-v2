@@ -109,7 +109,7 @@ const PersonalizedOverview = () => {
 
   const getMonthlyStatus = () => {
     const currentBalance = getCurrentBalance();
-    const totalDebt = debts.filter(d => d.isActive).reduce((sum, d) => sum + d.remainingAmount, 0);
+    const totalDebt = debts.filter(d => d.remainingAmount > 0).reduce((sum, d) => sum + d.remainingAmount, 0);
     const netWorth = currentBalance - totalDebt;
     
     return {

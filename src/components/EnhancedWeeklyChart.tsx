@@ -54,10 +54,7 @@ const EnhancedWeeklyChart = () => {
         balance: entry.balance,
         netChange: entry.netChange,
         earnings: entry.earnings,
-        expenses: entry.petrol + entry.food + entry.other,
-        petrol: entry.petrol,
-        food: entry.food,
-        other: entry.other,
+        expenses: entry.expenses,
         // Moving averages
         balanceMA: entry.balance, // Could calculate 7-day moving average
         trend: entry.netChange > 0 ? 'positive' : entry.netChange < 0 ? 'negative' : 'neutral'

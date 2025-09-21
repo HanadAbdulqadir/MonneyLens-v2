@@ -11,7 +11,7 @@ const WeeklyChart = () => {
     balance: entry.balance,
     netChange: entry.netChange,
     earnings: entry.earnings,
-    expenses: entry.petrol + entry.food + entry.other
+    expenses: entry.expenses
   }));
 
   const CustomTooltip = ({ active, payload, label }: any) => {

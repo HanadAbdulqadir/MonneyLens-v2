@@ -68,8 +68,8 @@ const QuickInsightsGrid = () => {
       : 0;
 
     // Debt info
-    const totalDebt = debts.filter(d => d.isActive).reduce((sum, d) => sum + d.remainingAmount, 0);
-    const monthlyDebtPayments = debts.filter(d => d.isActive).reduce((sum, d) => sum + d.minimumPayment, 0);
+    const totalDebt = debts.filter(d => d.remainingAmount > 0).reduce((sum, d) => sum + d.remainingAmount, 0);
+    const monthlyDebtPayments = debts.filter(d => d.remainingAmount > 0).reduce((sum, d) => sum + d.minimumPayment, 0);
 
     // Savings rate
     const savingsRate = currentIncome > 0 ? ((currentIncome - currentExpenses) / currentIncome) * 100 : 0;

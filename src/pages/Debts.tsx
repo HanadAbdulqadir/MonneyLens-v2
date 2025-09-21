@@ -96,7 +96,7 @@ const Debts = () => {
     addDebtPayment(debtId, {
       amount,
       date: today,
-      type
+      notes: `Payment of £${amount.toFixed(2)}`
     });
     
     toast({
@@ -131,8 +131,8 @@ const Debts = () => {
     return { strokeDasharray, strokeDashoffset };
   };
 
-  const activeDebts = debts.filter(d => d.isActive);
-  const paidOffDebts = debts.filter(d => !d.isActive);
+  const activeDebts = debts.filter(d => d.remainingAmount > 0);
+  const paidOffDebts = debts.filter(d => d.remainingAmount <= 0);
   const totalDebt = activeDebts.reduce((sum, d) => sum + d.remainingAmount, 0);
   const totalOriginalDebt = debts.reduce((sum, d) => sum + d.totalAmount, 0);
   const totalPaidOff = totalOriginalDebt - totalDebt;
@@ -348,7 +348,7 @@ const Debts = () => {
                         <h3 className="font-bold text-xl mb-2">{debt.name}</h3>
                         <div className="flex items-center gap-2 mb-3">
                           <Badge variant="outline" className="text-xs">
-                            {debt.category}
+                            Debt
                           </Badge>
                           {isOverdue && <Badge variant="destructive" className="text-xs">Overdue</Badge>}
                           {isUrgent && !isOverdue && <Badge variant="secondary" className="text-xs bg-warning/20 text-warning">Due Soon</Badge>}
@@ -513,7 +513,7 @@ const Debts = () => {
                   <div>
                     <h3 className="font-semibold">{debt.name}</h3>
                     <Badge variant="secondary" className="mt-1 bg-success/20 text-success text-xs">
-                      {debt.category} - Paid Off
+                      Paid Off
                     </Badge>
                   </div>
                   <Button variant="ghost" size="sm" onClick={() => handleDelete(debt.id)} className="text-destructive">

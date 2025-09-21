@@ -106,7 +106,7 @@ const RecentActivityFeed = () => {
             activities.push({
               id: `debt-payment-${debt.id}-${payment.id}`,
               type: 'debt',
-              title: payment.type === 'minimum' ? 'Minimum Payment Made' : 'Extra Payment Made',
+              title: 'Payment Made',
               description: `£${payment.amount.toFixed(2)} paid toward ${debt.name}`,
               amount: payment.amount,
               date: payment.date,

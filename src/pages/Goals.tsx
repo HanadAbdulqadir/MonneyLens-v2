@@ -38,10 +38,11 @@ const Goals = () => {
     }
 
     const goalData = {
-      name: formData.name,
+      title: formData.name,
+      name: formData.name, // Alias for backward compatibility
       targetAmount: parseFloat(formData.targetAmount),
       currentAmount: parseFloat(formData.currentAmount) || 0,
-      deadline: formData.deadline,
+      targetDate: formData.deadline,
       category: formData.category,
       isCompleted: false
     };
@@ -67,10 +68,10 @@ const Goals = () => {
 
   const handleEdit = (goal: any) => {
     setFormData({
-      name: goal.name,
+      name: goal.title,
       targetAmount: goal.targetAmount.toString(),
       currentAmount: goal.currentAmount.toString(),
-      deadline: goal.deadline,
+      deadline: goal.targetDate,
       category: goal.category
     });
     setEditingGoal(goal.id);
@@ -95,7 +96,7 @@ const Goals = () => {
       if (isCompleted && !goal.isCompleted) {
         toast({
           title: "🎉 Goal Completed!",
-          description: `Congratulations! You've reached your goal: ${goal.name}`
+          description: `Congratulations! You've reached your goal: ${goal.title}`
         });
       }
     }
@@ -332,7 +333,7 @@ const Goals = () => {
                     {/* Header */}
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <h3 className="font-bold text-xl mb-2">{goal.name}</h3>
+                        <h3 className="font-bold text-xl mb-2">{goal.title}</h3>
                         <div className="flex items-center gap-2 mb-3">
                           <Badge variant="outline" className="text-xs">
                             {goal.category}

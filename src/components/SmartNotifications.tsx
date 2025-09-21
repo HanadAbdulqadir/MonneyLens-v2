@@ -86,7 +86,7 @@ const SmartNotifications = () => {
 
     // Debt Notifications
     debts.forEach(debt => {
-      if (!debt.isActive) return;
+      if (debt.remainingAmount <= 0) return;
       
       const dueDate = new Date(debt.dueDate);
       const daysUntilDue = Math.ceil((dueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));

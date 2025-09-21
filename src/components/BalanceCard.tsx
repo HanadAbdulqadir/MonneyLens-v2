@@ -44,7 +44,7 @@ const BalanceCard = () => {
           <div className="text-center">
             <p className="text-xs text-primary-foreground/80">Expenses</p>
             <p className="font-semibold text-red-200">
-              -£{(todaysData.petrol + todaysData.food + todaysData.other).toFixed(2)}
+              -£{todaysData.expenses.toFixed(2)}
             </p>
           </div>
           <div className="text-center">
