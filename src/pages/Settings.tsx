@@ -73,7 +73,7 @@ const Settings = () => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `pots-financial-data-${new Date().toISOString().split('T')[0]}.json`;
+    a.download = `moneylens-financial-data-${new Date().toISOString().split('T')[0]}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -86,8 +86,8 @@ const Settings = () => {
   };
 
   const clearAllData = () => {
-    localStorage.removeItem('potsFinancialData');
-    localStorage.removeItem('potsStartingPoint');
+    localStorage.removeItem('moneylensFinancialData');
+    localStorage.removeItem('moneylensStartingPoint');
     
     toast({
       title: "Data Cleared",

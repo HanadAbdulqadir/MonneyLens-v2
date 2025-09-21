@@ -47,7 +47,7 @@ const UserOnboarding = () => {
   const steps: OnboardingStep[] = [
     {
       id: 'welcome',
-      title: 'Welcome to Pots! 👋',
+      title: 'Welcome to MoneyLens! 👋',
       description: 'Your personal finance tracker that makes money management simple and insightful.',
       component: (
         <div className="text-center space-y-4">
@@ -57,7 +57,7 @@ const UserOnboarding = () => {
           <div className="space-y-2">
             <h3 className="text-lg font-semibold">Let's get you started!</h3>
             <p className="text-sm text-muted-foreground">
-              This quick tour will help you understand the key features and get the most out of Pots.
+              This quick tour will help you understand the key features and get the most out of MoneyLens.
             </p>
           </div>
           <div className="grid grid-cols-3 gap-4 text-xs">

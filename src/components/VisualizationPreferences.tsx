@@ -202,7 +202,7 @@ const VisualizationPreferences = () => {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `pots-viz-preferences-${new Date().toISOString().split('T')[0]}.json`;
+    link.download = `moneylens-viz-preferences-${new Date().toISOString().split('T')[0]}.json`;
     link.click();
     URL.revokeObjectURL(url);
     

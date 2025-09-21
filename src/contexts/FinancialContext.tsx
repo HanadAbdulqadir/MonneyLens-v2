@@ -104,14 +104,14 @@ export function FinancialProvider({ children }: { children: React.ReactNode }) {
 
   // Load data from localStorage on mount
   useEffect(() => {
-    const savedData = localStorage.getItem('potsFinancialData');
-    const savedStartingPoint = localStorage.getItem('potsStartingPoint');
-    const savedRecurring = localStorage.getItem('potsRecurringTransactions');
-    const savedGoals = localStorage.getItem('potsGoals');
-    const savedDebts = localStorage.getItem('potsDebts');
-    const savedTags = localStorage.getItem('potsTags');
-    const savedCurrency = localStorage.getItem('potsCurrency');
-    const savedTheme = localStorage.getItem('potsTheme');
+    const savedData = localStorage.getItem('moneylensFinancialData');
+    const savedStartingPoint = localStorage.getItem('moneylensStartingPoint');
+    const savedRecurring = localStorage.getItem('moneylensRecurringTransactions');
+    const savedGoals = localStorage.getItem('moneylensGoals');
+    const savedDebts = localStorage.getItem('moneylensDebts');
+    const savedTags = localStorage.getItem('moneylensTags');
+    const savedCurrency = localStorage.getItem('moneylensCurrency');
+    const savedTheme = localStorage.getItem('moneylensTheme');
     
     if (savedData) {
       const parsed = JSON.parse(savedData);
@@ -152,35 +152,35 @@ export function FinancialProvider({ children }: { children: React.ReactNode }) {
 
   // Save data to localStorage whenever it changes
   useEffect(() => {
-    localStorage.setItem('potsFinancialData', JSON.stringify({ dailyData, transactions }));
+    localStorage.setItem('moneylensFinancialData', JSON.stringify({ dailyData, transactions }));
   }, [dailyData, transactions]);
 
   useEffect(() => {
-    localStorage.setItem('potsStartingPoint', monthlyStartingPoint.toString());
+    localStorage.setItem('moneylensStartingPoint', monthlyStartingPoint.toString());
   }, [monthlyStartingPoint]);
 
   useEffect(() => {
-    localStorage.setItem('potsRecurringTransactions', JSON.stringify(recurringTransactions));
+    localStorage.setItem('moneylensRecurringTransactions', JSON.stringify(recurringTransactions));
   }, [recurringTransactions]);
 
   useEffect(() => {
-    localStorage.setItem('potsGoals', JSON.stringify(goals));
+    localStorage.setItem('moneylensGoals', JSON.stringify(goals));
   }, [goals]);
 
   useEffect(() => {
-    localStorage.setItem('potsDebts', JSON.stringify(debts));
+    localStorage.setItem('moneylensDebts', JSON.stringify(debts));
   }, [debts]);
 
   useEffect(() => {
-    localStorage.setItem('potsTags', JSON.stringify(tags));
+    localStorage.setItem('moneylensTags', JSON.stringify(tags));
   }, [tags]);
 
   useEffect(() => {
-    localStorage.setItem('potsCurrency', currency);
+    localStorage.setItem('moneylensCurrency', currency);
   }, [currency]);
 
   useEffect(() => {
-    localStorage.setItem('potsTheme', isDarkMode ? 'dark' : 'light');
+    localStorage.setItem('moneylensTheme', isDarkMode ? 'dark' : 'light');
     document.documentElement.classList.toggle('dark', isDarkMode);
   }, [isDarkMode]);
 

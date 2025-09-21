@@ -1,73 +1,102 @@
-# Welcome to your Lovable project
+# MoneyLens - Financial Tracker
 
-## Project info
+MoneyLens is a comprehensive personal finance tracking application that helps you manage your earnings, expenses, budgets, and financial goals with powerful analytics and insights.
 
-**URL**: https://lovable.dev/projects/1c58fc65-d718-407c-81bf-3adcbd5328f9
+## Features
 
-## How can I edit this code?
+- **Dashboard Overview**: Get a complete financial snapshot with balance, spending trends, and key metrics
+- **Transaction Management**: Add, edit, and categorize income and expenses
+- **Budget Tracking**: Set monthly budgets and receive alerts when approaching limits
+- **Financial Goals**: Create and track progress towards savings goals
+- **Debt Management**: Monitor and manage outstanding debts with payment tracking
+- **Recurring Transactions**: Automate regular income and expenses
+- **Calendar View**: Visualize financial activity on an interactive calendar
+- **Advanced Analytics**: Deep insights into spending patterns and trends
+- **Smart Notifications**: Get alerts for budget warnings, spending spikes, and goal progress
+- **Customizable Charts**: Choose from various visualization options and themes
+- **Dark/Light Mode**: Toggle between themes for comfortable viewing
+- **Data Export/Import**: Backup and restore your financial data
 
-There are several ways of editing your application.
+## Technologies Used
 
-**Use Lovable**
+- **Frontend**: React 18, TypeScript, Vite
+- **Styling**: Tailwind CSS, shadcn/ui components
+- **Charts**: Recharts for data visualization
+- **Routing**: React Router DOM
+- **State Management**: React Context API
+- **Icons**: Lucide React
+- **Build Tool**: Vite
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/1c58fc65-d718-407c-81bf-3adcbd5328f9) and start prompting.
+## Getting Started
 
-Changes made via Lovable will be committed automatically to this repo.
+### Prerequisites
 
-**Use your preferred IDE**
+- Node.js (v16 or higher)
+- npm or yarn package manager
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Installation
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+1. Clone the repository:
+```bash
+git clone https://github.com/HanadAbdulqadir/lets-collaborate-it.git
+cd lets-collaborate-it
+```
 
-Follow these steps:
+2. Install dependencies:
+```bash
+npm install
+```
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+3. Start the development server:
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+4. Open your browser and navigate to `http://localhost:5173`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Building for Production
 
-**Use GitHub Codespaces**
+```bash
+npm run build
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+The built application will be in the `dist` folder.
 
-## What technologies are used for this project?
+## Usage
 
-This project is built with:
+1. **Set Your Starting Balance**: Configure your initial monthly balance in the Settings page
+2. **Add Transactions**: Use the Quick Actions toolbar or Transactions page to add income and expenses
+3. **Create Budgets**: Set monthly spending limits for different categories
+4. **Track Goals**: Create financial goals and monitor your progress
+5. **Analyze Trends**: Use the Analytics page to understand your spending patterns
+6. **Customize**: Adjust visualization preferences and themes to your liking
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## Data Storage
 
-## How can I deploy this project?
+MoneyLens stores your financial data locally in your browser using localStorage. This means:
+- Your data remains private and never leaves your device
+- Data persists between browser sessions
+- You can export your data for backup or migration
 
-Simply open [Lovable](https://lovable.dev/projects/1c58fc65-d718-407c-81bf-3adcbd5328f9) and click on Share -> Publish.
+## Browser Support
 
-## Can I connect a custom domain to my Lovable project?
+MoneyLens works best in modern browsers that support:
+- ES6+ JavaScript features
+- CSS Grid and Flexbox
+- localStorage API
 
-Yes, you can!
+## Contributing
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+We welcome contributions! Please feel free to submit issues, feature requests, or pull requests.
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+## License
+
+This project is licensed under the MIT License.
+
+## Support
+
+If you encounter any issues or have questions, please open an issue on GitHub or contact the development team.
+
+---
+
+**MoneyLens** - Your financial clarity, visualized.

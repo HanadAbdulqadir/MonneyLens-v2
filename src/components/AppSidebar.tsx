@@ -75,7 +75,7 @@ export function AppSidebar() {
             </div>
             {!isCollapsed && (
               <div>
-                <h2 className="font-semibold text-sm">Pots</h2>
+                <h2 className="font-semibold text-sm">MoneyLens</h2>
                 <p className="text-xs text-muted-foreground">
                   {userName ? `Welcome, ${userName}` : 'Financial Tracker'}
                 </p>
