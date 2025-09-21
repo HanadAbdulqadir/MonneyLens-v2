@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { CategorySelector } from '@/components/CategorySelector';
 import { Plus } from 'lucide-react';
 import { useFinancial } from '@/contexts/FinancialContext';
 import { useToast } from '@/hooks/use-toast';
@@ -79,17 +80,11 @@ const AddTransactionModal = () => {
           
           <div>
             <Label htmlFor="category">Category</Label>
-            <Select value={formData.category} onValueChange={(value) => setFormData(prev => ({ ...prev, category: value }))}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select category" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Earnings">Earnings</SelectItem>
-                <SelectItem value="Petrol">Petrol</SelectItem>
-                <SelectItem value="Food">Food</SelectItem>
-                <SelectItem value="Other">Other</SelectItem>
-              </SelectContent>
-            </Select>
+            <CategorySelector 
+              value={formData.category}
+              onCategorySelect={(value) => setFormData(prev => ({ ...prev, category: value || '' }))}
+              showCreateNew={true}
+            />
           </div>
           
           <div>
