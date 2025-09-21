@@ -8,9 +8,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { FinancialProvider } from "@/contexts/SupabaseFinancialContext";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { AppSidebar } from "@/components/AppSidebar";
-import AccessibilityEnhancer from "@/components/AccessibilityEnhancer";
 import QuickActionsToolbar from "@/components/QuickActionsToolbar";
-import UserOnboarding from "@/components/UserOnboarding";
 import NotificationSystem from "@/components/NotificationSystem";
 import VisualizationPreferences from "@/components/VisualizationPreferences";
 import DataImporter from "@/components/DataImporter";
@@ -84,8 +82,6 @@ function AppContent() {
 
             {/* Enhanced UX Components */}
             <QuickActionsToolbar />
-            <AccessibilityEnhancer />
-            <UserOnboarding />
             <AdvancedSearch />
             <OfflineSupport />
           </main>
