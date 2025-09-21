@@ -12,6 +12,8 @@ This directory is for storing application screenshots for the GitHub README.
    - Debts (`/debts`)
    - Analytics (`/analytics`)
    - Calendar (`/calendar`)
+   - Categories (`/categories`)
+   - Recurring (`/recurring`)
    - Settings (`/settings`)
 
 2. Save screenshots with the following naming convention:
@@ -22,6 +24,8 @@ This directory is for storing application screenshots for the GitHub README.
    - `debts.png` - Debt management page
    - `analytics.png` - Analytics & reports page
    - `calendar.png` - Calendar view page
+   - `categories.png` - Categories management page
+   - `recurring.png` - Recurring transactions page
    - `settings.png` - Settings & preferences page
 
 3. Replace the placeholder image references in the main README.md file with your actual screenshots.

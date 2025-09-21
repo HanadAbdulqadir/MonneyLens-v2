@@ -47,6 +47,14 @@ MoneyLens is a comprehensive personal finance tracking application that helps yo
 <!-- Add screenshot: src/screenshots/calendar.png -->
 ![Calendar](src/screenshots/calendar.png)
 
+### Categories Management
+<!-- Add screenshot: src/screenshots/categories.png -->
+![Categories](src/screenshots/categories.png)
+
+### Recurring Transactions
+<!-- Add screenshot: src/screenshots/recurring.png -->
+![Recurring](src/screenshots/recurring.png)
+
 ### Settings & Preferences
 <!-- Add screenshot: src/screenshots/settings.png -->
 ![Settings](src/screenshots/settings.png)
