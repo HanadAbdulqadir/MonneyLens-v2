@@ -59,13 +59,13 @@ const ResponsiveLayout = ({
       case 1:
         return `${baseClasses} grid-cols-1`;
       case 2:
-        return `${baseClasses} grid-cols-1 md:grid-cols-2`;
+        return `${baseClasses} grid-cols-1 lg:grid-cols-2`;
       case 3:
-        return `${baseClasses} grid-cols-1 md:grid-cols-2 lg:grid-cols-3`;
+        return `${baseClasses} grid-cols-1 md:grid-cols-2 xl:grid-cols-3`;
       case 4:
-        return `${baseClasses} grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4`;
+        return `${baseClasses} grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4`;
       default:
-        return `${baseClasses} grid-cols-1 md:grid-cols-2`;
+        return `${baseClasses} grid-cols-1 lg:grid-cols-2`;
     }
   };
 
@@ -160,7 +160,17 @@ const ResponsiveLayout = ({
       {/* Main Content */}
       {!isCollapsed && (
         <div className={cn(getDeviceClasses(), "transition-all duration-300")}>
-          <div className={getGridClasses()}>
+          <div 
+            className={getGridClasses()}
+            style={{
+              // Prevent squashing with proper min-width constraints
+              display: 'grid',
+              gridTemplateColumns: gridSize === 1 
+                ? '1fr' 
+                : `repeat(auto-fit, minmax(min(320px, 100%), 1fr))`,
+              gap: 'clamp(1rem, 4vw, 1.5rem)'
+            }}
+          >
             {children}
           </div>
         </div>
@@ -187,24 +197,40 @@ export const ResponsiveGrid = ({
   children, 
   columns = { sm: 1, md: 2, lg: 3, xl: 4 },
   gap = 6,
-  className
+  className,
+  minWidth = "300px"
 }: {
   children: ReactNode;
   columns?: { sm?: number; md?: number; lg?: number; xl?: number };
   gap?: number;
   className?: string;
+  minWidth?: string;
 }) => {
   const gridClasses = [
     'grid',
     `gap-${gap}`,
+    // Use CSS Grid auto-fit for better responsiveness
+    columns.sm === 1 ? 'grid-cols-1' : '',
+    columns.md && columns.md > 1 ? `md:grid-cols-[repeat(auto-fit,minmax(${minWidth},1fr))]` : '',
+    // Fallback classes for better browser support
     `grid-cols-${columns.sm || 1}`,
-    columns.md && `md:grid-cols-${columns.md}`,
-    columns.lg && `lg:grid-cols-${columns.lg}`,
-    columns.xl && `xl:grid-cols-${columns.xl}`
+    columns.md && `md:grid-cols-${Math.min(columns.md, 2)}`,
+    columns.lg && `lg:grid-cols-${Math.min(columns.lg, 3)}`,
+    columns.xl && `xl:grid-cols-${Math.min(columns.xl, 4)}`
   ].filter(Boolean).join(' ');
 
   return (
-    <div className={cn(gridClasses, className)}>
+    <div 
+      className={cn(gridClasses, className)}
+      style={{
+        // CSS Grid with proper min-width constraints
+        display: 'grid',
+        gridTemplateColumns: columns.sm === 1 
+          ? '1fr' 
+          : `repeat(auto-fit, minmax(min(${minWidth}, 100%), 1fr))`,
+        gap: `${gap * 0.25}rem`
+      }}
+    >
       {children}
     </div>
   );

@@ -74,14 +74,14 @@ const Index = () => {
 
       {/* Enhanced Charts Section */}
       <ResponsiveLayout enableGridToggle={true} enableDevicePreview={false}>
-        <ResponsiveGrid columns={{ sm: 1, lg: 2 }} gap={6}>
+        <ResponsiveGrid columns={{ sm: 1, lg: 2 }} gap={6} minWidth="350px">
           <EnhancedWeeklyChart />
           <EnhancedCategoryBreakdown />
         </ResponsiveGrid>
       </ResponsiveLayout>
       
       {/* Activity and Transactions Grid */}
-      <ResponsiveGrid columns={{ sm: 1, md: 2 }} gap={6}>
+      <ResponsiveGrid columns={{ sm: 1, md: 2 }} gap={6} minWidth="280px">
         <RecentTransactions />
         <RecentActivityFeed />
       </ResponsiveGrid>
