@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { Plus, Target, Wallet, CreditCard, TrendingUp } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Plus, Target, Wallet, CreditCard, TrendingUp, Minimize2, Maximize2, X } from "lucide-react";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
@@ -10,7 +11,8 @@ import {
 } from "@/components/ui/tooltip";
 
 const FloatingActionButtons = () => {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -23,10 +25,7 @@ const FloatingActionButtons = () => {
       icon: Plus,
       label: "Add Transaction",
       action: () => {
-        // This will trigger the AddTransactionModal if we're on dashboard,
-        // otherwise navigate to transactions page
         if (location.pathname === '/') {
-          // Trigger the existing modal (we'll need to expose this)
           const addButton = document.querySelector('[data-add-transaction]') as HTMLButtonElement;
           if (addButton) addButton.click();
         } else {
@@ -61,67 +60,71 @@ const FloatingActionButtons = () => {
     },
   ];
 
+  if (!isVisible) return null;
+
   return (
     <TooltipProvider>
-      <div className="fixed bottom-4 right-4 z-50">
-        <div className="flex flex-col items-end gap-2">
-          {/* Quick Action Buttons */}
-          {isExpanded && (
-            <div className="flex flex-col gap-1.5 animate-fade-in">
+      <div className="fixed top-4 right-4 z-50">
+        <Card className={`bg-background/95 backdrop-blur-sm border shadow-lg transition-all duration-300 ${
+          isMinimized ? 'w-12 h-12' : 'w-64 h-auto'
+        }`}>
+          {/* Window Header */}
+          <div className="flex items-center justify-between p-2 border-b bg-muted/50">
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-destructive"></div>
+              <div className="w-3 h-3 rounded-full bg-warning"></div>
+              <div className="w-3 h-3 rounded-full bg-success"></div>
+              {!isMinimized && (
+                <span className="text-xs font-medium ml-2">Quick Actions</span>
+              )}
+            </div>
+            <div className="flex items-center gap-1">
+              <Button
+                size="sm"
+                variant="ghost"
+                className="h-6 w-6 p-0 hover:bg-muted"
+                onClick={() => setIsMinimized(!isMinimized)}
+              >
+                {isMinimized ? (
+                  <Maximize2 className="h-3 w-3" />
+                ) : (
+                  <Minimize2 className="h-3 w-3" />
+                )}
+              </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                className="h-6 w-6 p-0 hover:bg-destructive/20 text-destructive"
+                onClick={() => setIsVisible(false)}
+              >
+                <X className="h-3 w-3" />
+              </Button>
+            </div>
+          </div>
+
+          {/* Window Content */}
+          {!isMinimized && (
+            <div className="p-3 space-y-2 animate-fade-in">
               {quickActions.map((action, index) => {
                 const Icon = action.icon;
                 return (
-                  <Tooltip key={index}>
-                    <TooltipTrigger asChild>
-                      <Button
-                        size="sm"
-                        className={`h-8 w-8 rounded-full shadow-md text-white transition-all duration-200 hover:scale-105 animate-scale-in ${action.color}`}
-                        style={{ animationDelay: `${index * 30}ms` }}
-                        onClick={() => {
-                          action.action();
-                          setIsExpanded(false);
-                        }}
-                      >
-                        <Icon className="h-3.5 w-3.5" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent side="left" className="bg-card border text-xs">
-                      <p className="font-medium">{action.label}</p>
-                    </TooltipContent>
-                  </Tooltip>
+                  <Button
+                    key={index}
+                    variant="ghost"
+                    size="sm"
+                    className="w-full justify-start gap-3 h-8 px-3 hover:bg-muted transition-colors"
+                    onClick={() => action.action()}
+                  >
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-white ${action.color}`}>
+                      <Icon className="h-3 w-3" />
+                    </div>
+                    <span className="text-xs font-medium">{action.label}</span>
+                  </Button>
                 );
               })}
             </div>
           )}
-
-          {/* Main FAB */}
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                size="sm"
-                className={`h-10 w-10 rounded-full shadow-lg bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground transition-all duration-300 hover:scale-105 ${
-                  isExpanded ? 'rotate-45' : 'rotate-0'
-                }`}
-                onClick={() => setIsExpanded(!isExpanded)}
-              >
-                <Plus className="h-4 w-4" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="left" className="bg-card border text-xs">
-              <p className="font-medium">
-                {isExpanded ? 'Close menu' : 'Quick actions'}
-              </p>
-            </TooltipContent>
-          </Tooltip>
-        </div>
-
-        {/* Backdrop */}
-        {isExpanded && (
-          <div
-            className="fixed inset-0 bg-black/20 backdrop-blur-sm -z-10 animate-fade-in"
-            onClick={() => setIsExpanded(false)}
-          />
-        )}
+        </Card>
       </div>
     </TooltipProvider>
   );
