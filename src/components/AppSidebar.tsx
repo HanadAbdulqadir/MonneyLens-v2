@@ -1,6 +1,6 @@
-import { LayoutDashboard, TrendingUp, PieChart, Target, Settings, CreditCard, Calendar, Flag, RefreshCw } from "lucide-react";
+import { LayoutDashboard, TrendingUp, PieChart, Target, Settings, CreditCard, Calendar, Flag, RefreshCw, LogOut } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useAuth } from "@/hooks/useAuth";
 import {
   Sidebar,
   SidebarContent,
@@ -12,6 +12,8 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 
   const menuItems = [
     { title: "Dashboard", url: "/", icon: LayoutDashboard },
@@ -29,35 +31,12 @@ import {
 export function AppSidebar() {
   const { state } = useSidebar();
   const location = useLocation();
+  const { user, signOut } = useAuth();
   const isCollapsed = state === "collapsed";
-  const [userName, setUserName] = useState('');
 
-  // Load user name from localStorage
-  useEffect(() => {
-    const savedName = localStorage.getItem('user-name') || '';
-    setUserName(savedName);
-    
-    // Listen for storage changes to update name in real-time
-    const handleStorageChange = () => {
-      const updatedName = localStorage.getItem('user-name') || '';
-      setUserName(updatedName);
-    };
-    
-    window.addEventListener('storage', handleStorageChange);
-    
-    // Also listen for custom events when name changes in same tab
-    const handleNameUpdate = () => {
-      const updatedName = localStorage.getItem('user-name') || '';
-      setUserName(updatedName);
-    };
-    
-    window.addEventListener('user-name-updated', handleNameUpdate);
-    
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('user-name-updated', handleNameUpdate);
-    };
-  }, []);
+  const handleSignOut = async () => {
+    await signOut();
+  };
 
   const isActive = (path: string) => {
     if (path === "/") return location.pathname === "/";
@@ -71,13 +50,13 @@ export function AppSidebar() {
         <div className="p-4 border-b">
           <div className="flex items-center gap-3">
             <div className="h-8 w-8 rounded-lg bg-gradient-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-sm">P</span>
+              <span className="text-primary-foreground font-bold text-sm">M</span>
             </div>
             {!isCollapsed && (
               <div>
                 <h2 className="font-semibold text-sm">MoneyLens</h2>
                 <p className="text-xs text-muted-foreground">
-                  {userName ? `Welcome, ${userName}` : 'Financial Tracker'}
+                  {user?.user_metadata?.display_name || user?.email || 'Financial Tracker'}
                 </p>
               </div>
             )}
@@ -118,6 +97,22 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+
+        {/* Sign Out Button */}
+        <div className="mt-auto p-3">
+          <Separator className="mb-3" />
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleSignOut}
+            className={`w-full justify-start gap-3 text-muted-foreground hover:text-foreground ${
+              isCollapsed ? "px-2" : ""
+            }`}
+          >
+            <LogOut className="h-4 w-4" />
+            {!isCollapsed && <span className="text-sm">Sign Out</span>}
+          </Button>
+        </div>
       </SidebarContent>
     </Sidebar>
   );
