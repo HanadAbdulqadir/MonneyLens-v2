@@ -73,6 +73,22 @@ interface DbDailyEntry {
   updated_at: string;
 }
 
+interface DbRecurringTransaction {
+  id: string;
+  user_id: string;
+  amount: number;
+  category: string;
+  created_at: string;
+  description: string;
+  end_date: string;
+  frequency: string;
+  is_active: boolean;
+  last_processed: string;
+  start_date: string;
+  tags: string[];
+  updated_at: string;
+}
+
 interface DbUserSettings {
   id: string;
   user_id: string;
@@ -206,7 +222,19 @@ export function FinancialProvider({ children }: { children: ReactNode }) {
   const [currency, setCurrency] = useState('USD');
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState('');
+  const [recurringTransactions, setRecurringTransactions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Helper function to convert recurring transaction
+  const dbRecurringToApp = (dbRecurring: DbRecurringTransaction): any => ({
+    id: dbRecurring.id,
+    name: dbRecurring.description, // Use description as name
+    category: dbRecurring.category,
+    amount: Number(dbRecurring.amount),
+    frequency: dbRecurring.frequency as 'daily' | 'weekly' | 'monthly' | 'yearly',
+    nextDate: dbRecurring.last_processed, // Use last_processed as nextDate
+    isActive: dbRecurring.is_active,
+  });
 
   // Helper functions to convert between database and app types
   const dbTransactionToApp = (dbTx: DbTransaction): Transaction => ({
@@ -331,6 +359,17 @@ export function FinancialProvider({ children }: { children: ReactNode }) {
 
       if (profileData) {
         setCurrency(profileData.currency || 'USD');
+      }
+
+      // Load recurring transactions
+      const { data: recurringData } = await supabase
+        .from('recurring_transactions')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+      if (recurringData) {
+        setRecurringTransactions(recurringData.map(dbRecurringToApp));
       }
 
     } catch (error) {
@@ -698,6 +737,87 @@ export function FinancialProvider({ children }: { children: ReactNode }) {
     setCategoryFilter(filter);
   };
 
+  // Recurring transaction methods
+  const addRecurringTransaction = async (transaction: any) => {
+    if (!user) return;
+
+    const { data, error } = await supabase
+      .from('recurring_transactions')
+      .insert({
+        user_id: user.id,
+        description: transaction.name, // Use name as description
+        category: transaction.category,
+        amount: transaction.amount,
+        frequency: transaction.frequency,
+        start_date: new Date().toISOString().split('T')[0],
+        end_date: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 1 year from now
+        last_processed: transaction.nextDate,
+        is_active: transaction.isActive,
+        tags: []
+      })
+      .select()
+      .single();
+
+    if (error) {
+      toast.error('Failed to add recurring transaction');
+      throw error;
+    }
+
+    if (data) {
+      const newRecurring = dbRecurringToApp(data);
+      setRecurringTransactions(prev => [newRecurring, ...prev]);
+      toast.success('Recurring transaction added successfully');
+    }
+  };
+
+  const updateRecurringTransaction = async (id: string, updates: any) => {
+    if (!user) return;
+
+    const { data, error } = await supabase
+      .from('recurring_transactions')
+      .update({
+        ...(updates.name && { description: updates.name }),
+        ...(updates.category && { category: updates.category }),
+        ...(updates.amount !== undefined && { amount: updates.amount }),
+        ...(updates.frequency && { frequency: updates.frequency }),
+        ...(updates.nextDate && { last_processed: updates.nextDate }),
+        ...(updates.isActive !== undefined && { is_active: updates.isActive }),
+      })
+      .eq('id', id)
+      .eq('user_id', user.id)
+      .select()
+      .single();
+
+    if (error) {
+      toast.error('Failed to update recurring transaction');
+      throw error;
+    }
+
+    if (data) {
+      const updatedRecurring = dbRecurringToApp(data);
+      setRecurringTransactions(prev => prev.map(r => r.id === id ? updatedRecurring : r));
+      toast.success('Recurring transaction updated successfully');
+    }
+  };
+
+  const deleteRecurringTransaction = async (id: string) => {
+    if (!user) return;
+
+    const { error } = await supabase
+      .from('recurring_transactions')
+      .delete()
+      .eq('id', id)
+      .eq('user_id', user.id);
+
+    if (error) {
+      toast.error('Failed to delete recurring transaction');
+      throw error;
+    }
+
+    setRecurringTransactions(prev => prev.filter(r => r.id !== id));
+    toast.success('Recurring transaction deleted successfully');
+  };
+
   // Clear all data
   const clearAllData = async () => {
     if (!user) return;
@@ -709,6 +829,7 @@ export function FinancialProvider({ children }: { children: ReactNode }) {
       await supabase.from('financial_goals').delete().eq('user_id', user.id);
       await supabase.from('transactions').delete().eq('user_id', user.id);
       await supabase.from('daily_entries').delete().eq('user_id', user.id);
+      await supabase.from('recurring_transactions').delete().eq('user_id', user.id);
       
       // Reset settings to defaults
       await supabase
@@ -724,6 +845,7 @@ export function FinancialProvider({ children }: { children: ReactNode }) {
       setGoals([]);
       setDebts([]);
       setDailyData([]);
+      setRecurringTransactions([]);
       setMonthlyStartingPoint(0);
       setCategoryFilter('');
 
@@ -823,7 +945,7 @@ export function FinancialProvider({ children }: { children: ReactNode }) {
     isDarkMode,
     categoryFilter,
     loading,
-    recurringTransactions: [], // Placeholder
+    recurringTransactions, // Now returns actual recurring transactions
     addTransaction,
     updateTransaction,
     deleteTransaction,
@@ -842,9 +964,9 @@ export function FinancialProvider({ children }: { children: ReactNode }) {
     toggleDarkMode: () => updateDarkMode(!isDarkMode),
     updateCategoryFilter,
     setCategoryFilter: updateCategoryFilter,
-    addRecurringTransaction: async () => {}, // Placeholder
-    updateRecurringTransaction: async () => {}, // Placeholder
-    deleteRecurringTransaction: async () => {}, // Placeholder
+    addRecurringTransaction,
+    updateRecurringTransaction,
+    deleteRecurringTransaction,
     getCurrentBalance,
     getTodaysData,
     recalculateBalances,

@@ -41,7 +41,7 @@ interface ImportResult {
 }
 
 export default function UniversalCSVImporter({ onImportComplete }: UniversalCSVImporterProps) {
-  const { addTransaction, addGoal, addDebt, transactions, goals, debts, currency } = useFinancial();
+  const { addTransaction, addGoal, addDebt, addRecurringTransaction, transactions, goals, debts, currency } = useFinancial();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [importResult, setImportResult] = useState<ImportResult | null>(null);
@@ -138,9 +138,10 @@ export default function UniversalCSVImporter({ onImportComplete }: UniversalCSVI
     
     setProgress(70);
     
-    // Detect recurring patterns and create goals
+    // Detect recurring patterns and create recurring transactions
     const recurringPatterns: ImportResult['recurringPatterns'] = [];
     let goalsCreated = 0;
+    let recurringTransactionsCreated = 0;
     
     Object.entries(categories).forEach(([category, data]) => {
       if (data.count >= 3) {
@@ -148,13 +149,30 @@ export default function UniversalCSVImporter({ onImportComplete }: UniversalCSVI
         if (data.count > 20) frequency = "daily";
         else if (data.count > 8) frequency = "weekly";
         
-        recurringPatterns.push({
+        const recurringPattern = {
           name: `${category} Expense`,
           amount: Math.round(data.avg),
           frequency,
           category,
           occurrences: data.count
-        });
+        };
+        
+        recurringPatterns.push(recurringPattern);
+        
+        // Create recurring transaction for detected patterns
+        try {
+          addRecurringTransaction({
+            name: recurringPattern.name,
+            category: recurringPattern.category,
+            amount: recurringPattern.amount,
+            frequency: recurringPattern.frequency as 'daily' | 'weekly' | 'monthly' | 'yearly',
+            nextDate: new Date().toISOString().split('T')[0],
+            isActive: true
+          });
+          recurringTransactionsCreated++;
+        } catch (error) {
+          console.error('Error creating recurring transaction:', error);
+        }
         
         // Create goal for large recurring expenses
         if (data.avg > 100) {
