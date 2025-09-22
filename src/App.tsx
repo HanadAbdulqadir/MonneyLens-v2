@@ -22,6 +22,7 @@ import Categories from "./pages/Categories";
 import Calendar from "./pages/Calendar";
 import Settings from "./pages/Settings";
 import Budget from "./pages/Budget";
+import FinancialHub from "./pages/FinancialHub";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
 
@@ -64,6 +65,7 @@ function AppContent() {
             <div className="p-6">
               <Routes>
                 <Route path="/" element={<Index />} />
+                <Route path="/financial-hub" element={<FinancialHub />} />
                 <Route path="/analytics" element={<Analytics />} />
                 <Route path="/transactions" element={<Transactions />} />
                 <Route path="/goals" element={<Goals />} />

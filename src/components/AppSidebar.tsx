@@ -1,4 +1,4 @@
-import { LayoutDashboard, TrendingUp, PieChart, Target, Settings, CreditCard, Calendar, Flag, RefreshCw, LogOut } from "lucide-react";
+import { LayoutDashboard, TrendingUp, PieChart, Target, Settings, CreditCard, Calendar, Flag, RefreshCw, LogOut, Building } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import {
@@ -17,6 +17,7 @@ import { Separator } from "@/components/ui/separator";
 
   const menuItems = [
     { title: "Dashboard", url: "/", icon: LayoutDashboard },
+    { title: "Financial Hub", url: "/financial-hub", icon: Building },
     { title: "Transactions", url: "/transactions", icon: CreditCard },
     { title: "Analytics", url: "/analytics", icon: TrendingUp },
     { title: "Categories", url: "/categories", icon: PieChart },
