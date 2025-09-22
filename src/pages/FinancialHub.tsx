@@ -24,6 +24,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import FinancialHubConfig from "@/components/FinancialHubConfig";
+import CSVConfigurationImporter from "@/components/CSVConfigurationImporter";
 
 // Charts
 import {
@@ -482,7 +483,7 @@ export default function FinancialHub() {
   const [monthsPlan, setMonthsPlan] = useState<Record<string, PlanDay[]>>({});
   const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
   const [selectedDay, setSelectedDay] = useState<PlanDay | null>(null);
-  const [view, setView] = useState<"config" | "calendar" | "weekly" | "transition">("config");
+  const [view, setView] = useState<"config" | "csv-import" | "calendar" | "weekly" | "transition">("config");
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
   const [dynamicConfig, setDynamicConfig] = useState<any>(null);
@@ -590,6 +591,9 @@ export default function FinancialHub() {
             <Button variant={view === "config" ? "default" : "outline"} onClick={() => setView("config")}>
               Configuration
             </Button>
+            <Button variant={view === "csv-import" ? "default" : "outline"} onClick={() => setView("csv-import")}>
+              CSV Import
+            </Button>
             <Button variant={view === "weekly" ? "default" : "outline"} onClick={() => setView("weekly")}>
               Weekly View
             </Button>
@@ -691,6 +695,69 @@ export default function FinancialHub() {
               </CardContent>
             </Card>
           )}
+        </div>
+      )}
+
+      {/* CSV Import View */}
+      {view === "csv-import" && (
+        <div className="space-y-6">
+          <Card>
+            <CardContent className="p-6">
+              <h2 className="text-2xl font-bold mb-4">CSV Configuration Import</h2>
+              <p className="text-gray-600 mb-6">
+                Upload a CSV file with your financial transactions to automatically configure the entire Financial Hub.
+                The system will analyze your data and create a complete financial plan for the next 12 months.
+              </p>
+              
+              <CSVConfigurationImporter 
+                onConfigurationComplete={(config) => {
+                  setDynamicConfig(config);
+                  // Convert CSV config to schema format
+                  const newSchema: UserSchema = {
+                    currency: "GBP",
+                    startingBalance: config.startingBalance,
+                    averageDailyIncome: config.averageDailyIncome,
+                    weeklyIncome: config.weeklyIncome,
+                    incomeFrequency: config.incomeFrequency,
+                    payDays: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+                    expenses: config.expenses.map(exp => ({
+                      id: exp.id,
+                      name: exp.name,
+                      amount: exp.amount,
+                      frequency: exp.frequency,
+                      dayOfWeek: exp.dayOfWeek,
+                      dayOfMonth: exp.dayOfMonth,
+                      category: exp.category as any,
+                      notes: exp.notes
+                    })),
+                    pots: config.pots.map(pot => ({
+                      id: pot.id,
+                      name: pot.name,
+                      goalAmount: pot.goalAmount,
+                      currentAmount: pot.currentAmount,
+                      frequency: pot.frequency,
+                      priority: pot.priority,
+                      type: pot.type as any
+                    })),
+                    rules: {
+                      leftoverStrategy: "buffer",
+                      weeklyAllocation: {
+                        weeks1_2: "next-month-pot",
+                        weeks3_5: "buffer",
+                      },
+                      essentialOrder: ["Food", "Transport", "Housing", "Utilities", "Entertainment", "Healthcare", "Other"],
+                      thresholds: {
+                        warning: 100,
+                        danger: 0,
+                      },
+                    },
+                  };
+                  setSchema(newSchema);
+                  setView("weekly"); // Automatically switch to weekly view after import
+                }}
+              />
+            </CardContent>
+          </Card>
         </div>
       )}
 
