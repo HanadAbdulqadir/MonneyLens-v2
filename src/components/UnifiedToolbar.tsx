@@ -86,11 +86,24 @@ const UnifiedToolbar: React.FC<UnifiedToolbarProps> = () => {
   return (
     <TooltipProvider>
       <div className="fixed bottom-4 right-4 z-40">
-        {/* Hidden components for accessibility and tour */}
-        <div className="opacity-0 pointer-events-none absolute -z-10">
-          <AccessibilityEnhancer />
-          <UserOnboarding />
-        </div>
+        {/* Accessibility and Tour Components - Now properly controlled */}
+        {showAccessibility && (
+          <div className="absolute bottom-full right-0 mb-2">
+            <AccessibilityEnhancer 
+              open={showAccessibility} 
+              onOpenChange={setShowAccessibility} 
+            />
+          </div>
+        )}
+        
+        {showTour && (
+          <div className="absolute bottom-full right-0 mb-2">
+            <UserOnboarding 
+              open={showTour} 
+              onOpenChange={setShowTour} 
+            />
+          </div>
+        )}
         
         <Card className={`bg-background/95 backdrop-blur-sm border shadow-lg transition-all duration-300 cursor-pointer ${
           isMinimized ? 'w-16 h-16 rounded-full shadow-xl hover:shadow-2xl hover:scale-105' : 'w-56'

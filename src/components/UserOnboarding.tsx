@@ -27,10 +27,19 @@ interface OnboardingStep {
   completed?: boolean;
 }
 
-const UserOnboarding = () => {
+interface UserOnboardingProps {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
+
+const UserOnboarding: React.FC<UserOnboardingProps> = ({ open, onOpenChange }) => {
   const { transactions, addTransaction } = useFinancial();
   const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
+
+  // Use controlled state if provided, otherwise use internal state
+  const dialogOpen = open !== undefined ? open : isOpen;
+  const setDialogOpen = onOpenChange || setIsOpen;
   const [currentStep, setCurrentStep] = useState(0);
   const [completedSteps, setCompletedSteps] = useState<string[]>([]);
 
@@ -254,7 +263,7 @@ const UserOnboarding = () => {
   return (
     <>
       {/* Onboarding Dialog - Tour is now only accessible through QuickActionsToolbar */}
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <div data-onboarding-dialog style={{ display: 'none' }} />
         <DialogContent className="sm:max-w-[500px] p-0">
           {/* Header */}

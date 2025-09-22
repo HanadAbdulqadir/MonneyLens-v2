@@ -31,7 +31,12 @@ interface AccessibilitySettings {
   colorBlindSupport: string;
 }
 
-const AccessibilityEnhancer = () => {
+interface AccessibilityEnhancerProps {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
+
+const AccessibilityEnhancer: React.FC<AccessibilityEnhancerProps> = ({ open, onOpenChange }) => {
   const [settings, setSettings] = useState<AccessibilitySettings>({
     fontSize: 100,
     highContrast: false,
@@ -44,6 +49,10 @@ const AccessibilityEnhancer = () => {
   });
 
   const [isOpen, setIsOpen] = useState(false);
+
+  // Use controlled state if provided, otherwise use internal state
+  const dialogOpen = open !== undefined ? open : isOpen;
+  const setDialogOpen = onOpenChange || setIsOpen;
 
   // Load settings from localStorage
   useEffect(() => {
@@ -157,7 +166,7 @@ const AccessibilityEnhancer = () => {
   return (
     <>
       {/* Floating Accessibility Button */}
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogTrigger asChild>
           <Button
             size="sm"
