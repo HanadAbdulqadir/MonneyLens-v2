@@ -242,12 +242,12 @@ const UserOnboarding = () => {
 
   return (
     <>
-      {/* Onboarding Tour Button - Bottom Right */}
+      {/* Onboarding Tour Button - Bottom Left (to avoid QuickActionsToolbar conflict) */}
       <Button
         variant="ghost"
         size="sm"
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 z-40 gap-1 bg-background/95 backdrop-blur-sm border shadow-lg h-10 px-3 rounded-full text-xs hover:shadow-xl transition-all duration-200"
+        className="fixed bottom-6 left-6 z-40 gap-1 bg-background/95 backdrop-blur-sm border shadow-lg h-10 px-3 rounded-full text-xs hover:shadow-xl transition-all duration-200"
         title="Take the tour again"
       >
         <Play className="h-3 w-3" />
