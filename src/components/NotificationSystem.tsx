@@ -22,7 +22,7 @@ import {
 
 interface Notification {
   id: string;
-  type: 'budget_warning' | 'budget_exceeded' | 'spending_spike' | 'goal_progress' | 'weekly_summary' | 'info';
+  type: 'budget_warning' | 'budget_exceeded' | 'spending_spike' | 'goal_progress' | 'goal_reminder' | 'action_required' | 'weekly_summary' | 'system_alert' | 'info';
   title: string;
   message: string;
   severity: 'low' | 'medium' | 'high';
@@ -31,6 +31,9 @@ interface Notification {
   actionable: boolean;
   category?: string;
   amount?: number;
+  goalId?: string;
+  actionType?: 'earn_money' | 'complete_step' | 'review_budget' | 'update_transactions';
+  pushEnabled: boolean;
 }
 
 interface NotificationSettings {
@@ -102,7 +105,8 @@ const NotificationSystem = () => {
           isRead: false,
           actionable: true,
           category,
-          amount: spent - budget
+          amount: spent - budget,
+          pushEnabled: true
         });
       } else if (settings.budgetWarnings && percentage >= settings.warningThreshold) {
         newNotifications.push({
@@ -115,7 +119,8 @@ const NotificationSystem = () => {
           isRead: false,
           actionable: true,
           category,
-          amount: spent
+          amount: spent,
+          pushEnabled: true
         });
       }
     });
@@ -143,7 +148,8 @@ const NotificationSystem = () => {
           timestamp: new Date(),
           isRead: false,
           actionable: true,
-          amount: lastWeekSpending - averageWeeklySpending
+          amount: lastWeekSpending - averageWeeklySpending,
+          pushEnabled: true
         });
       }
     }
@@ -163,7 +169,8 @@ const NotificationSystem = () => {
           severity: 'low',
           timestamp: new Date(),
           isRead: false,
-          actionable: false
+          actionable: false,
+          pushEnabled: true
         });
       }
     }

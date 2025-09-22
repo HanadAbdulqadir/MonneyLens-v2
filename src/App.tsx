@@ -11,6 +11,7 @@ import { AppSidebar } from "@/components/AppSidebar";
 import UnifiedToolbar from "@/components/UnifiedToolbar";
 import QuickActionsToolbar from "@/components/QuickActionsToolbar";
 import PageTourManager from "@/components/PageTourManager";
+import GoalNotificationManager from "@/components/GoalNotificationManager";
 import NotificationSystem from "@/components/NotificationSystem";
 import DataImporter from "@/components/DataImporter";
 import AdvancedSearch from "@/components/AdvancedSearch";
@@ -98,6 +99,7 @@ function AppContent() {
             <QuickActionsToolbar />
             <UnifiedToolbar />
             <PageTourManager />
+            <GoalNotificationManager />
             <AdvancedSearch />
             <UserOnboarding />
           </main>
