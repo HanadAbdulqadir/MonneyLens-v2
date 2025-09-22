@@ -12,6 +12,7 @@ import QuickActionsToolbar from "@/components/QuickActionsToolbar";
 import NotificationSystem from "@/components/NotificationSystem";
 import DataImporter from "@/components/DataImporter";
 import AdvancedSearch from "@/components/AdvancedSearch";
+import UserOnboarding from "@/components/UserOnboarding";
 import Index from "./pages/Index";
 import Analytics from "./pages/Analytics";
 import Transactions from "./pages/Transactions";
@@ -33,8 +34,14 @@ function AppContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 to-secondary/5">
+        <div className="text-center space-y-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          <div>
+            <h2 className="text-xl font-semibold text-primary">MoneyLens</h2>
+            <p className="text-muted-foreground">Loading your financial dashboard...</p>
+          </div>
+        </div>
       </div>
     );
   }
@@ -49,10 +56,16 @@ function AppContent() {
         <div className="flex min-h-screen w-full">
           <AppSidebar />
           
-          <main className="flex-1 overflow-auto">
-            <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b">
-              <div className="flex items-center justify-between h-14 px-6">
-                <SidebarTrigger className="mr-4" />
+          <main className="flex-1 overflow-auto bg-gradient-to-br from-background to-muted/20">
+            <header className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b shadow-sm">
+              <div className="flex items-center justify-between h-16 px-6">
+                <div className="flex items-center gap-4">
+                  <SidebarTrigger className="mr-2" />
+                  <div className="hidden sm:block">
+                    <h1 className="text-lg font-semibold text-primary">MoneyLens</h1>
+                    <p className="text-xs text-muted-foreground">Your financial companion</p>
+                  </div>
+                </div>
                 
                 {/* Header Actions */}
                 <div className="flex items-center gap-3">
@@ -82,6 +95,7 @@ function AppContent() {
             {/* Enhanced UX Components */}
             <QuickActionsToolbar />
             <AdvancedSearch />
+            <UserOnboarding />
           </main>
         </div>
         

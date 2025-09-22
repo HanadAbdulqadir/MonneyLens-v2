@@ -20,7 +20,9 @@ import {
   X,
   FileSpreadsheet,
   Database,
-  Globe
+  Globe,
+  Loader2,
+  Shield
 } from "lucide-react";
 
 interface ImportedTransaction {
@@ -326,21 +328,52 @@ const DataImporter = () => {
               <TabsContent value="transactions" className="space-y-4">
                 {/* Upload Section */}
                 <div className="space-y-4">
-                  <div className="text-center p-8 border-2 border-dashed border-border rounded-lg">
-                    <FileText className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                    <h3 className="text-lg font-medium mb-2">Upload CSV File</h3>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      Import your transaction data from a CSV file
+                  <div className="text-center p-8 border-2 border-dashed border-border rounded-lg bg-gradient-to-br from-primary/5 to-secondary/5">
+                    <FileText className="h-16 w-16 mx-auto text-primary mb-4" />
+                    <h3 className="text-xl font-semibold mb-2">Import Your Financial Data</h3>
+                    <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto">
+                      Get started quickly by importing your existing transaction data. 
+                      We support CSV files from most banks and financial apps.
                     </p>
                     
-                    <div className="flex flex-col sm:flex-row gap-3 items-center justify-center">
-                      <Button onClick={() => fileInputRef.current?.click()} disabled={isProcessing}>
-                        {isProcessing ? 'Processing...' : 'Choose File'}
+                    <div className="flex flex-col sm:flex-row gap-4 items-center justify-center mb-6">
+                      <Button 
+                        onClick={() => fileInputRef.current?.click()} 
+                        disabled={isProcessing}
+                        size="lg"
+                        className="gap-2"
+                      >
+                        {isProcessing ? (
+                          <>
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                            Processing...
+                          </>
+                        ) : (
+                          <>
+                            <Upload className="h-4 w-4" />
+                            Choose CSV File
+                          </>
+                        )}
                       </Button>
-                      <Button variant="outline" onClick={downloadTemplate}>
-                        <Download className="h-4 w-4 mr-2" />
+                      <Button variant="outline" onClick={downloadTemplate} size="lg" className="gap-2">
+                        <Download className="h-4 w-4" />
                         Download Template
                       </Button>
+                    </div>
+                    
+                    <div className="grid grid-cols-3 gap-4 text-xs max-w-md mx-auto">
+                      <div className="text-center p-2 bg-background rounded border">
+                        <FileText className="h-6 w-6 mx-auto mb-1 text-primary" />
+                        <span>CSV Format</span>
+                      </div>
+                      <div className="text-center p-2 bg-background rounded border">
+                        <CheckCircle className="h-6 w-6 mx-auto mb-1 text-success" />
+                        <span>Auto-Detect</span>
+                      </div>
+                      <div className="text-center p-2 bg-background rounded border">
+                        <Shield className="h-6 w-6 mx-auto mb-1 text-blue-500" />
+                        <span>Secure</span>
+                      </div>
                     </div>
                     
                     <input

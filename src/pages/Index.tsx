@@ -21,11 +21,17 @@ import CommandPalette from "@/components/CommandPalette";
 import UnifiedToolbar from "@/components/UnifiedToolbar";
 import ContextualHelp from "@/components/ContextualHelp";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
+import { useFinancial } from "@/contexts/SupabaseFinancialContext";
+import { Button } from "@/components/ui/button";
+import { Sparkles, Plus, Upload, Play } from "lucide-react";
 import { useState } from "react";
 
 const Index = () => {
   // Initialize keyboard shortcuts
   useKeyboardShortcuts();
+  const { transactions, goals, debts } = useFinancial();
+
+  const isNewUser = transactions.length === 0 && goals.length === 0 && debts.length === 0;
 
   return (
     <div className="space-y-8 animate-fade-in">
@@ -33,11 +39,19 @@ const Index = () => {
       <CommandPalette />
       <ContextualHelp />
       <UnifiedToolbar />
+      
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Financial Command Center</h1>
-          <p className="text-muted-foreground">Your complete financial ecosystem at a glance</p>
+          <h1 className="text-3xl font-bold tracking-tight">
+            {isNewUser ? "Welcome to MoneyLens! 👋" : "Financial Command Center"}
+          </h1>
+          <p className="text-muted-foreground">
+            {isNewUser 
+              ? "Let's get started with your financial journey" 
+              : "Your complete financial ecosystem at a glance"
+            }
+          </p>
         </div>
         <div className="flex items-center gap-3">
           <StartingPointModal />
@@ -46,6 +60,37 @@ const Index = () => {
           </div>
         </div>
       </div>
+
+      {/* Welcome Section for New Users */}
+      {isNewUser && (
+        <div className="bg-gradient-to-r from-primary/5 to-secondary/5 border border-primary/20 rounded-xl p-6">
+          <div className="flex items-start gap-4">
+            <div className="bg-primary/10 p-3 rounded-full">
+              <Sparkles className="h-6 w-6 text-primary" />
+            </div>
+            <div className="flex-1">
+              <h2 className="text-xl font-semibold mb-2">Ready to take control of your finances?</h2>
+              <p className="text-muted-foreground mb-4">
+                Start by adding your first transaction or import your existing data to see your financial picture.
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <Button className="gap-2">
+                  <Plus className="h-4 w-4" />
+                  Add First Transaction
+                </Button>
+                <Button variant="outline" className="gap-2">
+                  <Upload className="h-4 w-4" />
+                  Import Data
+                </Button>
+                <Button variant="outline" className="gap-2">
+                  <Play className="h-4 w-4" />
+                  Take Tour
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Smart Notifications */}
       <SmartNotifications />
