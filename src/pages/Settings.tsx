@@ -15,7 +15,7 @@ import ThemePreferences from "@/components/ThemePreferences";
 import OfflineSupport from "@/components/OfflineSupport";
 
 const Settings = () => {
-  const { monthlyStartingPoint, setMonthlyStartingPoint, dailyData, transactions, currency } = useFinancial();
+  const { monthlyStartingPoint, setMonthlyStartingPoint, dailyData, transactions, currency, clearAllData } = useFinancial();
   const { toast } = useToast();
   const [startingPoint, setStartingPoint] = useState(monthlyStartingPoint.toString());
   const [notifications, setNotifications] = useState(true);
@@ -87,14 +87,20 @@ const Settings = () => {
     });
   };
 
-  const clearAllData = () => {
-    localStorage.removeItem('moneylensFinancialData');
-    localStorage.removeItem('moneylensStartingPoint');
-    
-    toast({
-      title: "Data Cleared",
-      description: "All financial data has been cleared. Please refresh the page."
-    });
+  const handleClearAllData = async () => {
+    try {
+      await clearAllData();
+      toast({
+        title: "Data Cleared",
+        description: "All financial data has been cleared successfully."
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to clear data. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
   const resetToDefaults = () => {
@@ -317,7 +323,7 @@ const Settings = () => {
               </DialogHeader>
               <div className="flex justify-end gap-2 mt-4">
                 <Button variant="outline">Cancel</Button>
-                <Button variant="destructive" onClick={clearAllData}>
+                <Button variant="destructive" onClick={handleClearAllData}>
                   Delete Everything
                 </Button>
               </div>

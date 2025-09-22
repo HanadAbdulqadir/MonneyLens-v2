@@ -191,6 +191,7 @@ interface FinancialContextType {
   getCurrentBalance: () => number;
   getTodaysData: () => DailyEntry;
   recalculateBalances: () => Promise<void>;
+  clearAllData: () => Promise<void>;
 }
 
 const FinancialContext = createContext<FinancialContextType | undefined>(undefined);
@@ -697,6 +698,43 @@ export function FinancialProvider({ children }: { children: ReactNode }) {
     setCategoryFilter(filter);
   };
 
+  // Clear all data
+  const clearAllData = async () => {
+    if (!user) return;
+
+    try {
+      // Delete all user data in sequence
+      await supabase.from('debt_payments').delete().eq('user_id', user.id);
+      await supabase.from('debts').delete().eq('user_id', user.id);
+      await supabase.from('financial_goals').delete().eq('user_id', user.id);
+      await supabase.from('transactions').delete().eq('user_id', user.id);
+      await supabase.from('daily_entries').delete().eq('user_id', user.id);
+      
+      // Reset settings to defaults
+      await supabase
+        .from('user_settings')
+        .update({ 
+          monthly_starting_point: 0,
+          category_filter: null
+        })
+        .eq('user_id', user.id);
+
+      // Reset state
+      setTransactions([]);
+      setGoals([]);
+      setDebts([]);
+      setDailyData([]);
+      setMonthlyStartingPoint(0);
+      setCategoryFilter('');
+
+      toast.success('All data cleared successfully');
+    } catch (error) {
+      console.error('Error clearing data:', error);
+      toast.error('Failed to clear data');
+      throw error;
+    }
+  };
+
   // Utility methods
   const getCurrentBalance = () => {
     if (dailyData.length === 0) return monthlyStartingPoint;
@@ -807,6 +845,7 @@ export function FinancialProvider({ children }: { children: ReactNode }) {
     getCurrentBalance,
     getTodaysData,
     recalculateBalances,
+    clearAllData,
   };
 
   return (
