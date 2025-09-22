@@ -26,7 +26,7 @@ import {
 interface UnifiedToolbarProps {}
 
 const UnifiedToolbar: React.FC<UnifiedToolbarProps> = () => {
-  const [isMinimized, setIsMinimized] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(true); // Start minimized by default
   const [showAccessibility, setShowAccessibility] = useState(false);
   const [showTour, setShowTour] = useState(false);
 
