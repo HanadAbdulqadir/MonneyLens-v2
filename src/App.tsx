@@ -9,6 +9,7 @@ import { FinancialProvider } from "@/contexts/SupabaseFinancialContext";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { AppSidebar } from "@/components/AppSidebar";
 import UnifiedToolbar from "@/components/UnifiedToolbar";
+import QuickActionsToolbar from "@/components/QuickActionsToolbar";
 import NotificationSystem from "@/components/NotificationSystem";
 import DataImporter from "@/components/DataImporter";
 import AdvancedSearch from "@/components/AdvancedSearch";
@@ -93,6 +94,7 @@ function AppContent() {
             </div>
 
             {/* Enhanced UX Components */}
+            <QuickActionsToolbar />
             <UnifiedToolbar />
             <AdvancedSearch />
             <UserOnboarding />
