@@ -487,6 +487,7 @@ export default function FinancialHub() {
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
   const [dynamicConfig, setDynamicConfig] = useState<any>(null);
+  const currency = schema.currency;
 
   useEffect(() => {
     const start = parseISO(startDate);
@@ -978,54 +979,232 @@ export default function FinancialHub() {
         </div>
       )}
 
-      {/* Transition Plan View */}
+      {/* Enhanced Transition Plan View */}
       {view === "transition" && selectedMonth && (
-        <Card>
-          <CardContent className="p-6">
-            <h2 className="text-2xl font-bold mb-6">Transition Plan</h2>
-            <div className="space-y-4">
-              {monthsPlan[selectedMonth]?.slice(0, 10).map(day => (
-                <div key={day.date} className="flex items-center gap-6 p-4 border rounded-lg">
-                  <div className="text-center min-w-[100px]">
-                    <div className="font-semibold">{format(parseISO(day.date), 'EEE')}</div>
-                    <div className="text-2xl font-bold">{format(parseISO(day.date), 'dd')}</div>
-                    <div className="text-sm text-gray-600">{format(parseISO(day.date), 'MMM')}</div>
-                  </div>
+        <div className="space-y-6">
+          {/* Pot Progress Overview */}
+          <Card>
+            <CardContent className="p-6">
+              <h2 className="text-2xl font-bold mb-6">Pot Transition Plan</h2>
+              <p className="text-gray-600 mb-6">
+                Track how your pots will grow over time and see the transition from current state to target goals.
+              </p>
+              
+              {/* Pot Progress Summary */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                {schema.pots.map(pot => {
+                  const progress = (pot.currentAmount / pot.goalAmount) * 100;
+                  const daysInMonth = monthsPlan[selectedMonth]?.length || 30;
+                  const dailyTarget = pot.goalAmount / daysInMonth;
+                  const daysNeeded = Math.ceil((pot.goalAmount - pot.currentAmount) / dailyTarget);
                   
-                  <div className="flex-1 grid grid-cols-4 gap-4">
-                    <div>
-                      <div className="text-sm text-gray-600">Starting</div>
-                      <div className="font-semibold">£{(day.balanceAfter - day.income + day.expenses.reduce((s, e) => s + e.amount, 0)).toFixed(0)}</div>
-                    </div>
-                    <div>
-                      <div className="text-sm text-gray-600">Income</div>
-                      <div className="font-semibold text-green-600">+£{day.income}</div>
-                    </div>
-                    <div>
-                      <div className="text-sm text-gray-600">Expenses</div>
-                      <div className="font-semibold text-red-600">
-                        -£{day.expenses.reduce((s, e) => s + e.amount, 0)}
+                  return (
+                    <div key={pot.id} className="border rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <h3 className="font-semibold text-sm">{pot.name}</h3>
+                        <Badge variant={
+                          pot.type === 'essential' ? 'default' :
+                          pot.type === 'savings' ? 'secondary' :
+                          pot.type === 'buffer' ? 'outline' : 'destructive'
+                        }>
+                          {pot.type}
+                        </Badge>
+                      </div>
+                      <div className="text-xs text-gray-600 mb-2">
+                        {currency}{pot.currentAmount} / {currency}{pot.goalAmount}
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
+                        <div 
+                          className="h-2 rounded-full bg-green-500 transition-all"
+                          style={{ width: `${Math.min(100, progress)}%` }}
+                        />
+                      </div>
+                      <div className="text-xs text-gray-600">
+                        {progress >= 100 ? 'Complete' : `${Math.round(progress)}% • ${daysNeeded} days left`}
                       </div>
                     </div>
-                    <div>
-                      <div className="text-sm text-gray-600">Ending</div>
-                      <div className="font-semibold">£{day.balanceAfter}</div>
-                    </div>
-                  </div>
+                  );
+                })}
+              </div>
 
-                  <div className="min-w-[200px]">
-                    <div className="text-sm text-gray-600">Actions</div>
-                    <div className="text-xs space-y-1">
-                      {day.recommendations.map((rec, i) => (
-                        <div key={i}>• {rec}</div>
-                      ))}
+              {/* Weekly Pot Allocation Strategy */}
+              <div className="bg-blue-50 rounded-lg p-4 mb-6">
+                <h3 className="font-semibold text-blue-900 mb-2">Weekly Pot Allocation Strategy</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                      <span className="font-medium">Weeks 1-2:</span>
                     </div>
+                    <p className="text-blue-700">Leftover funds go to Next-Month Pot</p>
+                    <p className="text-xs text-blue-600">Focus on building buffer for upcoming month</p>
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                      <span className="font-medium">Weeks 3-5:</span>
+                    </div>
+                    <p className="text-blue-700">Leftover funds go to Buffer Pot</p>
+                    <p className="text-xs text-blue-600">Build emergency fund and flexibility</p>
                   </div>
                 </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Daily Transition Timeline */}
+          <Card>
+            <CardContent className="p-6">
+              <h3 className="text-xl font-semibold mb-4">Daily Transition Timeline</h3>
+              <div className="space-y-4">
+                {monthsPlan[selectedMonth]?.slice(0, 14).map((day, index) => {
+                  const totalPotContributions = day.pots.reduce((sum, pot) => sum + pot.contribution, 0);
+                  const totalExpenses = day.expenses.reduce((sum, expense) => sum + expense.amount, 0);
+                  const netChange = day.income - totalExpenses - totalPotContributions;
+                  
+                  return (
+                    <div key={day.date} className={`border-l-4 pl-4 py-3 ${
+                      day.dayStatus === 'danger' ? 'border-l-red-500 bg-red-50' :
+                      day.dayStatus === 'warning' ? 'border-l-yellow-500 bg-yellow-50' :
+                      'border-l-green-500 bg-green-50'
+                    }`}>
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-4">
+                          <div className="text-center">
+                            <div className="font-semibold">{format(parseISO(day.date), 'EEE')}</div>
+                            <div className="text-2xl font-bold">{format(parseISO(day.date), 'dd')}</div>
+                            <div className="text-xs text-gray-600">Week {day.weekNumber}</div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Badge variant="outline" className="bg-white">
+                              {currency}{day.income}
+                            </Badge>
+                            <span className="text-sm text-gray-600">→</span>
+                            <Badge variant="outline" className="bg-white">
+                              {currency}{totalExpenses}
+                            </Badge>
+                            <span className="text-sm text-gray-600">→</span>
+                            <Badge variant="outline" className="bg-white">
+                              {currency}{totalPotContributions}
+                            </Badge>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className={`font-semibold ${
+                            day.dayStatus === 'danger' ? 'text-red-600' :
+                            day.dayStatus === 'warning' ? 'text-yellow-600' : 'text-green-600'
+                          }`}>
+                            {currency}{day.balanceAfter}
+                          </div>
+                          <div className="text-xs text-gray-600">
+                            {netChange >= 0 ? '+' : ''}{currency}{netChange}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Pot Contributions */}
+                      {day.pots.length > 0 && (
+                        <div className="mt-2">
+                          <div className="text-xs font-medium text-gray-600 mb-1">Pot Contributions:</div>
+                          <div className="flex flex-wrap gap-2">
+                            {day.pots.map(pot => (
+                              <div key={pot.id} className="flex items-center gap-1 text-xs">
+                                <div className={`w-2 h-2 rounded-full ${
+                                  pot.type === 'essential' ? 'bg-blue-500' :
+                                  pot.type === 'savings' ? 'bg-green-500' :
+                                  pot.type === 'buffer' ? 'bg-yellow-500' : 'bg-purple-500'
+                                }`}></div>
+                                <span>{pot.name}:</span>
+                                <span className="font-semibold text-green-600">+{currency}{pot.contribution}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Recommendations */}
+                      {day.recommendations.length > 0 && (
+                        <div className="mt-2">
+                          <div className="text-xs font-medium text-gray-600 mb-1">Recommendations:</div>
+                          <div className="space-y-1">
+                            {day.recommendations.map((rec, i) => (
+                              <div key={i} className="flex items-center gap-2 text-xs">
+                                <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+                                <span>{rec}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Monthly Pot Summary */}
+          <Card>
+            <CardContent className="p-6">
+              <h3 className="text-xl font-semibold mb-4">Monthly Pot Summary</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Pot Contributions Chart */}
+                <div>
+                  <h4 className="font-medium mb-3">Pot Contributions by Type</h4>
+                  <div className="space-y-3">
+                    {Object.entries(POT_TYPE_COLORS).map(([type, color]) => {
+                      const typeContributions = monthsPlan[selectedMonth]?.reduce((sum, day) => 
+                        sum + day.pots.filter(pot => pot.type === type).reduce((potSum, pot) => potSum + pot.contribution, 0), 0
+                      ) || 0;
+                      
+                      return (
+                        <div key={type} className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: color }}></div>
+                            <span className="text-sm capitalize">{type}</span>
+                          </div>
+                          <span className="font-semibold">{currency}{typeContributions.toFixed(2)}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Pot Progress Projection */}
+                <div>
+                  <h4 className="font-medium mb-3">Pot Progress Projection</h4>
+                  <div className="space-y-3">
+                    {schema.pots.map(pot => {
+                      const monthlyContributions = monthsPlan[selectedMonth]?.reduce((sum, day) => 
+                        sum + day.pots.filter(p => p.id === pot.id).reduce((potSum, p) => potSum + p.contribution, 0), 0
+                      ) || 0;
+                      const projectedEnd = pot.currentAmount + monthlyContributions;
+                      const progress = (projectedEnd / pot.goalAmount) * 100;
+                      
+                      return (
+                        <div key={pot.id} className="space-y-1">
+                          <div className="flex justify-between text-sm">
+                            <span>{pot.name}</span>
+                            <span>{currency}{projectedEnd.toFixed(0)} / {currency}{pot.goalAmount}</span>
+                          </div>
+                          <div className="w-full bg-gray-200 rounded-full h-2">
+                            <div 
+                              className="h-2 rounded-full bg-green-500 transition-all"
+                              style={{ width: `${Math.min(100, progress)}%` }}
+                            />
+                          </div>
+                          <div className="text-xs text-gray-600">
+                            {progress >= 100 ? 'Target reached this month!' : `${Math.round(progress)}% complete`}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       )}
 
       {/* Day Detail Modal */}
