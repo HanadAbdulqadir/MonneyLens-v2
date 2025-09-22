@@ -23,6 +23,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import FinancialHubConfig from "@/components/FinancialHubConfig";
 
 // Charts
 import {
@@ -481,9 +482,10 @@ export default function FinancialHub() {
   const [monthsPlan, setMonthsPlan] = useState<Record<string, PlanDay[]>>({});
   const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
   const [selectedDay, setSelectedDay] = useState<PlanDay | null>(null);
-  const [view, setView] = useState<"calendar" | "weekly" | "transition">("weekly");
+  const [view, setView] = useState<"config" | "calendar" | "weekly" | "transition">("config");
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
+  const [dynamicConfig, setDynamicConfig] = useState<any>(null);
 
   useEffect(() => {
     const start = parseISO(startDate);
@@ -585,6 +587,9 @@ export default function FinancialHub() {
             />
           </div>
           <div className="flex gap-2">
+            <Button variant={view === "config" ? "default" : "outline"} onClick={() => setView("config")}>
+              Configuration
+            </Button>
             <Button variant={view === "weekly" ? "default" : "outline"} onClick={() => setView("weekly")}>
               Weekly View
             </Button>
@@ -601,8 +606,96 @@ export default function FinancialHub() {
         </div>
       </div>
 
+      {/* Configuration View */}
+      {view === "config" && (
+        <div className="space-y-6">
+          <Card>
+            <CardContent className="p-6">
+              <h2 className="text-2xl font-bold mb-4">Financial Planning Configuration</h2>
+              <p className="text-gray-600 mb-6">
+                Configure your expenses, income, and savings goals. The system will automatically analyze your existing 
+                financial data and suggest realistic values based on your transaction history.
+              </p>
+              
+              <FinancialHubConfig 
+                onConfigUpdate={(config) => {
+                  setDynamicConfig(config);
+                  // Convert dynamic config to schema format
+                  const newSchema: UserSchema = {
+                    currency: "GBP",
+                    startingBalance: config.startingBalance,
+                    averageDailyIncome: config.averageDailyIncome,
+                    weeklyIncome: config.weeklyIncome,
+                    incomeFrequency: config.incomeFrequency,
+                    payDays: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+                    expenses: config.expenses.map(exp => ({
+                      id: exp.id,
+                      name: exp.name,
+                      amount: exp.amount,
+                      frequency: exp.frequency,
+                      dayOfWeek: exp.dayOfWeek,
+                      dayOfMonth: exp.dayOfMonth,
+                      category: exp.category as any,
+                      notes: exp.notes
+                    })),
+                    pots: config.pots.map(pot => ({
+                      id: pot.id,
+                      name: pot.name,
+                      goalAmount: pot.goalAmount,
+                      currentAmount: pot.currentAmount,
+                      frequency: pot.frequency,
+                      priority: pot.priority,
+                      type: pot.type as any
+                    })),
+                    rules: {
+                      leftoverStrategy: "buffer",
+                      weeklyAllocation: {
+                        weeks1_2: "next-month-pot",
+                        weeks3_5: "buffer",
+                      },
+                      essentialOrder: ["Food", "Transport", "Housing", "Utilities", "Entertainment", "Healthcare", "Other"],
+                      thresholds: {
+                        warning: 100,
+                        danger: 0,
+                      },
+                    },
+                  };
+                  setSchema(newSchema);
+                }}
+              />
+            </CardContent>
+          </Card>
+          
+          {dynamicConfig && (
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="font-semibold mb-4">Configuration Summary</h3>
+                <div className="grid grid-cols-3 gap-4 text-sm">
+                  <div>
+                    <span className="font-medium">Expenses:</span> {dynamicConfig.expenses?.length || 0}
+                  </div>
+                  <div>
+                    <span className="font-medium">Pots:</span> {dynamicConfig.pots?.length || 0}
+                  </div>
+                  <div>
+                    <span className="font-medium">Daily Income:</span> {schema.currency} {dynamicConfig.averageDailyIncome}
+                  </div>
+                </div>
+                <Button 
+                  onClick={() => setView("weekly")} 
+                  className="mt-4"
+                  disabled={!dynamicConfig.expenses?.length || !dynamicConfig.pots?.length}
+                >
+                  Generate Plan
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+      )}
+
       {/* Alerts Section */}
-      {getUpcomingAlerts.length > 0 && (
+      {getUpcomingAlerts.length > 0 && view !== "config" && (
         <Card className="border-l-4 border-l-yellow-500">
           <CardContent className="p-4">
             <h3 className="font-semibold mb-2">Upcoming Alerts</h3>
