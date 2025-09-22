@@ -743,16 +743,19 @@ export function FinancialProvider({ children }: { children: ReactNode }) {
 
   const getTodaysData = (): DailyEntry => {
     const today = new Date().toISOString().split('T')[0];
-    const todaysEntry = dailyData.find(entry => entry.date === today);
     
-    if (todaysEntry) return todaysEntry;
+    // Calculate today's data from current transactions
+    const todaysTransactions = transactions.filter(t => t.date === today);
+    const earnings = todaysTransactions.filter(t => t.amount > 0).reduce((sum, t) => sum + t.amount, 0);
+    const expenses = todaysTransactions.filter(t => t.amount < 0).reduce((sum, t) => sum + Math.abs(t.amount), 0);
+    const netChange = earnings - expenses;
     
     return {
       date: today,
-      earnings: 0,
-      expenses: 0,
-      netChange: 0,
-      balance: getCurrentBalance(),
+      earnings,
+      expenses,
+      netChange,
+      balance: getCurrentBalance() + netChange, // Add today's net change to current balance
     };
   };
 
