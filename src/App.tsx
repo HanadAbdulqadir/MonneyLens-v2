@@ -10,6 +10,7 @@ import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { AppSidebar } from "@/components/AppSidebar";
 import UnifiedToolbar from "@/components/UnifiedToolbar";
 import QuickActionsToolbar from "@/components/QuickActionsToolbar";
+import PageTourManager from "@/components/PageTourManager";
 import NotificationSystem from "@/components/NotificationSystem";
 import DataImporter from "@/components/DataImporter";
 import AdvancedSearch from "@/components/AdvancedSearch";
@@ -96,6 +97,7 @@ function AppContent() {
             {/* Enhanced UX Components */}
             <QuickActionsToolbar />
             <UnifiedToolbar />
+            <PageTourManager />
             <AdvancedSearch />
             <UserOnboarding />
           </main>

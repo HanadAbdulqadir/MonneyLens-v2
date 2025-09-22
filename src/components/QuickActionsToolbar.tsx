@@ -133,6 +133,24 @@ const QuickActionsToolbar = () => {
     return () => document.removeEventListener('keydown', handleKeyPress);
   }, [isOpen]);
 
+  // Helper function to get page name from path
+  const getPageNameFromPath = (path: string): string => {
+    const pageMap: { [key: string]: string } = {
+      '/': 'Dashboard',
+      '/financial-hub': 'Financial Hub',
+      '/analytics': 'Analytics',
+      '/transactions': 'Transactions',
+      '/goals': 'Goals',
+      '/debts': 'Debts',
+      '/recurring': 'Recurring',
+      '/categories': 'Categories',
+      '/budget': 'Budget',
+      '/calendar': 'Calendar',
+      '/settings': 'Settings'
+    };
+    return pageMap[path] || 'Dashboard';
+  };
+
   return (
     <TooltipProvider>
       {/* Quick Stats Bar */}
@@ -232,12 +250,15 @@ const QuickActionsToolbar = () => {
                 size="sm" 
                 variant="outline" 
                 onClick={() => {
-                  // Simple approach: just open the onboarding dialog directly
-                  // We'll use a global function or state to trigger the tour
-                  window.dispatchEvent(new CustomEvent('open-tour'));
+                  // Trigger page-specific tour based on current URL
+                  const currentPath = window.location.pathname;
+                  const pageName = getPageNameFromPath(currentPath);
+                  window.dispatchEvent(new CustomEvent('open-page-tour', { 
+                    detail: { pageName } 
+                  }));
                 }}
                 className="gap-2 text-xs h-9 hover:bg-muted transition-colors"
-                title="Take the app tour"
+                title="Take a tour of this page"
               >
                 <Play className="h-3 w-3" />
                 Tour
