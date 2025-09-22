@@ -34,7 +34,7 @@ const UserOnboarding = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [completedSteps, setCompletedSteps] = useState<string[]>([]);
 
-  // Check if user is new (no transactions)
+  // Check if user is new (no transactions) and listen for tour events
   useEffect(() => {
     const hasSeenOnboarding = localStorage.getItem('onboarding-completed');
     const isNewUser = transactions.length === 0;
@@ -42,6 +42,17 @@ const UserOnboarding = () => {
     if (!hasSeenOnboarding && isNewUser) {
       setTimeout(() => setIsOpen(true), 1000); // Delay to let page load
     }
+
+    // Listen for tour start events from QuickActionsToolbar
+    const handleStartTour = () => {
+      setIsOpen(true);
+    };
+
+    window.addEventListener('start-tour', handleStartTour);
+    
+    return () => {
+      window.removeEventListener('start-tour', handleStartTour);
+    };
   }, [transactions]);
 
   const steps: OnboardingStep[] = [
@@ -242,19 +253,7 @@ const UserOnboarding = () => {
 
   return (
     <>
-      {/* Onboarding Tour Button - Bottom Left (to avoid QuickActionsToolbar conflict) */}
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 left-6 z-40 gap-1 bg-background/95 backdrop-blur-sm border shadow-lg h-10 px-3 rounded-full text-xs hover:shadow-xl transition-all duration-200"
-        title="Take the tour again"
-      >
-        <Play className="h-3 w-3" />
-        Tour
-      </Button>
-
-      {/* Onboarding Dialog */}
+      {/* Onboarding Dialog - Tour is now only accessible through QuickActionsToolbar */}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="sm:max-w-[500px] p-0">
           {/* Header */}

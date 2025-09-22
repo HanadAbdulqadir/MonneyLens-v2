@@ -21,7 +21,8 @@ import {
   Maximize2,
   TrendingUp,
   TrendingDown,
-  Wallet
+  Wallet,
+  Play
 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {
@@ -205,7 +206,7 @@ const QuickActionsToolbar = () => {
             </div>
 
             {/* Quick Action Buttons */}
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-3 gap-2">
               <Button 
                 size="sm" 
                 onClick={() => setIsOpen(true)}
@@ -213,7 +214,7 @@ const QuickActionsToolbar = () => {
                 title="Quick Add Transaction (Ctrl+K)"
               >
                 <Plus className="h-3 w-3" />
-                Add Transaction
+                Add
               </Button>
               
               <Button 
@@ -224,7 +225,22 @@ const QuickActionsToolbar = () => {
                 title="Export Data"
               >
                 <Download className="h-3 w-3" />
-                Export CSV
+                Export
+              </Button>
+
+              <Button 
+                size="sm" 
+                variant="outline" 
+                onClick={() => {
+                  // This will trigger the UserOnboarding tour
+                  const event = new CustomEvent('start-tour');
+                  window.dispatchEvent(event);
+                }}
+                className="gap-2 text-xs h-9 hover:bg-muted transition-colors"
+                title="Take the app tour"
+              >
+                <Play className="h-3 w-3" />
+                Tour
               </Button>
             </div>
 
