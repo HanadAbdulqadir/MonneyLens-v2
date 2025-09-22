@@ -5,9 +5,11 @@ import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useFinancial } from "@/contexts/FinancialContext";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import UniversalCSVImporter from "./UniversalCSVImporter";
 import { 
   Upload, 
   FileText, 
@@ -17,7 +19,8 @@ import {
   ArrowRight,
   X,
   FileSpreadsheet,
-  Database
+  Database,
+  Globe
 } from "lucide-react";
 
 interface ImportedTransaction {
@@ -302,68 +305,87 @@ const DataImporter = () => {
 
         <div className="space-y-6">
           {!importPreview && (
-            <>
-              {/* Upload Section */}
-              <div className="space-y-4">
-                <div className="text-center p-8 border-2 border-dashed border-border rounded-lg">
-                  <FileText className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-medium mb-2">Upload CSV File</h3>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    Import your transaction data from a CSV file
-                  </p>
-                  
-                  <div className="flex flex-col sm:flex-row gap-3 items-center justify-center">
-                    <Button onClick={() => fileInputRef.current?.click()} disabled={isProcessing}>
-                      {isProcessing ? 'Processing...' : 'Choose File'}
-                    </Button>
-                    <Button variant="outline" onClick={downloadTemplate}>
-                      <Download className="h-4 w-4 mr-2" />
-                      Download Template
-                    </Button>
-                  </div>
-                  
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept=".csv"
-                    onChange={handleFileUpload}
-                    className="hidden"
-                  />
-                </div>
-
-                {isProcessing && (
-                  <div className="space-y-2">
-                    <Progress value={50} className="w-full" />
-                    <p className="text-sm text-center text-muted-foreground">
-                      Processing your file...
+            <Tabs defaultValue="universal" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="universal" className="flex items-center gap-2">
+                  <Globe className="h-4 w-4" />
+                  Universal Import
+                </TabsTrigger>
+                <TabsTrigger value="transactions" className="flex items-center gap-2">
+                  <FileText className="h-4 w-4" />
+                  Transactions Only
+                </TabsTrigger>
+              </TabsList>
+              
+              {/* Universal Import Tab */}
+              <TabsContent value="universal" className="space-y-4">
+                <UniversalCSVImporter onImportComplete={() => setIsOpen(false)} />
+              </TabsContent>
+              
+              {/* Transactions Only Tab */}
+              <TabsContent value="transactions" className="space-y-4">
+                {/* Upload Section */}
+                <div className="space-y-4">
+                  <div className="text-center p-8 border-2 border-dashed border-border rounded-lg">
+                    <FileText className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                    <h3 className="text-lg font-medium mb-2">Upload CSV File</h3>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Import your transaction data from a CSV file
                     </p>
+                    
+                    <div className="flex flex-col sm:flex-row gap-3 items-center justify-center">
+                      <Button onClick={() => fileInputRef.current?.click()} disabled={isProcessing}>
+                        {isProcessing ? 'Processing...' : 'Choose File'}
+                      </Button>
+                      <Button variant="outline" onClick={downloadTemplate}>
+                        <Download className="h-4 w-4 mr-2" />
+                        Download Template
+                      </Button>
+                    </div>
+                    
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept=".csv"
+                      onChange={handleFileUpload}
+                      className="hidden"
+                    />
                   </div>
-                )}
-              </div>
 
-              {/* Format Requirements */}
-              <Card className="p-4">
-                <h4 className="font-medium mb-3">CSV Format Requirements</h4>
-                <div className="space-y-2 text-sm">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-success" />
-                    <span><strong>Required columns:</strong> Date, Category, Amount</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-success" />
-                    <span><strong>Date format:</strong> YYYY-MM-DD, MM/DD/YYYY, or DD/MM/YYYY</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-success" />
-                    <span><strong>Categories:</strong> Earnings, Food, Petrol, Other</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-success" />
-                    <span><strong>Amount:</strong> Positive for income, negative for expenses</span>
-                  </div>
+                  {isProcessing && (
+                    <div className="space-y-2">
+                      <Progress value={50} className="w-full" />
+                      <p className="text-sm text-center text-muted-foreground">
+                        Processing your file...
+                      </p>
+                    </div>
+                  )}
                 </div>
-              </Card>
-            </>
+
+                {/* Format Requirements */}
+                <Card className="p-4">
+                  <h4 className="font-medium mb-3">CSV Format Requirements</h4>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="h-4 w-4 text-success" />
+                      <span><strong>Required columns:</strong> Date, Category, Amount</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="h-4 w-4 text-success" />
+                      <span><strong>Date format:</strong> YYYY-MM-DD, MM/DD/YYYY, or DD/MM/YYYY</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="h-4 w-4 text-success" />
+                      <span><strong>Categories:</strong> Earnings, Food, Petrol, Other</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="h-4 w-4 text-success" />
+                      <span><strong>Amount:</strong> Positive for income, negative for expenses</span>
+                    </div>
+                  </div>
+                </Card>
+              </TabsContent>
+            </Tabs>
           )}
 
           {/* Preview Section */}
