@@ -99,7 +99,7 @@ const OfflineSupport = ({ className }: OfflineSupportProps) => {
       if (pending) {
         const transactions = JSON.parse(pending);
         
-        // In a real app, you'd sync these with your backend
+        // In a real implementation, you would sync these with Supabase
         // For now, we'll just clear them and show success
         localStorage.removeItem('pending-transactions');
         setPendingSync([]);
