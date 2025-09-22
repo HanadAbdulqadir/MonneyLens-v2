@@ -232,9 +232,9 @@ const QuickActionsToolbar = () => {
                 size="sm" 
                 variant="outline" 
                 onClick={() => {
-                  // This will trigger the UserOnboarding tour
-                  const event = new CustomEvent('start-tour');
-                  window.dispatchEvent(event);
+                  // Simple approach: just open the onboarding dialog directly
+                  // We'll use a global function or state to trigger the tour
+                  window.dispatchEvent(new CustomEvent('open-tour'));
                 }}
                 className="gap-2 text-xs h-9 hover:bg-muted transition-colors"
                 title="Take the app tour"

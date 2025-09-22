@@ -44,14 +44,14 @@ const UserOnboarding = () => {
     }
 
     // Listen for tour start events from QuickActionsToolbar
-    const handleStartTour = () => {
+    const handleOpenTour = () => {
       setIsOpen(true);
     };
 
-    window.addEventListener('start-tour', handleStartTour);
+    window.addEventListener('open-tour', handleOpenTour);
     
     return () => {
-      window.removeEventListener('start-tour', handleStartTour);
+      window.removeEventListener('open-tour', handleOpenTour);
     };
   }, [transactions]);
 
@@ -255,6 +255,7 @@ const UserOnboarding = () => {
     <>
       {/* Onboarding Dialog - Tour is now only accessible through QuickActionsToolbar */}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <div data-onboarding-dialog style={{ display: 'none' }} />
         <DialogContent className="sm:max-w-[500px] p-0">
           {/* Header */}
           <DialogHeader className="p-6 pb-4">
