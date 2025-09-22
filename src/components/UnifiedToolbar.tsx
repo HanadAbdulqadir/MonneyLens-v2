@@ -30,6 +30,24 @@ const UnifiedToolbar: React.FC<UnifiedToolbarProps> = () => {
   const [showAccessibility, setShowAccessibility] = useState(false);
   const [showTour, setShowTour] = useState(false);
 
+  // Helper function to get page name from path
+  const getPageNameFromPath = (path: string): string => {
+    const pageMap: { [key: string]: string } = {
+      '/': 'Dashboard',
+      '/financial-hub': 'Financial Hub',
+      '/analytics': 'Analytics',
+      '/transactions': 'Transactions',
+      '/goals': 'Goals',
+      '/debts': 'Debts',
+      '/recurring': 'Recurring',
+      '/categories': 'Categories',
+      '/budget': 'Budget',
+      '/calendar': 'Calendar',
+      '/settings': 'Settings'
+    };
+    return pageMap[path] || 'Dashboard';
+  };
+
   const tools = [
     {
       id: 'command-palette',
@@ -59,7 +77,14 @@ const UnifiedToolbar: React.FC<UnifiedToolbarProps> = () => {
       id: 'tour',
       icon: Play,
       label: 'Take Tour',
-      action: () => setShowTour(true),
+      action: () => {
+        // Trigger page-specific tour based on current URL
+        const currentPath = window.location.pathname;
+        const pageName = getPageNameFromPath(currentPath);
+        window.dispatchEvent(new CustomEvent('open-page-tour', { 
+          detail: { pageName } 
+        }));
+      },
       category: 'primary'
     },
     {

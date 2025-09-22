@@ -22,67 +22,127 @@ const PageTourManager = () => {
     'Dashboard': [
       {
         id: 'welcome-dashboard',
-        title: 'Welcome to Your Dashboard',
-        description: 'Your dashboard provides an overview of your financial health and recent activity.',
+        title: 'Welcome to Your Financial Dashboard',
+        description: 'This is your central hub for monitoring your financial health. The dashboard provides real-time insights into your income, expenses, and overall financial status.',
       },
       {
         id: 'balance-card',
-        title: 'Balance Overview',
-        description: 'See your current balance, income, and expenses at a glance.',
+        title: 'Balance Overview Card',
+        description: 'The balance card shows your current financial standing. Green indicates positive balance, red shows negative. Click on different sections to filter transactions by type.',
+      },
+      {
+        id: 'personalized-overview',
+        title: 'Personalized Financial Overview',
+        description: 'This section adapts to your spending patterns. It highlights key metrics like monthly spending trends, category breakdowns, and financial health indicators.',
       },
       {
         id: 'recent-transactions',
-        title: 'Recent Transactions',
-        description: 'Quickly review your most recent financial activity.',
+        title: 'Recent Transactions Panel',
+        description: 'View your latest financial activity here. Each transaction shows amount, category, and date. Click any transaction to see more details or make edits.',
       },
       {
-        id: 'quick-actions',
-        title: 'Quick Actions',
-        description: 'Use the floating toolbar to quickly add transactions or access other features.',
+        id: 'weekly-chart',
+        title: 'Weekly Spending Chart',
+        description: 'This interactive chart visualizes your spending patterns over the current week. Hover over bars to see exact amounts and compare daily spending.',
+      },
+      {
+        id: 'quick-insights',
+        title: 'Quick Insights Grid',
+        description: 'Get instant financial insights like spending alerts, budget status, and upcoming recurring payments. These cards update in real-time as you add transactions.',
+      },
+      {
+        id: 'navigation-sidebar',
+        title: 'Navigation Sidebar',
+        description: 'Use the sidebar to access different sections: Transactions, Budget, Analytics, Goals, and Settings. The active page is highlighted for easy orientation.',
+      },
+      {
+        id: 'toolbar-actions',
+        title: 'Quick Action Toolbars',
+        description: 'Two floating toolbars provide quick access: the top toolbar shows monthly stats and quick add, while the bottom toolbar offers comprehensive tools and accessibility features.',
       }
     ],
     'Transactions': [
       {
         id: 'welcome-transactions',
-        title: 'Transaction Management',
-        description: 'This is where you can view, add, and manage all your financial transactions.',
+        title: 'Comprehensive Transaction Management',
+        description: 'This page serves as your complete transaction hub. Track every financial movement, categorize spending, and analyze your cash flow patterns.',
       },
       {
-        id: 'transaction-list',
-        title: 'Transaction List',
-        description: 'Browse through all your recorded transactions with filtering options.',
+        id: 'transaction-filters',
+        title: 'Advanced Filtering System',
+        description: 'Use the filter panel to narrow down transactions by date range, category, amount, or type. Multiple filters can be combined for precise searching.',
       },
       {
-        id: 'add-transaction',
-        title: 'Adding Transactions',
-        description: 'Use the quick add button or form to record new income or expenses.',
+        id: 'transaction-table',
+        title: 'Interactive Transaction Table',
+        description: 'The main table displays all your transactions with sortable columns. Click column headers to sort by date, amount, or category.',
       },
       {
-        id: 'search-filter',
-        title: 'Search & Filter',
-        description: 'Find specific transactions using search and filter options.',
+        id: 'transaction-details',
+        title: 'Transaction Details View',
+        description: 'Click any transaction row to open detailed view. Edit amounts, categories, or add notes to keep your records accurate.',
+      },
+      {
+        id: 'bulk-actions',
+        title: 'Bulk Transaction Operations',
+        description: 'Select multiple transactions to perform batch operations like category changes, deletion, or exporting selected items.',
+      },
+      {
+        id: 'search-functionality',
+        title: 'Smart Search System',
+        description: 'Use the search bar to find transactions by description, category, or amount. The search updates results in real-time as you type.',
+      },
+      {
+        id: 'export-options',
+        title: 'Data Export Features',
+        description: 'Export your transaction data to CSV format for external analysis or backup purposes. Choose date ranges and specific categories for export.',
+      },
+      {
+        id: 'import-capabilities',
+        title: 'Transaction Import Tools',
+        description: 'Import transactions from bank statements or other financial apps using the universal CSV importer for comprehensive data consolidation.',
       }
     ],
     'Budget': [
       {
         id: 'welcome-budget',
-        title: 'Budget Planning',
-        description: 'Set and track your spending limits across different categories.',
+        title: 'Smart Budget Management System',
+        description: 'Create, monitor, and adjust your financial budgets with precision. This system helps you maintain spending discipline across all categories.',
       },
       {
-        id: 'budget-categories',
-        title: 'Budget Categories',
-        description: 'Organize your budget by categories like food, entertainment, utilities, etc.',
+        id: 'budget-overview',
+        title: 'Budget Overview Dashboard',
+        description: 'See all your budgets at a glance with progress indicators. Green shows you\'re within budget, yellow indicates caution, red means overspending.',
       },
       {
-        id: 'progress-tracking',
-        title: 'Progress Tracking',
-        description: 'Monitor your spending against your budget goals with visual indicators.',
+        id: 'category-budgets',
+        title: 'Category-Specific Budgets',
+        description: 'Set individual spending limits for each category like groceries, entertainment, utilities. Each category shows current spending vs. budget.',
       },
       {
-        id: 'budget-adjustments',
-        title: 'Adjusting Budgets',
-        description: 'Easily modify your budget amounts as your financial situation changes.',
+        id: 'progress-visualization',
+        title: 'Visual Progress Indicators',
+        description: 'Progress bars and circular indicators show how close you are to your budget limits. Hover for detailed breakdowns.',
+      },
+      {
+        id: 'budget-creation',
+        title: 'Creating New Budgets',
+        description: 'Use the budget creation wizard to set up new spending limits. Choose categories, set amounts, and define time periods.',
+      },
+      {
+        id: 'budget-adjustment',
+        title: 'Dynamic Budget Adjustments',
+        description: 'Easily modify existing budgets as your financial situation changes. Adjust amounts, extend timeframes, or pause budgets temporarily.',
+      },
+      {
+        id: 'spending-alerts',
+        title: 'Smart Spending Alerts',
+        description: 'Receive notifications when you approach or exceed budget limits. Alerts help prevent overspending before it happens.',
+      },
+      {
+        id: 'budget-reports',
+        title: 'Budget Performance Reports',
+        description: 'Generate detailed reports showing budget adherence, spending patterns, and areas for improvement.',
       }
     ],
     'Analytics': [
