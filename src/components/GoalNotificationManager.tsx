@@ -150,23 +150,15 @@ const GoalNotificationManager = () => {
       if (genuinelyNew.length > 0) {
         setNotifications(prev => [...genuinelyNew, ...prev].slice(0, 10)); // Keep only latest 10
         
-        // Show push notifications for high severity notifications
+        // Show in-app toast notifications for all new notifications
         genuinelyNew.forEach(notification => {
-          if (notification.pushEnabled && notification.severity === 'high') {
-            // Show browser notification if supported
-            if ('Notification' in window && Notification.permission === 'granted') {
-              new Notification(notification.title, {
-                body: notification.message,
-                icon: '/favicon.ico',
-                tag: notification.id
-              });
-            }
-            
-            // Show toast notification
+          if (notification.pushEnabled) {
+            // Show toast notification with appropriate variant
             toast({
               title: notification.title,
               description: notification.message,
-              variant: notification.severity === 'high' ? 'destructive' : 'default'
+              variant: notification.severity === 'high' ? 'destructive' : 
+                       notification.severity === 'medium' ? 'default' : 'default'
             });
           }
         });
@@ -180,12 +172,7 @@ const GoalNotificationManager = () => {
     return () => clearInterval(interval);
   }, [goals, transactions, notifications]);
 
-  // Request notification permission on component mount
-  useEffect(() => {
-    if ('Notification' in window && Notification.permission === 'default') {
-      Notification.requestPermission();
-    }
-  }, []);
+  // No browser notification permission needed - using in-app notifications only
 
   // Function to handle notification actions
   const handleNotificationAction = (notification: GoalNotification) => {
