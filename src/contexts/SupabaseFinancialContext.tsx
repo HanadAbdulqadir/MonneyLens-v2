@@ -228,11 +228,11 @@ export function FinancialProvider({ children }: { children: ReactNode }) {
   // Helper function to convert recurring transaction
   const dbRecurringToApp = (dbRecurring: DbRecurringTransaction): any => ({
     id: dbRecurring.id,
-    name: dbRecurring.description, // Use description as name
+    name: dbRecurring.description || 'Unnamed Transaction', // Use description as name, provide default
     category: dbRecurring.category,
     amount: Number(dbRecurring.amount),
     frequency: dbRecurring.frequency as 'daily' | 'weekly' | 'monthly' | 'yearly',
-    nextDate: dbRecurring.last_processed, // Use last_processed as nextDate
+    nextDate: dbRecurring.last_processed || dbRecurring.start_date, // Use last_processed as nextDate, fallback to start_date
     isActive: dbRecurring.is_active,
   });
 
