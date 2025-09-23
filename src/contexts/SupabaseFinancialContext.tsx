@@ -12,6 +12,7 @@ interface DbTransaction {
   amount: number;
   description: string | null;
   tags: string[];
+  pot_id: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -107,6 +108,7 @@ export interface Transaction {
   amount: number;
   description?: string;
   tags?: string[];
+  pot_id?: string | null;
   week?: string; // For backward compatibility
   dailyEntryId?: string; // For backward compatibility
 }
@@ -244,6 +246,7 @@ export function FinancialProvider({ children }: { children: ReactNode }) {
     amount: Number(dbTx.amount),
     description: dbTx.description || undefined,
     tags: dbTx.tags || [],
+    pot_id: dbTx.pot_id || undefined,
   });
 
   const dbGoalToApp = (dbGoal: DbFinancialGoal): FinancialGoal => ({
@@ -399,6 +402,7 @@ export function FinancialProvider({ children }: { children: ReactNode }) {
         amount: transaction.amount,
         description: transaction.description || null,
         tags: transaction.tags || [],
+        pot_id: transaction.pot_id || null,
       })
       .select()
       .single();
@@ -427,6 +431,7 @@ export function FinancialProvider({ children }: { children: ReactNode }) {
         ...(updates.amount !== undefined && { amount: updates.amount }),
         ...(updates.description !== undefined && { description: updates.description || null }),
         ...(updates.tags && { tags: updates.tags }),
+        ...(updates.pot_id !== undefined && { pot_id: updates.pot_id || null }),
       })
       .eq('id', id)
       .eq('user_id', user.id)
