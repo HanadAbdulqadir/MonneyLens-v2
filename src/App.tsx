@@ -27,6 +27,7 @@ import Calendar from "./pages/Calendar";
 import Settings from "./pages/Settings";
 import Budget from "./pages/Budget";
 import FinancialHub from "./pages/FinancialHub";
+import QuickAllocation from "./pages/QuickAllocation";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
 
@@ -82,6 +83,7 @@ function AppContent() {
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/financial-hub" element={<FinancialHub />} />
+                <Route path="/quick-allocation" element={<QuickAllocation />} />
                 <Route path="/analytics" element={<Analytics />} />
                 <Route path="/transactions" element={<Transactions />} />
                 <Route path="/goals" element={<Goals />} />
