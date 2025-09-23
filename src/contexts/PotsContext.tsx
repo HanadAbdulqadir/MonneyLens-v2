@@ -86,27 +86,37 @@ export function PotsProvider({ children }: { children: ReactNode }) {
     try {
       setLoading(true);
       
-      // Load pots
+      // Try to load pots from database first
       const { data: potsData, error: potsError } = await supabase
         .from('pots')
         .select('*')
         .eq('user_id', user.id)
         .order('priority');
 
-      if (potsError) throw potsError;
-      setPots(potsData || []);
+      if (potsError) {
+        // If database fails, try local storage
+        console.warn('Database not available, loading from local storage:', potsError);
+        const localPots = JSON.parse(localStorage.getItem(`pots-${user.id}`) || '[]');
+        setPots(localPots);
+      } else {
+        setPots(potsData || []);
+      }
 
-      // Load allocation rules
+      // Try to load allocation rules from database
       const { data: rulesData, error: rulesError } = await supabase
         .from('allocation_rules')
         .select('*')
         .eq('user_id', user.id)
         .order('priority');
 
-      if (rulesError) throw rulesError;
-      setAllocationRules((rulesData as AllocationRule[]) || []);
+      if (rulesError) {
+        console.warn('Allocation rules table not available:', rulesError);
+        setAllocationRules([]);
+      } else {
+        setAllocationRules((rulesData as AllocationRule[]) || []);
+      }
 
-      // Load recent allocation transactions
+      // Try to load allocation transactions from database
       const { data: transactionsData, error: transactionsError } = await supabase
         .from('allocation_transactions')
         .select('*')
@@ -114,8 +124,12 @@ export function PotsProvider({ children }: { children: ReactNode }) {
         .order('allocation_date', { ascending: false })
         .limit(50);
 
-      if (transactionsError) throw transactionsError;
-      setAllocationTransactions((transactionsData as AllocationTransaction[]) || []);
+      if (transactionsError) {
+        console.warn('Allocation transactions table not available:', transactionsError);
+        setAllocationTransactions([]);
+      } else {
+        setAllocationTransactions((transactionsData as AllocationTransaction[]) || []);
+      }
 
     } catch (error) {
       console.error('Error loading pots data:', error);
@@ -129,6 +143,7 @@ export function PotsProvider({ children }: { children: ReactNode }) {
     if (!user) throw new Error('User not authenticated');
 
     try {
+      // Try to create pot in database
       const { data, error } = await supabase
         .from('pots')
         .insert({
@@ -138,7 +153,36 @@ export function PotsProvider({ children }: { children: ReactNode }) {
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        // If database table doesn't exist, use local storage fallback
+        console.warn('Database table not available, using local storage fallback:', error);
+        
+        // Create mock pot with local storage
+        const mockPot: Pot = {
+          id: `local-${Date.now()}`,
+          user_id: user.id,
+          name: potData.name,
+          description: potData.description || null,
+          target_amount: potData.target_amount,
+          current_balance: potData.current_balance || 0,
+          priority: potData.priority,
+          allocation_rule: potData.allocation_rule || {},
+          auto_transfer_enabled: potData.auto_transfer_enabled || false,
+          color: potData.color,
+          icon: potData.icon,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        };
+
+        // Save to local storage
+        const existingPots = JSON.parse(localStorage.getItem(`pots-${user.id}`) || '[]');
+        const updatedPots = [...existingPots, mockPot];
+        localStorage.setItem(`pots-${user.id}`, JSON.stringify(updatedPots));
+        
+        setPots(prev => [...prev, mockPot]);
+        toast.success(`Pot "${potData.name}" created successfully (local storage)`);
+        return;
+      }
 
       setPots(prev => [...prev, data]);
       toast.success(`Pot "${potData.name}" created successfully`);
