@@ -6,6 +6,7 @@ import WeeklyChart from "@/components/WeeklyChart";
 import EnhancedWeeklyChart from "@/components/EnhancedWeeklyChart";
 import SmartTransactionEntry from "@/components/SmartTransactionEntry";
 import StartingPointModal from "@/components/StartingPointModal";
+import AIFinancialInsights from "@/components/AIFinancialInsights";
 import SmartNotifications from "@/components/SmartNotifications";
 import PersonalizedOverview from "@/components/PersonalizedOverview";
 import FinancialHealthScore from "@/components/FinancialHealthScore";
@@ -189,6 +190,9 @@ const Index = () => {
           </Card>
         </div>
       )}
+
+      {/* AI Financial Insights - Top Priority */}
+      <AIFinancialInsights />
 
       {/* Personalized Overview - Full Width */}
       <PersonalizedOverview />
