@@ -41,13 +41,22 @@ export default function Pots() {
   });
 
   const handleCreatePot = async () => {
+    if (!newPot.name.trim()) {
+      toast.error('Please enter a pot name');
+      return;
+    }
+
     try {
       await createPot({
-        ...newPot,
+        name: newPot.name.trim(),
+        description: newPot.description || null,
+        target_amount: newPot.target_amount,
         current_balance: 0,
         priority: pots.length + 1,
         allocation_rule: { type: 'manual' },
-        auto_transfer_enabled: false
+        auto_transfer_enabled: false,
+        color: newPot.color,
+        icon: newPot.icon
       });
       setShowCreatePot(false);
       setNewPot({
@@ -59,6 +68,7 @@ export default function Pots() {
       });
       toast.success('Pot created successfully');
     } catch (error) {
+      console.error('Error creating pot:', error);
       toast.error('Failed to create pot');
     }
   };
