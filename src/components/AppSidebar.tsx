@@ -1,4 +1,4 @@
-import { LayoutDashboard, TrendingUp, PieChart, Target, Settings, CreditCard, Calendar, Flag, RefreshCw, LogOut, Building, Zap } from "lucide-react";
+import { LayoutDashboard, TrendingUp, PieChart, Target, Settings, CreditCard, Calendar, Flag, RefreshCw, LogOut, Building, Zap, Wallet, PiggyBank, BarChart3, FileText, Users, Shield } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import {
@@ -15,20 +15,41 @@ import {
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
-  const menuItems = [
-    { title: "Dashboard", url: "/", icon: LayoutDashboard },
-    { title: "Financial Hub", url: "/financial-hub", icon: Building },
-    { title: "Quick Allocation", url: "/quick-allocation", icon: Zap },
-    { title: "Transactions", url: "/transactions", icon: CreditCard },
-    { title: "Analytics", url: "/analytics", icon: TrendingUp },
-    { title: "Categories", url: "/categories", icon: PieChart },
-    { title: "Budget", url: "/budget", icon: Target },
-    { title: "Goals", url: "/goals", icon: Flag },
-    { title: "Debts", url: "/debts", icon: CreditCard },
-    { title: "Recurring", url: "/recurring", icon: RefreshCw },
-    { title: "Calendar", url: "/calendar", icon: Calendar },
-    { title: "Settings", url: "/settings", icon: Settings },
-  ];
+// Reorganized menu structure for better day-to-day flow
+const menuGroups = [
+  {
+    title: "Daily Operations",
+    items: [
+      { title: "Dashboard", url: "/", icon: LayoutDashboard, description: "Daily financial overview" },
+      { title: "Quick Allocation", url: "/quick-allocation", icon: Zap, description: "Smart daily earnings allocation" },
+      { title: "Transactions", url: "/transactions", icon: CreditCard, description: "Manage income & expenses" },
+    ]
+  },
+  {
+    title: "Planning & Strategy",
+    items: [
+      { title: "Financial Hub", url: "/financial-hub", icon: Building, description: "Complete financial planning" },
+      { title: "Budget", url: "/budget", icon: Target, description: "Budget management & tracking" },
+      { title: "Goals", url: "/goals", icon: Flag, description: "Financial goal achievement" },
+      { title: "Debts", url: "/debts", icon: Wallet, description: "Debt management & payoff" },
+    ]
+  },
+  {
+    title: "Analysis & Insights",
+    items: [
+      { title: "Analytics", url: "/analytics", icon: TrendingUp, description: "Advanced financial analytics" },
+      { title: "Categories", url: "/categories", icon: PieChart, description: "Expense categorization" },
+      { title: "Recurring", url: "/recurring", icon: RefreshCw, description: "Recurring transactions" },
+      { title: "Calendar", url: "/calendar", icon: Calendar, description: "Financial calendar view" },
+    ]
+  },
+  {
+    title: "System & Settings",
+    items: [
+      { title: "Settings", url: "/settings", icon: Settings, description: "Application configuration" },
+    ]
+  }
+];
 
 export function AppSidebar() {
   const { state } = useSidebar();
@@ -51,54 +72,85 @@ export function AppSidebar() {
         {/* Header */}
         <div className="p-4 border-b">
           <div className="flex items-center gap-3">
-            <div className="h-8 w-8 rounded-lg bg-gradient-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-sm">M</span>
+            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+              <span className="text-white font-bold text-sm">M</span>
             </div>
             {!isCollapsed && (
               <div>
                 <h2 className="font-semibold text-sm">MoneyLens</h2>
                 <p className="text-xs text-muted-foreground">
-                  {user?.user_metadata?.display_name || user?.email || 'Financial Tracker'}
+                  {user?.user_metadata?.display_name || user?.email || 'Financial Intelligence'}
                 </p>
               </div>
             )}
           </div>
         </div>
 
-        {/* Navigation */}
-        <SidebarGroup className="px-3 py-4">
-          <SidebarGroupLabel className={isCollapsed ? "sr-only" : ""}>
-            Navigation
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu className="gap-2">
-              {menuItems.map((item) => {
-                const Icon = item.icon;
-                const active = isActive(item.url);
-                
-                return (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton 
-                      asChild 
-                      className={`transition-all duration-200 ${
-                        active 
-                          ? "bg-primary/10 text-primary font-medium border border-primary/20" 
-                          : "hover:bg-muted/50"
-                      }`}
-                    >
-                      <NavLink to={item.url} className="flex items-center gap-3">
-                        <Icon className={`h-4 w-4 ${active ? "text-primary" : ""}`} />
-                        {!isCollapsed && (
-                          <span className="text-sm">{item.title}</span>
-                        )}
-                      </NavLink>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                );
-              })}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {/* Navigation Groups */}
+        {menuGroups.map((group, groupIndex) => (
+          <SidebarGroup key={group.title} className="px-3 py-3">
+            {!isCollapsed && (
+              <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                {group.title}
+              </SidebarGroupLabel>
+            )}
+            <SidebarGroupContent>
+              <SidebarMenu className="gap-1">
+                {group.items.map((item) => {
+                  const Icon = item.icon;
+                  const active = isActive(item.url);
+                  
+                  return (
+                    <SidebarMenuItem key={item.title}>
+                      <SidebarMenuButton 
+                        asChild 
+                        className={`transition-all duration-200 ${
+                          active 
+                            ? "bg-primary/10 text-primary font-medium border border-primary/20 shadow-sm" 
+                            : "hover:bg-muted/50 hover:shadow-sm"
+                        }`}
+                        title={isCollapsed ? `${item.title}: ${item.description}` : undefined}
+                      >
+                        <NavLink to={item.url} className="flex items-center gap-3">
+                          <Icon className={`h-4 w-4 flex-shrink-0 ${active ? "text-primary" : ""}`} />
+                          {!isCollapsed && (
+                            <div className="flex-1 min-w-0">
+                              <span className="text-sm block truncate">{item.title}</span>
+                              <span className="text-xs text-muted-foreground block truncate">{item.description}</span>
+                            </div>
+                          )}
+                        </NavLink>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  );
+                })}
+              </SidebarMenu>
+            </SidebarGroupContent>
+            {groupIndex < menuGroups.length - 1 && !isCollapsed && (
+              <Separator className="my-2" />
+            )}
+          </SidebarGroup>
+        ))}
+
+        {/* Quick Stats Summary (Visible when expanded) */}
+        {!isCollapsed && (
+          <div className="px-3 py-3 mt-2">
+            <div className="bg-muted/30 rounded-lg p-3 space-y-2">
+              <div className="flex justify-between items-center text-xs">
+                <span className="text-muted-foreground">Today's Balance</span>
+                <span className="font-medium text-green-600">+£180</span>
+              </div>
+              <div className="flex justify-between items-center text-xs">
+                <span className="text-muted-foreground">Goals Progress</span>
+                <span className="font-medium">68%</span>
+              </div>
+              <div className="flex justify-between items-center text-xs">
+                <span className="text-muted-foreground">Upcoming Bills</span>
+                <span className="font-medium text-orange-600">2</span>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Sign Out Button */}
         <div className="mt-auto p-3">
