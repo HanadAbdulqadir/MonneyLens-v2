@@ -4,7 +4,7 @@ import EnhancedCategoryBreakdown from "@/components/EnhancedCategoryBreakdown";
 import RecentTransactions from "@/components/RecentTransactions";
 import WeeklyChart from "@/components/WeeklyChart";
 import EnhancedWeeklyChart from "@/components/EnhancedWeeklyChart";
-import AddTransactionModal from "@/components/AddTransactionModal";
+import SmartTransactionEntry from "@/components/SmartTransactionEntry";
 import StartingPointModal from "@/components/StartingPointModal";
 import SmartNotifications from "@/components/SmartNotifications";
 import PersonalizedOverview from "@/components/PersonalizedOverview";
@@ -68,7 +68,7 @@ const Index = () => {
         <div className="flex items-center gap-3">
           <StartingPointModal />
           <div data-add-transaction>
-            <AddTransactionModal />
+            <SmartTransactionEntry />
           </div>
         </div>
       </div>

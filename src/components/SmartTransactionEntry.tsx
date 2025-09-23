@@ -1,578 +1,366 @@
-import { useState, useMemo, useCallback } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import React, { useState, useRef, useEffect } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
-import { Card } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { CategorySelector } from '@/components/CategorySelector';
+import { useFinancial } from '@/contexts/SupabaseFinancialContext';
+import { useToast } from '@/hooks/use-toast';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { 
   Plus, 
-  Calendar as CalendarIcon, 
-  Lightbulb, 
-  Tag, 
+  Mic, 
+  Camera, 
+  MapPin, 
+  Clock, 
+  Zap, 
+  X,
   DollarSign,
-  AlertCircle,
-  CheckCircle2,
-  Loader2,
-  Brain,
-  TrendingUp,
-  TrendingDown,
-  Fuel,
-  UtensilsCrossed,
-  ShoppingBag
+  Calendar,
+  Tag
 } from 'lucide-react';
-import { useFinancial } from '@/contexts/FinancialContext';
-import { useToast } from '@/hooks/use-toast';
-import { format } from 'date-fns';
-import { cn } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
 
 interface SmartTransactionEntryProps {
-  trigger?: React.ReactNode;
-  onSuccess?: () => void;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  triggerPosition?: { x: number; y: number };
 }
 
-interface ValidationError {
-  field: string;
-  message: string;
-}
-
-interface CategorySuggestion {
-  category: string;
-  confidence: number;
-  reason: string;
-  icon: any;
-}
-
-const SmartTransactionEntry = ({ trigger, onSuccess }: SmartTransactionEntryProps) => {
-  const [open, setOpen] = useState(false);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
+const SmartTransactionEntry: React.FC<SmartTransactionEntryProps> = ({ 
+  open, 
+  onOpenChange,
+  triggerPosition 
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [voiceInput, setVoiceInput] = useState('');
+  const [formData, setFormData] = useState({
+    description: '',
+    amount: '',
+    category: '',
+    date: new Date().toISOString().split('T')[0],
+    location: ''
+  });
+  const [quickAmounts] = useState([5, 10, 20, 50, 100]);
+  const [frequentCategories, setFrequentCategories] = useState<string[]>([]);
+  
   const { addTransaction, transactions } = useFinancial();
   const { toast } = useToast();
+  const isMobile = useIsMobile();
+  const recognitionRef = useRef<any>(null);
 
-  const [formData, setFormData] = useState({
-    date: new Date(),
-    description: '',
-    category: '',
-    amount: '',
-    week: 'W4',
-    tags: [] as string[]
-  });
-
-  const [validationErrors, setValidationErrors] = useState<ValidationError[]>([]);
-  const [categorySuggestions, setCategorySuggestions] = useState<CategorySuggestion[]>([]);
-
-  // Smart category prediction based on description
-  const predictCategory = useCallback((description: string): CategorySuggestion[] => {
-    if (!description || description.length < 3) return [];
-
-    const desc = description.toLowerCase();
-    const suggestions: CategorySuggestion[] = [];
-
-    // Earnings keywords
-    const earningsKeywords = ['salary', 'wage', 'income', 'bonus', 'freelance', 'payment', 'refund', 'cashback'];
-    if (earningsKeywords.some(keyword => desc.includes(keyword))) {
-      suggestions.push({
-        category: 'Earnings',
-        confidence: 0.9,
-        reason: 'Contains income-related keywords',
-        icon: TrendingUp
-      });
-    }
-
-    // Petrol keywords
-    const petrolKeywords = ['petrol', 'gas', 'fuel', 'station', 'bp', 'shell', 'esso', 'tesco fuel'];
-    if (petrolKeywords.some(keyword => desc.includes(keyword))) {
-      suggestions.push({
-        category: 'Petrol',
-        confidence: 0.95,
-        reason: 'Contains fuel-related keywords',
-        icon: Fuel
-      });
-    }
-
-    // Food keywords
-    const foodKeywords = ['food', 'restaurant', 'cafe', 'lunch', 'dinner', 'grocery', 'takeaway', 'delivery', 'mcdonalds', 'kfc', 'pizza', 'tesco', 'asda', 'sainsbury'];
-    if (foodKeywords.some(keyword => desc.includes(keyword))) {
-      suggestions.push({
-        category: 'Food',
-        confidence: 0.85,
-        reason: 'Contains food/restaurant keywords',
-        icon: UtensilsCrossed
-      });
-    }
-
-    // If no specific category found, suggest based on amount patterns
-    if (suggestions.length === 0) {
-      suggestions.push({
-        category: 'Other',
-        confidence: 0.5,
-        reason: 'No specific keywords found',
-        icon: ShoppingBag
-      });
-    }
-
-    // Sort by confidence
-    return suggestions.sort((a, b) => b.confidence - a.confidence);
-  }, []);
-
-  // Analyze transaction patterns for better suggestions
-  const analyzeTransactionPatterns = useCallback((description: string, amount: number) => {
-    // Find similar transactions
-    const similarTransactions = transactions.filter(t => {
-      const descSimilarity = description.toLowerCase().split(' ').some(word => 
-        t.category.toLowerCase().includes(word.toLowerCase())
-      );
-      const amountSimilarity = Math.abs(t.amount - amount) < 10; // Within £10
-      return descSimilarity || amountSimilarity;
+  // Calculate frequent categories from transaction history
+  useEffect(() => {
+    const categoryCounts: Record<string, number> = {};
+    transactions.forEach(transaction => {
+      categoryCounts[transaction.category] = (categoryCounts[transaction.category] || 0) + 1;
     });
-
-    if (similarTransactions.length > 0) {
-      // Get most common category from similar transactions
-      const categoryCount = similarTransactions.reduce((acc, t) => {
-        acc[t.category] = (acc[t.category] || 0) + 1;
-        return acc;
-      }, {} as Record<string, number>);
-
-      const mostCommonCategory = Object.entries(categoryCount)
-        .sort(([,a], [,b]) => b - a)[0][0];
-
-      return {
-        suggestedCategory: mostCommonCategory,
-        confidence: 0.8,
-        reason: `Based on ${similarTransactions.length} similar transactions`
-      };
-    }
-
-    return null;
+    
+    const sortedCategories = Object.entries(categoryCounts)
+      .sort(([,a], [,b]) => b - a)
+      .slice(0, 5)
+      .map(([category]) => category);
+    
+    setFrequentCategories(sortedCategories);
   }, [transactions]);
 
-  // Real-time validation
-  const validateField = useCallback((field: string, value: any): ValidationError | null => {
-    switch (field) {
-      case 'amount':
-        const numAmount = parseFloat(value);
-        if (isNaN(numAmount) || numAmount <= 0) {
-          return { field, message: 'Amount must be a positive number' };
-        }
-        if (numAmount > 10000) {
-          return { field, message: 'Amount seems unusually high. Please verify.' };
-        }
-        break;
-        
-      case 'description':
-        if (value.length < 3) {
-          return { field, message: 'Description should be at least 3 characters' };
-        }
-        break;
-        
-      case 'category':
-        if (!value) {
-          return { field, message: 'Please select a category' };
-        }
-        break;
-        
-      case 'date':
-        if (!value) {
-          return { field, message: 'Please select a date' };
-        }
-        const selectedDate = new Date(value);
-        const now = new Date();
-        const futureLimit = new Date();
-        futureLimit.setDate(now.getDate() + 30);
-        
-        if (selectedDate > futureLimit) {
-          return { field, message: 'Date cannot be more than 30 days in the future' };
-        }
-        break;
+  // Initialize speech recognition
+  useEffect(() => {
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      recognitionRef.current = new SpeechRecognition();
+      recognitionRef.current.continuous = false;
+      recognitionRef.current.interimResults = false;
+      recognitionRef.current.lang = 'en-US';
+
+      recognitionRef.current.onresult = (event: any) => {
+        const transcript = event.results[0][0].transcript;
+        setVoiceInput(transcript);
+        processVoiceInput(transcript);
+      };
+
+      recognitionRef.current.onerror = (event: any) => {
+        console.error('Speech recognition error:', event.error);
+        toast({
+          title: "Voice input failed",
+          description: "Please try again or type manually",
+          variant: "destructive"
+        });
+      };
     }
-    return null;
   }, []);
 
-  // Handle form field changes
-  const handleFieldChange = useCallback((field: string, value: any) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    
-    // Clear validation error for this field
-    setValidationErrors(prev => prev.filter(error => error.field !== field));
-    
-    // Validate the field
-    const error = validateField(field, value);
-    if (error) {
-      setValidationErrors(prev => [...prev.filter(e => e.field !== field), error]);
-    }
+  const processVoiceInput = (transcript: string) => {
+    // Simple NLP for common patterns
+    const amountMatch = transcript.match(/(\d+(?:\.\d{2})?)/);
+    const categoryKeywords: Record<string, string[]> = {
+      'Food & Dining': ['food', 'lunch', 'dinner', 'restaurant', 'coffee', 'groceries'],
+      'Transportation': ['transport', 'bus', 'train', 'taxi', 'fuel', 'parking'],
+      'Shopping': ['shopping', 'store', 'mall', 'clothes', 'electronics'],
+      'Entertainment': ['movie', 'concert', 'game', 'entertainment', 'netflix'],
+      'Bills & Utilities': ['bill', 'utility', 'electric', 'water', 'internet']
+    };
 
-    // Smart suggestions when description changes
-    if (field === 'description' && value.length >= 3) {
-      setIsAnalyzing(true);
-      setTimeout(() => {
-        const suggestions = predictCategory(value);
-        setCategorySuggestions(suggestions);
-        
-        // Auto-suggest category if confidence is high enough
-        if (suggestions.length > 0 && suggestions[0].confidence >= 0.9 && !formData.category) {
-          setFormData(prev => ({ ...prev, category: suggestions[0].category }));
-        }
-        
-        setIsAnalyzing(false);
-      }, 500);
-    }
-
-    // Analyze patterns when both description and amount are available
-    if (field === 'amount' && formData.description && value) {
-      const pattern = analyzeTransactionPatterns(formData.description, parseFloat(value));
-      if (pattern && !formData.category) {
-        setCategorySuggestions(prev => [{
-          category: pattern.suggestedCategory,
-          confidence: pattern.confidence,
-          reason: pattern.reason,
-          icon: ShoppingBag
-        }, ...prev]);
+    let detectedCategory = '';
+    for (const [category, keywords] of Object.entries(categoryKeywords)) {
+      if (keywords.some(keyword => transcript.toLowerCase().includes(keyword))) {
+        detectedCategory = category;
+        break;
       }
     }
-  }, [formData.category, formData.description, validateField, predictCategory, analyzeTransactionPatterns]);
 
-  // Smart tag extraction
-  const extractTags = useCallback((description: string): string[] => {
-    const tags = [];
-    const desc = description.toLowerCase();
-    
-    // Common tag patterns
-    if (desc.includes('urgent') || desc.includes('emergency')) tags.push('urgent');
-    if (desc.includes('monthly') || desc.includes('recurring')) tags.push('recurring');
-    if (desc.includes('business') || desc.includes('work')) tags.push('business');
-    if (desc.includes('personal') || desc.includes('private')) tags.push('personal');
-    if (desc.includes('essential') || desc.includes('necessary')) tags.push('essential');
-    
-    return tags;
-  }, []);
+    setFormData(prev => ({
+      ...prev,
+      description: transcript,
+      amount: amountMatch ? amountMatch[1] : '',
+      category: detectedCategory
+    }));
+  };
 
-  // Handle form submission
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Validate all fields
-    const errors = [];
-    Object.entries(formData).forEach(([field, value]) => {
-      if (field !== 'tags') {
-        const error = validateField(field, value);
-        if (error) errors.push(error);
-      }
-    });
-
-    if (errors.length > 0) {
-      setValidationErrors(errors);
+  const startVoiceInput = () => {
+    if (recognitionRef.current) {
+      setIsRecording(true);
+      recognitionRef.current.start();
+    } else {
       toast({
-        title: "Validation Error",
-        description: "Please fix the errors before submitting",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    try {
-      // Auto-extract tags if none provided
-      const finalTags = formData.tags.length > 0 
-        ? formData.tags 
-        : extractTags(formData.description);
-
-      addTransaction({
-        date: format(formData.date, 'yyyy-MM-dd'),
-        category: formData.category,
-        amount: parseFloat(formData.amount),
-        week: formData.week,
-        // Note: Current transaction interface doesn't support description/tags
-        // This would need to be extended in the FinancialContext
-      });
-
-      toast({
-        title: "Success",
-        description: "Transaction added successfully with smart categorization",
-      });
-
-      // Reset form
-      setFormData({
-        date: new Date(),
-        description: '',
-        category: '',
-        amount: '',
-        week: 'W4',
-        tags: []
-      });
-      
-      setCategorySuggestions([]);
-      setValidationErrors([]);
-      setOpen(false);
-      onSuccess?.();
-      
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to add transaction",
+        title: "Voice input not supported",
+        description: "Your browser doesn't support speech recognition",
         variant: "destructive"
       });
     }
   };
 
-  const getFieldError = (field: string) => 
-    validationErrors.find(error => error.field === field);
+  const stopVoiceInput = () => {
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+      setIsRecording(false);
+    }
+  };
+
+  const handleQuickAmount = (amount: number) => {
+    setFormData(prev => ({ ...prev, amount: amount.toString() }));
+  };
+
+  const handleQuickCategory = (category: string) => {
+    setFormData(prev => ({ ...prev, category }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!formData.amount || !formData.category) {
+      toast({
+        title: "Missing information",
+        description: "Please enter amount and category",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    addTransaction({
+      date: formData.date,
+      category: formData.category,
+      amount: parseFloat(formData.amount),
+      description: formData.description || `Transaction ${new Date().toLocaleTimeString()}`,
+      week: 'W' + Math.ceil(new Date().getDate() / 7)
+    });
+
+    toast({
+      title: "Transaction added!",
+      description: "Your transaction has been recorded successfully",
+    });
+
+    // Reset form
+    setFormData({
+      description: '',
+      amount: '',
+      category: '',
+      date: new Date().toISOString().split('T')[0],
+      location: ''
+    });
+    setVoiceInput('');
+    setIsOpen(false);
+  };
+
+  const dialogOpen = open !== undefined ? open : isOpen;
+  const setDialogOpen = onOpenChange || setIsOpen;
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        {trigger || (
-          <Button className="gap-2">
-            <Plus className="h-4 w-4" />
-            Smart Add Transaction
-          </Button>
-        )}
-      </DialogTrigger>
-      
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Brain className="h-5 w-5 text-primary" />
-            Smart Transaction Entry
-          </DialogTitle>
-        </DialogHeader>
-        
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Description Field with Smart Analysis */}
-          <div className="space-y-2">
-            <Label htmlFor="description" className="flex items-center gap-2">
-              Description *
-              {isAnalyzing && <Loader2 className="h-3 w-3 animate-spin text-primary" />}
-            </Label>
-            <Textarea
-              id="description"
-              value={formData.description}
-              onChange={(e) => handleFieldChange('description', e.target.value)}
-              placeholder="e.g., Tesco groceries, Shell petrol station, Monthly salary..."
-              className={cn(getFieldError('description') && "border-destructive")}
-              rows={3}
-            />
-            {getFieldError('description') && (
-              <p className="text-sm text-destructive flex items-center gap-1">
-                <AlertCircle className="h-3 w-3" />
-                {getFieldError('description')?.message}
-              </p>
-            )}
-          </div>
+    <>
+      {/* Floating Trigger Button */}
+      {!open && (
+        <Button
+          onClick={() => setDialogOpen(true)}
+          className={`
+            fixed z-50 rounded-full shadow-lg hover:shadow-xl transition-all duration-300
+            ${isMobile 
+              ? 'bottom-24 right-4 w-16 h-16 text-2xl' 
+              : 'bottom-8 right-8 w-14 h-14 text-xl'
+            }
+            bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700
+          `}
+          style={triggerPosition ? {
+            position: 'fixed',
+            left: triggerPosition.x - 28,
+            top: triggerPosition.y - 28
+          } : {}}
+        >
+          <Plus className="h-6 w-6" />
+        </Button>
+      )}
 
-          {/* Category Suggestions */}
-          {categorySuggestions.length > 0 && (
-            <Card className="p-4 bg-primary/5 border-primary/20">
-              <div className="flex items-center gap-2 mb-3">
-                <Lightbulb className="h-4 w-4 text-primary" />
-                <span className="font-medium text-sm">Smart Category Suggestions</span>
-              </div>
-              <div className="space-y-2">
-                {categorySuggestions.map((suggestion, index) => {
-                  const Icon = suggestion.icon;
-                  return (
-                    <div
-                      key={index}
-                      className={cn(
-                        "flex items-center justify-between p-2 rounded-lg cursor-pointer transition-colors",
-                        formData.category === suggestion.category 
-                          ? "bg-primary/20 border border-primary/30" 
-                          : "hover:bg-background"
-                      )}
-                      onClick={() => handleFieldChange('category', suggestion.category)}
-                    >
-                      <div className="flex items-center gap-3">
-                        <Icon className="h-4 w-4" />
-                        <div>
-                          <p className="font-medium text-sm">{suggestion.category}</p>
-                          <p className="text-xs text-muted-foreground">{suggestion.reason}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Badge 
-                          variant="outline" 
-                          className={cn(
-                            "text-xs",
-                            suggestion.confidence >= 0.8 ? "border-success text-success" :
-                            suggestion.confidence >= 0.6 ? "border-warning text-warning" : 
-                            "border-muted-foreground text-muted-foreground"
-                          )}
-                        >
-                          {Math.round(suggestion.confidence * 100)}%
-                        </Badge>
-                        {formData.category === suggestion.category && (
-                          <CheckCircle2 className="h-4 w-4 text-primary" />
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </Card>
-          )}
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent className={`
+          sm:max-w-[500px] p-0 overflow-hidden
+          ${isMobile ? 'max-h-[90vh]' : ''}
+        `}>
+          <DialogHeader className="p-6 pb-4 bg-gradient-to-r from-blue-50 to-purple-50">
+            <DialogTitle className="flex items-center gap-2 text-xl">
+              <Zap className="h-5 w-5 text-blue-600" />
+              Quick Transaction Entry
+            </DialogTitle>
+          </DialogHeader>
 
-          {/* Form Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Date Field */}
-            <div className="space-y-2">
-              <Label>Date *</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={cn(
-                      "w-full justify-start text-left font-normal",
-                      !formData.date && "text-muted-foreground",
-                      getFieldError('date') && "border-destructive"
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {formData.date ? format(formData.date, "PPP") : <span>Pick a date</span>}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={formData.date}
-                    onSelect={(date) => handleFieldChange('date', date)}
-                    initialFocus
-                    className={cn("p-3 pointer-events-auto")}
-                  />
-                </PopoverContent>
-              </Popover>
-              {getFieldError('date') && (
-                <p className="text-sm text-destructive flex items-center gap-1">
-                  <AlertCircle className="h-3 w-3" />
-                  {getFieldError('date')?.message}
-                </p>
-              )}
-            </div>
-
-            {/* Amount Field */}
-            <div className="space-y-2">
-              <Label htmlFor="amount">Amount (£) *</Label>
-              <div className="relative">
-                <DollarSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  id="amount"
-                  type="number"
-                  step="0.01"
-                  placeholder="0.00"
-                  value={formData.amount}
-                  onChange={(e) => handleFieldChange('amount', e.target.value)}
-                  className={cn("pl-10", getFieldError('amount') && "border-destructive")}
-                />
-              </div>
-              {getFieldError('amount') && (
-                <p className="text-sm text-destructive flex items-center gap-1">
-                  <AlertCircle className="h-3 w-3" />
-                  {getFieldError('amount')?.message}
-                </p>
-              )}
-            </div>
-
-            {/* Category Field */}
-            <div className="space-y-2">
-              <Label>Category *</Label>
-              <Select 
-                value={formData.category} 
-                onValueChange={(value) => handleFieldChange('category', value)}
-              >
-                <SelectTrigger className={cn(getFieldError('category') && "border-destructive")}>
-                  <SelectValue placeholder="Select category" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Earnings">
-                    <div className="flex items-center gap-2">
-                      <TrendingUp className="h-4 w-4 text-success" />
-                      Earnings
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="Petrol">
-                    <div className="flex items-center gap-2">
-                      <Fuel className="h-4 w-4 text-warning" />
-                      Petrol
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="Food">
-                    <div className="flex items-center gap-2">
-                      <UtensilsCrossed className="h-4 w-4 text-destructive" />
-                      Food
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="Other">
-                    <div className="flex items-center gap-2">
-                      <ShoppingBag className="h-4 w-4 text-muted-foreground" />
-                      Other
-                    </div>
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-              {getFieldError('category') && (
-                <p className="text-sm text-destructive flex items-center gap-1">
-                  <AlertCircle className="h-3 w-3" />
-                  {getFieldError('category')?.message}
-                </p>
-              )}
-            </div>
-
-            {/* Week Field */}
-            <div className="space-y-2">
-              <Label>Week</Label>
-              <Select 
-                value={formData.week} 
-                onValueChange={(value) => handleFieldChange('week', value)}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="W1">Week 1</SelectItem>
-                  <SelectItem value="W2">Week 2</SelectItem>
-                  <SelectItem value="W3">Week 3</SelectItem>
-                  <SelectItem value="W4">Week 4</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          {/* Auto-extracted Tags */}
-          {formData.description && extractTags(formData.description).length > 0 && (
-            <div className="space-y-2">
+          <form onSubmit={handleSubmit} className="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
+            {/* Voice Input Section */}
+            <div className="space-y-3">
               <Label className="flex items-center gap-2">
-                <Tag className="h-4 w-4" />
-                Auto-detected Tags
+                <Mic className="h-4 w-4" />
+                Voice Input (Optional)
+              </Label>
+              <div className="flex gap-2">
+                <Input
+                  placeholder="Describe your transaction..."
+                  value={voiceInput}
+                  onChange={(e) => setVoiceInput(e.target.value)}
+                  className="flex-1"
+                />
+                <Button
+                  type="button"
+                  variant={isRecording ? "destructive" : "outline"}
+                  onClick={isRecording ? stopVoiceInput : startVoiceInput}
+                  className="shrink-0"
+                >
+                  <Mic className="h-4 w-4" />
+                </Button>
+              </div>
+              {isRecording && (
+                <div className="flex items-center gap-2 text-sm text-orange-600">
+                  <div className="animate-pulse">● Recording...</div>
+                </div>
+              )}
+            </div>
+
+            {/* Quick Amount Presets */}
+            <div className="space-y-3">
+              <Label className="flex items-center gap-2">
+                <DollarSign className="h-4 w-4" />
+                Quick Amounts
               </Label>
               <div className="flex flex-wrap gap-2">
-                {extractTags(formData.description).map((tag, index) => (
-                  <Badge key={index} variant="secondary" className="gap-1">
-                    <Tag className="h-3 w-3" />
-                    {tag}
+                {quickAmounts.map(amount => (
+                  <Badge
+                    key={amount}
+                    variant={formData.amount === amount.toString() ? "default" : "outline"}
+                    className="cursor-pointer px-3 py-1.5"
+                    onClick={() => handleQuickAmount(amount)}
+                  >
+                    £{amount}
                   </Badge>
                 ))}
               </div>
             </div>
-          )}
 
-          {/* Form Actions */}
-          <div className="flex justify-end gap-3 pt-4 border-t">
-            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
-              Cancel
-            </Button>
-            <Button 
-              type="submit" 
-              disabled={validationErrors.length > 0 || !formData.description || !formData.category || !formData.amount}
-              className="gap-2"
-            >
-              <Brain className="h-4 w-4" />
-              Add Smart Transaction
-            </Button>
-          </div>
-        </form>
-      </DialogContent>
-    </Dialog>
+            {/* Amount Input */}
+            <div>
+              <Label htmlFor="amount">Amount (£)</Label>
+              <Input
+                id="amount"
+                type="number"
+                step="0.01"
+                placeholder="0.00"
+                value={formData.amount}
+                onChange={(e) => setFormData(prev => ({ ...prev, amount: e.target.value }))}
+                required
+                className="mt-1"
+              />
+            </div>
+
+            {/* Quick Categories */}
+            {frequentCategories.length > 0 && (
+              <div className="space-y-3">
+                <Label className="flex items-center gap-2">
+                  <Tag className="h-4 w-4" />
+                  Frequent Categories
+                </Label>
+                <div className="flex flex-wrap gap-2">
+                  {frequentCategories.map(category => (
+                    <Badge
+                      key={category}
+                      variant={formData.category === category ? "default" : "outline"}
+                      className="cursor-pointer px-3 py-1.5"
+                      onClick={() => handleQuickCategory(category)}
+                    >
+                      {category}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Category Selector */}
+            <div>
+              <Label htmlFor="category">Category</Label>
+              <div className="mt-1">
+                <CategorySelector 
+                  value={formData.category}
+                  onCategorySelect={(value) => setFormData(prev => ({ ...prev, category: value || '' }))}
+                  showCreateNew={true}
+                />
+              </div>
+            </div>
+
+            {/* Date Input */}
+            <div>
+              <Label htmlFor="date" className="flex items-center gap-2">
+                <Calendar className="h-4 w-4" />
+                Date
+              </Label>
+              <Input
+                id="date"
+                type="date"
+                value={formData.date}
+                onChange={(e) => setFormData(prev => ({ ...prev, date: e.target.value }))}
+                className="mt-1"
+              />
+            </div>
+
+            {/* Description */}
+            <div>
+              <Label htmlFor="description">Description (Optional)</Label>
+              <Input
+                id="description"
+                placeholder="What was this for?"
+                value={formData.description}
+                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                className="mt-1"
+              />
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-3 pt-4">
+              <Button type="button" variant="outline" onClick={() => setDialogOpen(false)} className="flex-1">
+                Cancel
+              </Button>
+              <Button type="submit" className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600">
+                Add Transaction
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 

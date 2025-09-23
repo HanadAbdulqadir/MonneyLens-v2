@@ -16,6 +16,8 @@ import NotificationSystem from "@/components/NotificationSystem";
 import DataImporter from "@/components/DataImporter";
 import AdvancedSearch from "@/components/AdvancedSearch";
 import UserOnboarding from "@/components/UserOnboarding";
+import SmartTransactionEntry from "@/components/SmartTransactionEntry";
+import MobileBottomNavigation from "@/components/MobileBottomNavigation";
 import Index from "./pages/Index";
 import Analytics from "./pages/Analytics";
 import Transactions from "./pages/Transactions";
@@ -104,6 +106,8 @@ function AppContent() {
             <GoalNotificationManager />
             <AdvancedSearch />
             <UserOnboarding />
+            <SmartTransactionEntry />
+            <MobileBottomNavigation />
           </main>
         </div>
         
