@@ -14,7 +14,7 @@ import {
   Calendar,
   Filter
 } from "lucide-react";
-import { useFinancial } from "@/contexts/FinancialContext";
+import { useFinancial } from "@/contexts/SupabaseFinancialContext";
 import { 
   PieChart, 
   Pie, 

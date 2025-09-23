@@ -18,7 +18,7 @@ import {
   ComposedChart,
   Legend
 } from 'recharts';
-import { useFinancial } from "@/contexts/FinancialContext";
+import { useFinancial } from "@/contexts/SupabaseFinancialContext";
 import { 
   TrendingUp, 
   TrendingDown, 
