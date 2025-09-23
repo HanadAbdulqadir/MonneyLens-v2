@@ -29,6 +29,7 @@ const menuGroups = [
     title: "Planning & Strategy",
     items: [
       { title: "Financial Hub", url: "/financial-hub", icon: Building, description: "Complete financial planning" },
+      { title: "Pots", url: "/pots", icon: PiggyBank, description: "Envelope budgeting system" },
       { title: "Budget", url: "/budget", icon: Target, description: "Budget management & tracking" },
       { title: "Goals", url: "/goals", icon: Flag, description: "Financial goal achievement" },
       { title: "Debts", url: "/debts", icon: Wallet, description: "Debt management & payoff" },
