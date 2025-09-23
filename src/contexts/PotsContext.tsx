@@ -2,6 +2,7 @@ import { createContext, useContext, ReactNode, useState, useEffect } from 'react
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import type { Json } from '@/integrations/supabase/types';
 
 export interface Pot {
   id: string;
@@ -11,7 +12,7 @@ export interface Pot {
   target_amount: number;
   current_balance: number;
   priority: number;
-  allocation_rule: any;
+  allocation_rule: Json;
   auto_transfer_enabled: boolean;
   color: string;
   icon: string;
@@ -25,7 +26,7 @@ export interface AllocationRule {
   pot_id: string;
   rule_type: 'daily' | 'weekly' | 'monthly' | 'custom';
   amount: number;
-  schedule: any;
+  schedule: Json;
   priority: number;
   enabled: boolean;
   created_at: string;
@@ -54,9 +55,9 @@ interface PotsContextType {
   createAllocationRule: (rule: Omit<AllocationRule, 'id' | 'user_id' | 'created_at' | 'updated_at'>) => Promise<void>;
   updateAllocationRule: (id: string, updates: Partial<AllocationRule>) => Promise<void>;
   deleteAllocationRule: (id: string) => Promise<void>;
-  allocateIncome: (amount: number, date?: string) => Promise<any[]>;
+  allocateIncome: (amount: number, date?: string) => Promise<unknown[]>;
   transferBetweenPots: (fromPotId: string, toPotId: string, amount: number) => Promise<void>;
-  getPotAllocationNeeds: (date?: string) => Promise<any[]>;
+  getPotAllocationNeeds: (date?: string) => Promise<unknown[]>;
 }
 
 const PotsContext = createContext<PotsContextType | undefined>(undefined);
