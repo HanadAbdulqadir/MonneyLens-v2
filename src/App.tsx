@@ -44,100 +44,133 @@ const queryClient = new QueryClient();
 
 // Helper component to avoid code duplication
 const ProtectedLayout = ({ children }: { children: React.ReactNode }) => (
-  <ProtectedRoute>
-    <FinancialProvider>
-      <PotsProvider>
-        <SidebarProvider>
-          <div className="flex min-h-screen w-full">
-            <AppSidebar />
-            
-            <main className="flex-1 overflow-auto bg-gradient-to-br from-background to-muted/20">
-              <header className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b shadow-sm">
-                <div className="flex items-center justify-between h-16 px-6">
-                  <div className="flex items-center gap-4">
-                    <SidebarTrigger className="mr-2" />
-                    <div className="hidden sm:block">
-                      <h1 className="text-lg font-semibold text-primary">MoneyLens</h1>
-                      <p className="text-xs text-muted-foreground">Your financial companion</p>
-                    </div>
-                  </div>
-                  
-                  {/* Header Actions */}
-                  <div className="flex items-center gap-3">
-                    <NotificationSystem />
-                    <DataImporter />
+  <FinancialProvider>
+    <PotsProvider>
+      <SidebarProvider>
+        <div className="flex min-h-screen w-full">
+          <AppSidebar />
+          
+          <main className="flex-1 overflow-auto bg-gradient-to-br from-background to-muted/20">
+            <header className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b shadow-sm">
+              <div className="flex items-center justify-between h-16 px-6">
+                <div className="flex items-center gap-4">
+                  <SidebarTrigger className="mr-2" />
+                  <div className="hidden sm:block">
+                    <h1 className="text-lg font-semibold text-primary">MoneyLens</h1>
+                    <p className="text-xs text-muted-foreground">Your financial companion</p>
                   </div>
                 </div>
-              </header>
-              
-              <div className="p-6">
-                {children}
+                
+                {/* Header Actions */}
+                <div className="flex items-center gap-3">
+                  <NotificationSystem />
+                  <DataImporter />
+                </div>
               </div>
+            </header>
+            
+            <div className="p-6">
+              {children}
+            </div>
 
-              {/* Enhanced UX Components */}
-              <QuickActionsToolbar />
-              <UnifiedToolbar />
-              <PageTourManager />
-              <GoalNotificationManager />
-              <AdvancedSearch />
-              <UserOnboarding />
-              <SmartTransactionEntry />
-              <MobileBottomNavigation />
-            </main>
-          </div>
-          
-          <Toaster />
-          <Sonner />
-        </SidebarProvider>
-      </PotsProvider>
-    </FinancialProvider>
-  </ProtectedRoute>
+            {/* Enhanced UX Components */}
+            <QuickActionsToolbar />
+            <UnifiedToolbar />
+            <PageTourManager />
+            <GoalNotificationManager />
+            <AdvancedSearch />
+            <UserOnboarding />
+            <SmartTransactionEntry />
+            <MobileBottomNavigation />
+          </main>
+        </div>
+        
+        <Toaster />
+        <Sonner />
+      </SidebarProvider>
+    </PotsProvider>
+  </FinancialProvider>
 );
 
 function AppContent() {
   return (
     <Routes>
       {/* Authentication Routes */}
-      <Route 
-        path="/login" 
-        element={
-          <ProtectedRoute requireAuth={false}>
-            <Login />
-          </ProtectedRoute>
-        } 
-      />
-      <Route 
-        path="/register" 
-        element={
-          <ProtectedRoute requireAuth={false}>
-            <Register />
-          </ProtectedRoute>
-        } 
-      />
-      <Route 
-        path="/forgot-password" 
-        element={
-          <ProtectedRoute requireAuth={false}>
-            <ForgotPassword />
-          </ProtectedRoute>
-        } 
-      />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
 
       {/* Protected Routes */}
-      <Route path="/" element={<ProtectedLayout><Index /></ProtectedLayout>} />
-      <Route path="/profile" element={<ProtectedLayout><Profile /></ProtectedLayout>} />
-      <Route path="/financial-hub" element={<ProtectedLayout><FinancialHub /></ProtectedLayout>} />
-      <Route path="/quick-allocation" element={<ProtectedLayout><QuickAllocation /></ProtectedLayout>} />
-      <Route path="/analytics" element={<ProtectedLayout><Analytics /></ProtectedLayout>} />
-      <Route path="/transactions" element={<ProtectedLayout><Transactions /></ProtectedLayout>} />
-      <Route path="/goals" element={<ProtectedLayout><Goals /></ProtectedLayout>} />
-      <Route path="/debts" element={<ProtectedLayout><Debts /></ProtectedLayout>} />
-      <Route path="/recurring" element={<ProtectedLayout><Recurring /></ProtectedLayout>} />
-      <Route path="/categories" element={<ProtectedLayout><Categories /></ProtectedLayout>} />
-      <Route path="/budget" element={<ProtectedLayout><Budget /></ProtectedLayout>} />
-      <Route path="/pots" element={<ProtectedLayout><Pots /></ProtectedLayout>} />
-      <Route path="/calendar" element={<ProtectedLayout><Calendar /></ProtectedLayout>} />
-      <Route path="/settings" element={<ProtectedLayout><Settings /></ProtectedLayout>} />
+      <Route path="/" element={
+        <ProtectedRoute>
+          <ProtectedLayout><Index /></ProtectedLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/profile" element={
+        <ProtectedRoute>
+          <ProtectedLayout><Profile /></ProtectedLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/financial-hub" element={
+        <ProtectedRoute>
+          <ProtectedLayout><FinancialHub /></ProtectedLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/quick-allocation" element={
+        <ProtectedRoute>
+          <ProtectedLayout><QuickAllocation /></ProtectedLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/analytics" element={
+        <ProtectedRoute>
+          <ProtectedLayout><Analytics /></ProtectedLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/transactions" element={
+        <ProtectedRoute>
+          <ProtectedLayout><Transactions /></ProtectedLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/goals" element={
+        <ProtectedRoute>
+          <ProtectedLayout><Goals /></ProtectedLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/debts" element={
+        <ProtectedRoute>
+          <ProtectedLayout><Debts /></ProtectedLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/recurring" element={
+        <ProtectedRoute>
+          <ProtectedLayout><Recurring /></ProtectedLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/categories" element={
+        <ProtectedRoute>
+          <ProtectedLayout><Categories /></ProtectedLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/budget" element={
+        <ProtectedRoute>
+          <ProtectedLayout><Budget /></ProtectedLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/pots" element={
+        <ProtectedRoute>
+          <ProtectedLayout><Pots /></ProtectedLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/calendar" element={
+        <ProtectedRoute>
+          <ProtectedLayout><Calendar /></ProtectedLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/settings" element={
+        <ProtectedRoute>
+          <ProtectedLayout><Settings /></ProtectedLayout>
+        </ProtectedRoute>
+      } />
       
       <Route path="*" element={<NotFound />} />
     </Routes>
