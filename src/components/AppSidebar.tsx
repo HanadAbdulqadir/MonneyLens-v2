@@ -1,4 +1,5 @@
 import { LayoutDashboard, TrendingUp, PieChart, Target, Settings, CreditCard, Calendar, Flag, RefreshCw, LogOut, Building, Zap, Wallet, PiggyBank, BarChart3, FileText, Users, Shield, User } from "lucide-react";
+import NotificationCenter from "@/components/NotificationCenter";
 import { NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -78,13 +79,14 @@ export function AppSidebar() {
               <span className="text-white font-bold text-sm">M</span>
             </div>
             {!isCollapsed && (
-              <div>
+              <div className="flex-1">
                 <h2 className="font-semibold text-sm">MoneyLens</h2>
                 <p className="text-xs text-muted-foreground">
                   {user?.user_metadata?.display_name || user?.email || 'Financial Intelligence'}
                 </p>
               </div>
             )}
+            <NotificationCenter />
           </div>
         </div>
 

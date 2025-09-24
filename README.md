@@ -2,6 +2,22 @@
 
 MoneyLens is a sophisticated personal finance management application that combines powerful analytics with intelligent automation to help you achieve financial clarity and control. Built with modern technologies and designed for real-world financial scenarios.
 
+## 🎯 What is MoneyLens?
+
+MoneyLens transforms how you manage your finances by providing:
+- **Smart Financial Intelligence**: AI-powered insights and recommendations
+- **Real-time Financial Overview**: Complete visibility into your financial health
+- **Intelligent Allocation**: Automated money distribution across savings, expenses, and goals
+- **Goal Achievement System**: Track and optimize your financial objectives
+- **Comprehensive Analytics**: Deep insights into spending patterns and trends
+
+### **Key Differentiators**
+- **Pot-based Envelope System**: Modern digital envelope budgeting
+- **Smart Daily Allocation**: Intelligent distribution of daily earnings
+- **Universal Data Import**: Seamless integration with any financial institution
+- **Real-time Collaboration**: Multi-user financial management
+- **Advanced Security**: Enterprise-grade data protection
+
 ## 🚀 Key Features
 
 ### **Core Financial Management**
