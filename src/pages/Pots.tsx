@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { usePots } from '@/contexts/PotsContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -19,7 +21,8 @@ import PotNotificationSystem from '@/components/PotNotificationSystem';
 import QuickAddTransaction from '@/components/QuickAddTransaction';
 
 export default function Pots() {
-  const { pots, allocationRules, allocationTransactions, createPot, updatePot, deletePot, createAllocationRule, deleteAllocationRule, allocateIncome } = usePots();
+  const { user } = useAuth();
+  const { pots, allocationRules, allocationTransactions, createPot, updatePot, deletePot, createAllocationRule, deleteAllocationRule, allocateIncome, transferBetweenPots } = usePots();
   const [showOnboarding, setShowOnboarding] = useState(pots.length === 0);
   const [showCreatePot, setShowCreatePot] = useState(false);
   const [showCreateRule, setShowCreateRule] = useState(false);
@@ -103,6 +106,65 @@ export default function Pots() {
       toast.success('Income allocated successfully');
     } catch (error) {
       toast.error('Failed to allocate income');
+    }
+  };
+
+  const handleAddFunds = async (potId: string) => {
+    const amount = prompt('Enter amount to add:');
+    if (!amount || isNaN(parseFloat(amount))) {
+      toast.error('Please enter a valid amount');
+      return;
+    }
+
+    try {
+      const pot = pots.find(p => p.id === potId);
+      if (!pot) throw new Error('Pot not found');
+
+      await updatePot(potId, {
+        current_balance: pot.current_balance + parseFloat(amount)
+      });
+      
+      // Record the transaction
+      await supabase
+        .from('allocation_transactions')
+        .insert({
+          user_id: user?.id,
+          pot_id: potId,
+          amount: parseFloat(amount),
+          allocation_date: new Date().toISOString().split('T')[0],
+          status: 'completed'
+        });
+
+      toast.success(`Added £${amount} to ${pot.name}`);
+    } catch (error) {
+      console.error('Error adding funds:', error);
+      toast.error('Failed to add funds');
+    }
+  };
+
+  const handleTransfer = async (fromPotId: string) => {
+    const amount = prompt('Enter amount to transfer:');
+    if (!amount || isNaN(parseFloat(amount))) {
+      toast.error('Please enter a valid amount');
+      return;
+    }
+
+    const toPotId = prompt('Enter destination pot ID (or name):');
+    if (!toPotId) {
+      toast.error('Please select a destination pot');
+      return;
+    }
+
+    try {
+      // Find destination pot by ID or name
+      const toPot = pots.find(p => p.id === toPotId || p.name.toLowerCase() === toPotId.toLowerCase());
+      if (!toPot) throw new Error('Destination pot not found');
+
+      await transferBetweenPots(fromPotId, toPot.id, parseFloat(amount));
+      toast.success(`Transferred £${amount} successfully`);
+    } catch (error) {
+      console.error('Error transferring funds:', error);
+      toast.error('Failed to transfer funds');
     }
   };
 
@@ -257,10 +319,10 @@ export default function Pots() {
                     </div>
 
                     <div className="flex gap-2">
-                      <Button variant="outline" size="sm" className="flex-1">
+                      <Button variant="outline" size="sm" className="flex-1" onClick={() => handleAddFunds(pot.id)}>
                         Add Funds
                       </Button>
-                      <Button variant="outline" size="sm" className="flex-1">
+                      <Button variant="outline" size="sm" className="flex-1" onClick={() => handleTransfer(pot.id)}>
                         Transfer
                       </Button>
                     </div>
