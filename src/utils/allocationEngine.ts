@@ -354,18 +354,39 @@ export class AllocationEngine {
    */
   async getPotAllocationNeeds(): Promise<any[]> {
     try {
-      const { data, error } = await supabase
-        .rpc('calculate_pot_allocation_needs', {
-          p_user_id: this.userId,
-          p_date: new Date().toISOString().split('T')[0]
-        });
+      // Since the RPC function might not exist, calculate manually
+      // Get all pots and their allocation rules
+      const { data: potsData } = await supabase
+        .from('pots')
+        .select('*')
+        .eq('user_id', this.userId);
 
-      if (error) {
-        console.error('Error calculating pot allocation needs:', error);
+      const { data: rulesData } = await supabase
+        .from('allocation_rules')
+        .select('*')
+        .eq('user_id', this.userId)
+        .eq('enabled', true);
+
+      if (!potsData || !rulesData) {
         return [];
       }
 
-      return data || [];
+      // Calculate allocation needs for each pot
+      const needs = potsData.map(pot => {
+        const rulesForPot = rulesData.filter(rule => rule.pot_id === pot.id);
+        const totalNeeded = rulesForPot.reduce((sum, rule) => sum + rule.amount, 0);
+        
+        return {
+          pot_id: pot.id,
+          pot_name: pot.name,
+          target_amount: pot.target_amount,
+          current_balance: pot.current_balance,
+          allocation_needed: totalNeeded,
+          shortfall: Math.max(0, totalNeeded - pot.current_balance)
+        };
+      });
+
+      return needs;
     } catch (error) {
       console.error('Failed to calculate pot allocation needs:', error);
       return [];

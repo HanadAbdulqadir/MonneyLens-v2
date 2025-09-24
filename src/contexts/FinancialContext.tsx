@@ -1,6 +1,6 @@
 // This file now exports the Supabase-backed financial context
 // Existing components will automatically use the new Supabase version
-export { FinancialProvider, useFinancial } from "@/contexts/SupabaseFinancialContext"";
+export { FinancialProvider, useFinancial } from "@/contexts/SupabaseFinancialContext";
 
 // Re-export types for compatibility
 export type {

@@ -310,7 +310,9 @@ export function PotsProvider({ children }: { children: ReactNode }) {
       await loadPotsData();
 
       toast.success(`Income of £${amount} allocated successfully`);
-      return data || [];
+      
+      // Ensure we return an array
+      return Array.isArray(data) ? data : [];
     } catch (error) {
       console.error('Error allocating income:', error);
       toast.error('Failed to allocate income');
@@ -377,15 +379,22 @@ export function PotsProvider({ children }: { children: ReactNode }) {
     if (!user) throw new Error('User not authenticated');
 
     try {
-      const { data, error } = await supabase
-        .rpc('calculate_pot_allocation_needs', {
-          p_user_id: user.id,
-          p_date: date
-        });
+      // Since the RPC function might not exist, calculate allocation needs manually
+      const needs = pots.map(pot => {
+        const rulesForPot = allocationRules.filter(rule => rule.pot_id === pot.id && rule.enabled);
+        const totalNeeded = rulesForPot.reduce((sum, rule) => sum + rule.amount, 0);
+        
+        return {
+          pot_id: pot.id,
+          pot_name: pot.name,
+          target_amount: pot.target_amount,
+          current_balance: pot.current_balance,
+          allocation_needed: totalNeeded,
+          shortfall: Math.max(0, totalNeeded - pot.current_balance)
+        };
+      });
 
-      if (error) throw error;
-
-      return data || [];
+      return needs;
     } catch (error) {
       console.error('Error getting pot allocation needs:', error);
       throw error;
