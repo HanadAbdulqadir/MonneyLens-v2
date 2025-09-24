@@ -95,12 +95,12 @@ const ProtectedLayout = ({ children }: { children: React.ReactNode }) => (
 function AppContent() {
   return (
     <Routes>
-      {/* Authentication Routes */}
+      {/* Authentication Routes - No protection needed */}
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
 
-      {/* Protected Routes */}
+      {/* Protected Routes - Wrap each route individually */}
       <Route path="/" element={
         <ProtectedRoute>
           <ProtectedLayout><Index /></ProtectedLayout>
