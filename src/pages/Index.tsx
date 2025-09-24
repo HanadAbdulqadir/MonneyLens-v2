@@ -1,54 +1,13 @@
-import BalanceCard from "@/components/BalanceCard";
-import EnhancedCategoryBreakdown from "@/components/EnhancedCategoryBreakdown";
-import RecentTransactions from "@/components/RecentTransactions";
-import EnhancedWeeklyChart from "@/components/EnhancedWeeklyChart";
-import SmartTransactionEntry from "@/components/SmartTransactionEntry";
-import StartingPointModal from "@/components/StartingPointModal";
-import AIFinancialInsights from "@/components/AIFinancialInsights";
-import SmartNotifications from "@/components/SmartNotifications";
-import PersonalizedOverview from "@/components/PersonalizedOverview";
-import FinancialHealthScore from "@/components/FinancialHealthScore";
-import QuickInsightsGrid from "@/components/QuickInsightsGrid";
-import RecentActivityFeed from "@/components/RecentActivityFeed";
-import DebtOverview from "@/components/DebtOverview";
-import GoalsOverview from "@/components/GoalsOverview";
-import BudgetOverview from "@/components/BudgetOverview";
-import DataFilter from "@/components/DataFilter";
-import ResponsiveLayout, { ResponsiveGrid } from "@/components/ResponsiveLayout";
-import CommandPalette from "@/components/CommandPalette";
-import UnifiedToolbar from "@/components/UnifiedToolbar";
-import ContextualHelp from "@/components/ContextualHelp";
-import WelcomeSection from "@/components/WelcomeSection";
-import DailyQuickActions from "@/components/DailyQuickActions";
-import UpcomingRecurringSection from "@/components/UpcomingRecurringSection";
-import NavigationFooter from "@/components/NavigationFooter";
-import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { useFinancial } from "@/contexts/SupabaseFinancialContext";
 
 const Index = () => {
-  // Initialize keyboard shortcuts
-  useKeyboardShortcuts();
-  const { transactions, goals, debts, recurringTransactions } = useFinancial();
+  const { transactions, goals, debts } = useFinancial();
 
   const isNewUser = transactions.length === 0 && goals.length === 0 && debts.length === 0;
 
-  // Calculate daily insights
-  const today = new Date().toISOString().split('T')[0];
-  const todayTransactions = transactions.filter(t => t.date === today);
-  const todayIncome = todayTransactions.filter(t => t.category === 'Earnings').reduce((sum, t) => sum + t.amount, 0);
-  const todayExpenses = todayTransactions.filter(t => t.category !== 'Earnings').reduce((sum, t) => sum + Math.abs(t.amount), 0);
-  
-  // Upcoming recurring transactions
-  const upcomingRecurring = recurringTransactions.slice(0, 3);
-
   return (
-    <div className="space-y-6 animate-fade-in">
-      {/* Unified System Components */}
-      <CommandPalette />
-      <ContextualHelp />
-      <UnifiedToolbar />
-      
-      {/* Daily Operations Header */}
+    <div className="space-y-6 animate-fade-in p-6">
+      {/* Simple Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">
@@ -61,75 +20,39 @@ const Index = () => {
             }
           </p>
         </div>
-        <div className="flex items-center gap-3">
-          <StartingPointModal />
-          <div data-add-transaction>
-            <SmartTransactionEntry />
-          </div>
+      </div>
+
+      {/* Basic Content */}
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="bg-card p-6 rounded-lg border shadow-sm">
+          <h3 className="font-semibold mb-2">Transactions</h3>
+          <p className="text-2xl font-bold">{transactions.length}</p>
+          <p className="text-sm text-muted-foreground">Total transactions</p>
+        </div>
+        
+        <div className="bg-card p-6 rounded-lg border shadow-sm">
+          <h3 className="font-semibold mb-2">Goals</h3>
+          <p className="text-2xl font-bold">{goals.length}</p>
+          <p className="text-sm text-muted-foreground">Active goals</p>
+        </div>
+        
+        <div className="bg-card p-6 rounded-lg border shadow-sm">
+          <h3 className="font-semibold mb-2">Debts</h3>
+          <p className="text-2xl font-bold">{debts.length}</p>
+          <p className="text-sm text-muted-foreground">Active debts</p>
         </div>
       </div>
 
-      {/* Welcome Section for New Users */}
-      <WelcomeSection isNewUser={isNewUser} />
-
-      {/* Smart Notifications */}
-      <SmartNotifications />
-
-      {/* Daily Quick Actions Grid */}
-      {!isNewUser && (
-        <DailyQuickActions 
-          goals={goals} 
-          todayIncome={todayIncome} 
-          todayExpenses={todayExpenses} 
-        />
-      )}
-
-      {/* AI Financial Insights - Top Priority */}
-      <AIFinancialInsights />
-
-      {/* Personalized Overview - Full Width */}
-      <PersonalizedOverview />
-
-      {/* Balance Card - Full Width */}
-      <BalanceCard />
-
-      {/* Quick Insights Grid */}
-      <QuickInsightsGrid />
-
-      {/* Key Financial Areas - Debts, Goals, Budget */}
-      <div className="grid gap-6 lg:grid-cols-3">
-        <DebtOverview />
-        <GoalsOverview />
-        <BudgetOverview />
+      {/* Simple Message */}
+      <div className="bg-muted/20 p-6 rounded-lg border">
+        <h3 className="font-semibold mb-2">MoneyLens Dashboard</h3>
+        <p className="text-muted-foreground">
+          {isNewUser 
+            ? "Start by adding your first transaction or setting up a financial goal."
+            : "Your financial overview is loading. Check the navigation menu for detailed views."
+          }
+        </p>
       </div>
-
-      {/* Upcoming Recurring Transactions */}
-      <UpcomingRecurringSection upcomingRecurring={upcomingRecurring} />
-
-      {/* Data Filtering */}
-      <DataFilter compact={true} />
-
-      {/* Enhanced Charts Section */}
-      <ResponsiveLayout enableGridToggle={true} enableDevicePreview={false}>
-        <ResponsiveGrid columns={{ sm: 1, lg: 2 }} gap={6} minWidth="350px">
-          <EnhancedWeeklyChart />
-          <EnhancedCategoryBreakdown />
-        </ResponsiveGrid>
-      </ResponsiveLayout>
-      
-      {/* Activity and Transactions Grid */}
-      <ResponsiveGrid columns={{ sm: 1, md: 2 }} gap={6} minWidth="280px">
-        <RecentTransactions />
-        <RecentActivityFeed />
-      </ResponsiveGrid>
-
-      {/* Financial Health Score - Bottom Section */}
-      <div className="max-w-4xl mx-auto">
-        <FinancialHealthScore />
-      </div>
-
-      {/* Quick Navigation Footer */}
-      <NavigationFooter isNewUser={isNewUser} />
     </div>
   );
 };
