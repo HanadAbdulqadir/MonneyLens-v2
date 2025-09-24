@@ -1,6 +1,6 @@
-import { LayoutDashboard, TrendingUp, PieChart, Target, Settings, CreditCard, Calendar, Flag, RefreshCw, LogOut, Building, Zap, Wallet, PiggyBank, BarChart3, FileText, Users, Shield } from "lucide-react";
+import { LayoutDashboard, TrendingUp, PieChart, Target, Settings, CreditCard, Calendar, Flag, RefreshCw, LogOut, Building, Zap, Wallet, PiggyBank, BarChart3, FileText, Users, Shield, User } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   Sidebar,
   SidebarContent,
@@ -47,6 +47,7 @@ const menuGroups = [
   {
     title: "System & Settings",
     items: [
+      { title: "Profile", url: "/profile", icon: User, description: "User profile & account settings" },
       { title: "Settings", url: "/settings", icon: Settings, description: "Application configuration" },
     ]
   }

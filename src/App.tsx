@@ -7,7 +7,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { FinancialProvider } from "@/contexts/SupabaseFinancialContext";
 import { PotsProvider } from "@/contexts/PotsContext";
-import { AuthProvider, useAuth } from "@/hooks/useAuth";
+import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import ProtectedRoute from "@/components/ProtectedRoute";
 import { AppSidebar } from "@/components/AppSidebar";
 import UnifiedToolbar from "@/components/UnifiedToolbar";
 import QuickActionsToolbar from "@/components/QuickActionsToolbar";
@@ -33,93 +34,113 @@ import FinancialHub from "./pages/FinancialHub";
 import QuickAllocation from "./pages/QuickAllocation";
 import Pots from "./pages/Pots";
 import NotFound from "./pages/NotFound";
-import Auth from "./pages/Auth";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import ForgotPassword from "./pages/ForgotPassword";
+import Profile from "./pages/Profile";
 
 const queryClient = new QueryClient();
 
 function AppContent() {
-  const { user, loading } = useAuth();
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 to-secondary/5">
-        <div className="text-center space-y-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <div>
-            <h2 className="text-xl font-semibold text-primary">MoneyLens</h2>
-            <p className="text-muted-foreground">Loading your financial dashboard...</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!user) {
-    return <Auth />;
-  }
-
   return (
-    <FinancialProvider>
-      <PotsProvider>
-      <SidebarProvider>
-        <div className="flex min-h-screen w-full">
-          <AppSidebar />
-          
-          <main className="flex-1 overflow-auto bg-gradient-to-br from-background to-muted/20">
-            <header className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b shadow-sm">
-              <div className="flex items-center justify-between h-16 px-6">
-                <div className="flex items-center gap-4">
-                  <SidebarTrigger className="mr-2" />
-                  <div className="hidden sm:block">
-                    <h1 className="text-lg font-semibold text-primary">MoneyLens</h1>
-                    <p className="text-xs text-muted-foreground">Your financial companion</p>
-                  </div>
-                </div>
-                
-                {/* Header Actions */}
-                <div className="flex items-center gap-3">
-                  <NotificationSystem />
-                  <DataImporter />
-                </div>
-              </div>
-            </header>
-            
-            <div className="p-6">
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/financial-hub" element={<FinancialHub />} />
-                <Route path="/quick-allocation" element={<QuickAllocation />} />
-                <Route path="/analytics" element={<Analytics />} />
-                <Route path="/transactions" element={<Transactions />} />
-                <Route path="/goals" element={<Goals />} />
-                <Route path="/debts" element={<Debts />} />
-                <Route path="/recurring" element={<Recurring />} />
-                <Route path="/categories" element={<Categories />} />
-                <Route path="/budget" element={<Budget />} />
-                <Route path="/pots" element={<Pots />} />
-                <Route path="/calendar" element={<Calendar />} />
-                <Route path="/settings" element={<Settings />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </div>
+    <Routes>
+      {/* Authentication Routes */}
+      <Route 
+        path="/login" 
+        element={
+          <ProtectedRoute requireAuth={false}>
+            <Login />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/register" 
+        element={
+          <ProtectedRoute requireAuth={false}>
+            <Register />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/forgot-password" 
+        element={
+          <ProtectedRoute requireAuth={false}>
+            <ForgotPassword />
+          </ProtectedRoute>
+        } 
+      />
 
-            {/* Enhanced UX Components */}
-            <QuickActionsToolbar />
-            <UnifiedToolbar />
-            <PageTourManager />
-            <GoalNotificationManager />
-            <AdvancedSearch />
-            <UserOnboarding />
-            <SmartTransactionEntry />
-            <MobileBottomNavigation />
-          </main>
-        </div>
-        
-        <Toaster />
-        <Sonner />
-      </SidebarProvider>
-      </PotsProvider>
-    </FinancialProvider>
+      {/* Protected Routes */}
+      <Route 
+        path="/*" 
+        element={
+          <ProtectedRoute>
+            <FinancialProvider>
+              <PotsProvider>
+                <SidebarProvider>
+                  <div className="flex min-h-screen w-full">
+                    <AppSidebar />
+                    
+                    <main className="flex-1 overflow-auto bg-gradient-to-br from-background to-muted/20">
+                      <header className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b shadow-sm">
+                        <div className="flex items-center justify-between h-16 px-6">
+                          <div className="flex items-center gap-4">
+                            <SidebarTrigger className="mr-2" />
+                            <div className="hidden sm:block">
+                              <h1 className="text-lg font-semibold text-primary">MoneyLens</h1>
+                              <p className="text-xs text-muted-foreground">Your financial companion</p>
+                            </div>
+                          </div>
+                          
+                          {/* Header Actions */}
+                          <div className="flex items-center gap-3">
+                            <NotificationSystem />
+                            <DataImporter />
+                          </div>
+                        </div>
+                      </header>
+                      
+                      <div className="p-6">
+                        <Routes>
+                          <Route path="/" element={<Index />} />
+                          <Route path="/profile" element={<Profile />} />
+                          <Route path="/financial-hub" element={<FinancialHub />} />
+                          <Route path="/quick-allocation" element={<QuickAllocation />} />
+                          <Route path="/analytics" element={<Analytics />} />
+                          <Route path="/transactions" element={<Transactions />} />
+                          <Route path="/goals" element={<Goals />} />
+                          <Route path="/debts" element={<Debts />} />
+                          <Route path="/recurring" element={<Recurring />} />
+                          <Route path="/categories" element={<Categories />} />
+                          <Route path="/budget" element={<Budget />} />
+                          <Route path="/pots" element={<Pots />} />
+                          <Route path="/calendar" element={<Calendar />} />
+                          <Route path="/settings" element={<Settings />} />
+                          <Route path="*" element={<NotFound />} />
+                        </Routes>
+                      </div>
+
+                      {/* Enhanced UX Components */}
+                      <QuickActionsToolbar />
+                      <UnifiedToolbar />
+                      <PageTourManager />
+                      <GoalNotificationManager />
+                      <AdvancedSearch />
+                      <UserOnboarding />
+                      <SmartTransactionEntry />
+                      <MobileBottomNavigation />
+                    </main>
+                  </div>
+                  
+                  <Toaster />
+                  <Sonner />
+                </SidebarProvider>
+              </PotsProvider>
+            </FinancialProvider>
+          </ProtectedRoute>
+        } 
+      />
+    </Routes>
   );
 }
 
