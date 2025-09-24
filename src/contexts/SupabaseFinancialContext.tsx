@@ -413,7 +413,7 @@ export function FinancialProvider({ children }: { children: ReactNode }) {
     }
 
     if (data) {
-      const newTransaction = dbTransactionToApp(data);
+      const newTransaction = dbTransactionToApp(data as DbTransaction);
       setTransactions(prev => [newTransaction, ...prev]);
       await recalculateBalances();
       toast.success('Transaction added successfully');
@@ -444,7 +444,7 @@ export function FinancialProvider({ children }: { children: ReactNode }) {
     }
 
     if (data) {
-      const updatedTransaction = dbTransactionToApp(data);
+      const updatedTransaction = dbTransactionToApp(data as DbTransaction);
       setTransactions(prev => prev.map(t => t.id === id ? updatedTransaction : t));
       await recalculateBalances();
       toast.success('Transaction updated successfully');

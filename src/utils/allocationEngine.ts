@@ -59,7 +59,7 @@ export class AllocationEngine {
         return summary;
       }
 
-      if (data) {
+      if (data && Array.isArray(data)) {
         summary.allocations = data.map((allocation: any) => ({
           pot_id: allocation.pot_id,
           pot_name: allocation.pot_name,
