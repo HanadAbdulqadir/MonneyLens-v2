@@ -10,9 +10,9 @@ const DebtOverview = () => {
   const { debts } = useFinancial();
   const navigate = useNavigate();
 
-  const activeDebts = debts.filter(d => d.remainingAmount > 0);
-  const totalDebt = activeDebts.reduce((sum, d) => sum + d.remainingAmount, 0);
-  const totalOriginalDebt = activeDebts.reduce((sum, d) => sum + d.totalAmount, 0);
+  const activeDebts = debts.filter(d => d?.remainingAmount > 0);
+  const totalDebt = activeDebts.reduce((sum, d) => sum + (d?.remainingAmount || 0), 0);
+  const totalOriginalDebt = activeDebts.reduce((sum, d) => sum + (d?.totalAmount || 0), 0);
   const totalProgress = totalOriginalDebt > 0 ? ((totalOriginalDebt - totalDebt) / totalOriginalDebt) * 100 : 0;
 
   const getDaysUntilDue = (dueDate: string) => {
