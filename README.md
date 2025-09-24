@@ -26,6 +26,7 @@ MoneyLens transforms how you manage your finances by providing:
 - **Intelligent Budgeting**: Dynamic budget tracking with predictive alerts
 - **Goal Achievement System**: AI-powered goal optimization and progress tracking
 - **Debt Management**: Comprehensive debt tracking with payoff strategies
+- **Debt Snowball Calculator**: Advanced debt payoff optimization with snowball and avalanche methods
 - **Recurring Transaction Automation**: Smart recurring payment management
 
 ### **Advanced Features**
