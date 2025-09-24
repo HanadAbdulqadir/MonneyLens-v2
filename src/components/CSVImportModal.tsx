@@ -23,7 +23,7 @@ import {
   TrendingDown,
   DollarSign
 } from 'lucide-react';
-import { useFinancial } from '@/contexts/FinancialContext';
+import { useFinancial } from "@/contexts/SupabaseFinancialContext";
 import { useToast } from '@/hooks/use-toast';
 import { format, parseISO, isValid } from 'date-fns';
 import { cn } from '@/lib/utils';

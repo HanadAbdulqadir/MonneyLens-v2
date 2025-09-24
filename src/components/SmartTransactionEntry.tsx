@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { CategorySelector } from '@/components/CategorySelector';
-import { useFinancial } from '@/contexts/SupabaseFinancialContext';
+import { useFinancial } from "@/contexts/SupabaseFinancialContext";
 import { useToast } from '@/hooks/use-toast';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { 

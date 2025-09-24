@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card";
-import { useFinancial } from "@/contexts/FinancialContext";
+import { useFinancial } from "@/contexts/SupabaseFinancialContext";
 import { TrendingUp, TrendingDown, DollarSign, Calendar, Brain, BarChart3 } from "lucide-react";
 import EnhancedRecurringManager from "@/components/EnhancedRecurringManager";
 import UpcomingRecurringWidget from "@/components/UpcomingRecurringWidget";

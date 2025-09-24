@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useFinancial } from "@/contexts/FinancialContext";
+import { useFinancial } from "@/contexts/SupabaseFinancialContext";
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, TrendingUp, TrendingDown } from "lucide-react";
 import EnhancedCalendarView from "@/components/EnhancedCalendarView";

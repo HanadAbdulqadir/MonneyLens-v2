@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card";
-import { useFinancial } from "@/contexts/FinancialContext";
+import { useFinancial } from "@/contexts/SupabaseFinancialContext";
 import AdvancedAnalyticsDashboard from "@/components/AdvancedAnalyticsDashboard";
 import TransactionAnalytics from "@/components/TransactionAnalytics";
 

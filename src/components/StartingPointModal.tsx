@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Settings } from 'lucide-react';
-import { useFinancial } from '@/contexts/FinancialContext';
+import { useFinancial } from "@/contexts/SupabaseFinancialContext";
 import { useToast } from '@/hooks/use-toast';
 
 const StartingPointModal = () => {

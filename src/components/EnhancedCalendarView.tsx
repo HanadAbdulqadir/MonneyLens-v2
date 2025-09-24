@@ -14,7 +14,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
-import { useFinancial } from "@/contexts/FinancialContext";
+import { useFinancial } from "@/contexts/SupabaseFinancialContext";
 import { 
   ChevronLeft, 
   ChevronRight, 

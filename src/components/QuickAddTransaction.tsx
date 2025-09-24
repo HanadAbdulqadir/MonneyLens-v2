@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useFinancial } from '@/contexts/SupabaseFinancialContext';
+import { useFinancial } from "@/contexts/SupabaseFinancialContext";
 import { usePots } from '@/contexts/PotsContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

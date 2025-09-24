@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useFinancial } from "@/contexts/FinancialContext";
+import { useFinancial } from "@/contexts/SupabaseFinancialContext";
 import { useState, useMemo } from "react";
 import { Plus, Download, Filter, BarChart3, Upload } from "lucide-react";
 import AddTransactionModal from "@/components/AddTransactionModal";

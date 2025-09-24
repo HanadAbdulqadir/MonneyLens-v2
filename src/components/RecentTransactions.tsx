@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Fuel, UtensilsCrossed, ShoppingBag, TrendingUp, Trash2, X } from "lucide-react";
-import { useFinancial } from "@/contexts/FinancialContext";
+import { useFinancial } from "@/contexts/SupabaseFinancialContext";
 import { useToast } from "@/hooks/use-toast";
 
 const RecentTransactions = () => {

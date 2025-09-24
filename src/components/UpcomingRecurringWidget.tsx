@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useFinancial } from "@/contexts/FinancialContext";
+import { useFinancial } from "@/contexts/SupabaseFinancialContext";
 import { useMemo } from "react";
 import { Calendar, Clock, TrendingUp, TrendingDown, Play, AlertTriangle } from "lucide-react";
 import { format, parseISO, differenceInDays, addDays, addWeeks, addMonths, addYears, isBefore, isAfter } from "date-fns";

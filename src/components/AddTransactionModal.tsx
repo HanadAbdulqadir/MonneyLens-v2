@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { CategorySelector } from '@/components/CategorySelector';
 import { Plus } from 'lucide-react';
-import { useFinancial } from '@/contexts/FinancialContext';
+import { useFinancial } from "@/contexts/SupabaseFinancialContext";
 import { useToast } from '@/hooks/use-toast';
 
 const AddTransactionModal = () => {
