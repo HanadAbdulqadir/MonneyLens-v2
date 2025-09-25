@@ -84,6 +84,12 @@ MoneyLens transforms how you manage your finances by providing:
 - **Tailwind CSS** with shadcn/ui components for modern design
 - **React Router DOM** for client-side routing
 
+### **Backend Stack (v2)**
+- **Node.js + Express** for API server
+- **Supabase** for real-time database and authentication
+- **Redis** for event-driven architecture and caching
+- **TypeScript** for type-safe backend development
+
 ### **Data & State Management**
 - **Supabase** for real-time database and authentication
 - **React Query (TanStack Query)** for server state management
@@ -293,25 +299,22 @@ npm run test:watch   # Run tests in watch mode
 - **Asset Optimization**: Optimized images and fonts
 - **CDN Ready**: Static assets optimized for CDN delivery
 
-## 🌟 Future Roadmap
+## 🌟 Version 2.0 - Enhanced Architecture
 
-### **Phase 1 (Current)**
-- ✅ Enhanced Quick Allocation Engine
-- ✅ Universal CSV Import System
-- ✅ Advanced Financial Hub Planning
-- ✅ Comprehensive User Experience Improvements
+### **New Features in v2.0**
+- **Monorepo Structure**: pnpm workspace with separate frontend/backend packages
+- **Enhanced Backend**: Node.js + Express API with Redis event bus
+- **Financial Engine**: Advanced financial calculations and projections
+- **AI Recommender**: Intelligent financial recommendations
+- **Event-Driven Architecture**: Real-time financial event processing
+- **Enhanced Supabase Schema**: Optimized database structure for performance
 
-### **Phase 2 (Next)**
-- 🔄 Mobile Application Development
-- 🔄 Advanced AI Financial Insights
-- 🔄 Investment Portfolio Integration
-- 🔄 Multi-Currency Support
-
-### **Phase 3 (Future)**
-- 📅 Social Financial Features
-- 📅 Advanced Reporting System
-- 📅 API Integration Ecosystem
-- 📅 Blockchain & Web3 Integration
+### **v2.0 Architecture Highlights**
+- **Monorepo Management**: pnpm workspace for efficient dependency management
+- **TypeScript Everywhere**: Full-stack TypeScript for type safety
+- **Redis Integration**: Event bus for real-time financial notifications
+- **Modular Services**: Separated financial engine, AI recommender, and event bus
+- **Enhanced Security**: Improved authentication and data protection
 
 ## 📞 Support
 
