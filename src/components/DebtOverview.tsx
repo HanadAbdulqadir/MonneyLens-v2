@@ -96,7 +96,7 @@ const DebtOverview = () => {
               <div key={debt.id} className="flex justify-between items-center text-sm">
                 <span>{debt.name}</span>
                 <div className="flex items-center gap-2">
-                  <span className="font-medium">£{debt.minimumPayment.toFixed(0)}</span>
+                  <span className="font-medium">£{(debt.minimumPayment || 0).toFixed(0)}</span>
                   <Badge variant="destructive" className="text-xs">
                     {daysUntilDue <= 0 ? 'Overdue' : `${daysUntilDue}d`}
                   </Badge>
@@ -137,7 +137,7 @@ const DebtOverview = () => {
                 <Progress value={progress} className="h-1.5 [&>div]:bg-success" />
                 <div className="flex justify-between text-xs text-muted-foreground mt-1">
                   <span>{progress.toFixed(0)}% paid off</span>
-                  <span>Min: £{debt.minimumPayment.toFixed(0)}</span>
+                  <span>Min: £{(debt.minimumPayment || 0).toFixed(0)}</span>
                 </div>
               </div>
             );
@@ -151,7 +151,7 @@ const DebtOverview = () => {
           <p className="text-xs text-muted-foreground">Total Remaining</p>
         </div>
         <div>
-          <p className="text-lg font-bold">£{activeDebts.reduce((sum, d) => sum + d.minimumPayment, 0).toFixed(0)}</p>
+          <p className="text-lg font-bold">£{activeDebts.reduce((sum, d) => sum + (d.minimumPayment || 0), 0).toFixed(0)}</p>
           <p className="text-xs text-muted-foreground">Monthly Payments</p>
         </div>
       </div>
