@@ -1,10 +1,11 @@
-import { Calculator, TrendingUp, BarChart3, Play, Home, PiggyBank } from "lucide-react";
+import { Calculator, TrendingUp, BarChart3, Play, Home, PiggyBank, Users } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScenarioManager } from "@/components/ScenarioManager";
 import { LoanCalculator } from "@/components/LoanCalculator";
 import { InvestmentCalculator } from "@/components/InvestmentCalculator";
+import { RetirementCalculator } from "@/components/RetirementCalculator";
 import { useState } from "react";
 
 export default function Tools() {
@@ -39,8 +40,8 @@ export default function Tools() {
       id: 'retirement-calculator',
       title: "Retirement Calculator",
       description: "Plan your retirement savings and withdrawal strategies",
-      icon: Calculator,
-      status: "Coming Soon",
+      icon: Users,
+      status: "Available",
       color: "text-orange-600"
     },
     {
@@ -118,6 +119,29 @@ export default function Tools() {
           </div>
         </div>
         <InvestmentCalculator />
+      </div>
+    );
+  }
+
+  if (activeTool === 'retirement-calculator') {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <Button 
+              variant="outline" 
+              onClick={() => setActiveTool(null)}
+              className="mb-4"
+            >
+              ← Back to Tools
+            </Button>
+            <h1 className="text-3xl font-bold tracking-tight">Retirement Calculator</h1>
+            <p className="text-muted-foreground">
+              Plan your retirement savings, withdrawals, and income strategy
+            </p>
+          </div>
+        </div>
+        <RetirementCalculator />
       </div>
     );
   }
