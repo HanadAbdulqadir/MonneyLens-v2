@@ -34,6 +34,7 @@ import Budget from "./pages/Budget";
 import FinancialHub from "./pages/FinancialHub";
 import QuickAllocation from "./pages/QuickAllocation";
 import Pots from "./pages/Pots";
+import Tools from "./pages/Tools";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -169,6 +170,11 @@ function AppContent() {
       <Route path="/settings" element={
         <ProtectedRoute>
           <ProtectedLayout><Settings /></ProtectedLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/tools" element={
+        <ProtectedRoute>
+          <ProtectedLayout><Tools /></ProtectedLayout>
         </ProtectedRoute>
       } />
       
