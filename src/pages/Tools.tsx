@@ -1,4 +1,4 @@
-import { Calculator, TrendingUp, BarChart3, Play, Home, PiggyBank, Users } from "lucide-react";
+import { Calculator, TrendingUp, BarChart3, Play, Home, PiggyBank, Users, Target } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -6,6 +6,7 @@ import { ScenarioManager } from "@/components/ScenarioManager";
 import { LoanCalculator } from "@/components/LoanCalculator";
 import { InvestmentCalculator } from "@/components/InvestmentCalculator";
 import { RetirementCalculator } from "@/components/RetirementCalculator";
+import { SavingsGoalCalculator } from "@/components/SavingsGoalCalculator";
 import { useState } from "react";
 
 export default function Tools() {
@@ -48,8 +49,8 @@ export default function Tools() {
       id: 'savings-calculator',
       title: "Savings Goal Calculator",
       description: "Calculate how much to save for specific financial goals",
-      icon: BarChart3,
-      status: "Coming Soon",
+      icon: Target,
+      status: "Available",
       color: "text-red-600"
     }
   ];
@@ -142,6 +143,29 @@ export default function Tools() {
           </div>
         </div>
         <RetirementCalculator />
+      </div>
+    );
+  }
+
+  if (activeTool === 'savings-calculator') {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <Button 
+              variant="outline" 
+              onClick={() => setActiveTool(null)}
+              className="mb-4"
+            >
+              ← Back to Tools
+            </Button>
+            <h1 className="text-3xl font-bold tracking-tight">Savings Goal Calculator</h1>
+            <p className="text-muted-foreground">
+              Plan and track progress toward your financial goals
+            </p>
+          </div>
+        </div>
+        <SavingsGoalCalculator />
       </div>
     );
   }
