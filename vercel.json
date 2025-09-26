@@ -21,10 +21,10 @@
       "dest": "/index.html"
     }
   ],
-  "functions": {
-    "*.html": {
-      "runtime": "@vercel/static-build"
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
-  },
-  "outputDirectory": "dist"
+  ]
 }
