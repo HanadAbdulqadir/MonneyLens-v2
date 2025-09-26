@@ -1,8 +1,10 @@
-import { Calculator, TrendingUp, BarChart3, Play } from "lucide-react";
+import { Calculator, TrendingUp, BarChart3, Play, Home, PiggyBank } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScenarioManager } from "@/components/ScenarioManager";
+import { LoanCalculator } from "@/components/LoanCalculator";
+import { InvestmentCalculator } from "@/components/InvestmentCalculator";
 import { useState } from "react";
 
 export default function Tools() {
@@ -18,20 +20,36 @@ export default function Tools() {
       color: "text-green-600"
     },
     {
-      id: 'calculators',
-      title: "Financial Calculators",
-      description: "Advanced calculators for loans, savings, investments, and more",
-      icon: Calculator,
-      status: "Coming Soon",
+      id: 'loan-calculator',
+      title: "Loan Calculator",
+      description: "Calculate mortgage payments, interest costs, and payoff strategies",
+      icon: Home,
+      status: "Available",
       color: "text-blue-600"
     },
     {
-      id: 'projections',
-      title: "Financial Projections",
-      description: "Project your financial future based on current trends",
+      id: 'investment-calculator',
+      title: "Investment Calculator",
+      description: "Project investment growth with compound interest and contributions",
+      icon: PiggyBank,
+      status: "Available",
+      color: "text-purple-600"
+    },
+    {
+      id: 'retirement-calculator',
+      title: "Retirement Calculator",
+      description: "Plan your retirement savings and withdrawal strategies",
+      icon: Calculator,
+      status: "Coming Soon",
+      color: "text-orange-600"
+    },
+    {
+      id: 'savings-calculator',
+      title: "Savings Goal Calculator",
+      description: "Calculate how much to save for specific financial goals",
       icon: BarChart3,
       status: "Coming Soon",
-      color: "text-purple-600"
+      color: "text-red-600"
     }
   ];
 
@@ -54,6 +72,52 @@ export default function Tools() {
           </div>
         </div>
         <ScenarioManager />
+      </div>
+    );
+  }
+
+  if (activeTool === 'loan-calculator') {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <Button 
+              variant="outline" 
+              onClick={() => setActiveTool(null)}
+              className="mb-4"
+            >
+              ← Back to Tools
+            </Button>
+            <h1 className="text-3xl font-bold tracking-tight">Loan Calculator</h1>
+            <p className="text-muted-foreground">
+              Calculate mortgage payments, interest costs, and payoff strategies
+            </p>
+          </div>
+        </div>
+        <LoanCalculator />
+      </div>
+    );
+  }
+
+  if (activeTool === 'investment-calculator') {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <Button 
+              variant="outline" 
+              onClick={() => setActiveTool(null)}
+              className="mb-4"
+            >
+              ← Back to Tools
+            </Button>
+            <h1 className="text-3xl font-bold tracking-tight">Investment Calculator</h1>
+            <p className="text-muted-foreground">
+              Project investment growth with compound interest and contributions
+            </p>
+          </div>
+        </div>
+        <InvestmentCalculator />
       </div>
     );
   }
