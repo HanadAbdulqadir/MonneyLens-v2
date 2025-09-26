@@ -1,8 +1,9 @@
-import { Calculator, TrendingUp, BarChart3, Play, Home, PiggyBank, Users, Target } from "lucide-react";
+import { Calculator, TrendingUp, BarChart3, Play, Home, PiggyBank, Users, Target, Brain } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScenarioManager } from "@/components/ScenarioManager";
+import { AIInsightsDashboard } from "@/components/AIInsightsDashboard";
 import { LoanCalculator } from "@/components/LoanCalculator";
 import { InvestmentCalculator } from "@/components/InvestmentCalculator";
 import { RetirementCalculator } from "@/components/RetirementCalculator";
@@ -20,6 +21,14 @@ export default function Tools() {
       icon: TrendingUp,
       status: "Available",
       color: "text-green-600"
+    },
+    {
+      id: 'ai-insights',
+      title: "AI Financial Insights",
+      description: "Get intelligent analysis and recommendations for your scenarios",
+      icon: Brain,
+      status: "Available",
+      color: "text-purple-600"
     },
     {
       id: 'loan-calculator',
@@ -166,6 +175,29 @@ export default function Tools() {
           </div>
         </div>
         <SavingsGoalCalculator />
+      </div>
+    );
+  }
+
+  if (activeTool === 'ai-insights') {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <Button 
+              variant="outline" 
+              onClick={() => setActiveTool(null)}
+              className="mb-4"
+            >
+              ← Back to Tools
+            </Button>
+            <h1 className="text-3xl font-bold tracking-tight">AI Financial Insights</h1>
+            <p className="text-muted-foreground">
+              Intelligent analysis and recommendations for your financial scenarios
+            </p>
+          </div>
+        </div>
+        <AIInsightsDashboard />
       </div>
     );
   }
