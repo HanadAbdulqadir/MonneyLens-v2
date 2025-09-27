@@ -44,3 +44,9 @@ jobs:
         NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
       with:
         args: deploy --prod --dir=dist
+
+    - name: Deploy to Surge.sh (alternative)
+      if: always()  # Always run as alternative deployment
+      run: |
+        npm install -g surge
+        surge dist moneylens-app.surge.sh --token ${{ secrets.SURGE_TOKEN }}
