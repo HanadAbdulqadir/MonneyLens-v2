@@ -1,17 +1,17 @@
 import { useState } from 'react';
-import { useFinancial } from "@/contexts/SupabaseFinancialContext";
-import { usePots } from '@/contexts/PotsContext';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar } from '@/components/ui/calendar';
-import { Badge } from '@/components/ui/badge';
+import { useFinancial } from "@core/contexts/SupabaseFinancialContext";
+import { usePots } from "@core/contexts/PotsContext";
+import { Button } from "@shared/components/ui/button";
+import { Input } from "@shared/components/ui/input";
+import { Label } from "@shared/components/ui/label";
+import { Textarea } from "@shared/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@shared/components/ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "@shared/components/ui/popover";
+import { Calendar } from "@shared/components/ui/calendar";
+import { Badge } from "@shared/components/ui/badge";
 import { Plus, CalendarIcon, Tag, PiggyBank } from 'lucide-react';
 import { format } from 'date-fns';
-import { cn } from '@/lib/utils';
+import { cn } from "@shared/lib/utils";
 import { toast } from 'sonner';
 
 interface QuickAddTransactionProps {

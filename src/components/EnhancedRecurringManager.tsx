@@ -1,33 +1,33 @@
 import React, { useState, useMemo } from 'react';
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
-import { Separator } from "@/components/ui/separator";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { Card } from "@shared/components/ui/card";
+import { Button } from "@shared/components/ui/button";
+import { Input } from "@shared/components/ui/input";
+import { Label } from "@shared/components/ui/label";
+import { Badge } from "@shared/components/ui/badge";
+import { Switch } from "@shared/components/ui/switch";
+import { Separator } from "@shared/components/ui/separator";
+import { ScrollArea } from "@shared/components/ui/scroll-area";
 import { 
   Dialog, 
   DialogContent, 
   DialogHeader, 
   DialogTitle, 
   DialogTrigger 
-} from "@/components/ui/dialog";
+} from "@shared/components/ui/dialog";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from "@shared/components/ui/popover";
 import { 
   Select, 
   SelectContent, 
   SelectItem, 
   SelectTrigger, 
   SelectValue 
-} from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useFinancial } from "@/contexts/SupabaseFinancialContext";
+} from "@shared/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@shared/components/ui/tabs";
+import { useFinancial } from "@core/contexts/SupabaseFinancialContext";
 import { 
   Plus, 
   RefreshCw, 
@@ -49,7 +49,7 @@ import {
   Target,
   Zap
 } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@shared/hooks/use-toast";
 import { format, addDays, addWeeks, addMonths, addYears, differenceInDays, isAfter, isBefore } from "date-fns";
 
 interface RecurringTemplate {

@@ -1,8 +1,8 @@
-import { Card } from "@/components/ui/card";
-import { useFinancial } from "@/contexts/SupabaseFinancialContext";
+import { Card } from "@shared/components/ui/card";
+import { useFinancial } from "@core/contexts/SupabaseFinancialContext";
 import { TrendingUp, TrendingDown, DollarSign, Calendar, Brain, BarChart3 } from "lucide-react";
-import EnhancedRecurringManager from "@/components/EnhancedRecurringManager";
-import UpcomingRecurringWidget from "@/components/UpcomingRecurringWidget";
+import EnhancedRecurringManager from "@components/EnhancedRecurringManager";
+import UpcomingRecurringWidget from "@components/UpcomingRecurringWidget";
 
 const Recurring = () => {
   const { recurringTransactions, currency } = useFinancial();

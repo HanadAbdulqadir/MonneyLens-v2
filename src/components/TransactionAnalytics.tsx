@@ -1,7 +1,7 @@
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
+import { Card } from "@shared/components/ui/card";
+import { Badge } from "@shared/components/ui/badge";
+import { Button } from "@shared/components/ui/button";
+import { Progress } from "@shared/components/ui/progress";
 import { 
   BarChart, 
   Bar, 
@@ -18,7 +18,7 @@ import {
   Area,
   AreaChart
 } from 'recharts';
-import { useFinancial } from "@/contexts/SupabaseFinancialContext";
+import { useFinancial } from "@core/contexts/SupabaseFinancialContext";
 import { 
   TrendingUp, 
   TrendingDown, 

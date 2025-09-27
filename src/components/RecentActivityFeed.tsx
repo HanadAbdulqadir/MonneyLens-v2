@@ -1,7 +1,7 @@
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { useFinancial } from "@/contexts/SupabaseFinancialContext";
+import { Card } from "@shared/components/ui/card";
+import { Badge } from "@shared/components/ui/badge";
+import { Button } from "@shared/components/ui/button";
+import { useFinancial } from "@core/contexts/SupabaseFinancialContext";
 import { 
   ArrowUpRight, 
   ArrowDownRight, 

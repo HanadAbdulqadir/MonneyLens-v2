@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Slider } from '@/components/ui/slider';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@shared/components/ui/card";
+import { Button } from "@shared/components/ui/button";
+import { Input } from "@shared/components/ui/input";
+import { Label } from "@shared/components/ui/label";
+import { Slider } from "@shared/components/ui/slider";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@shared/components/ui/tabs";
+import { Badge } from "@shared/components/ui/badge";
 import { 
   TrendingUp, 
   DollarSign, 
@@ -18,7 +18,7 @@ import {
   PiggyBank,
   Zap
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from "@shared/lib/utils";
 
 interface InvestmentCalculation {
   futureValue: number;

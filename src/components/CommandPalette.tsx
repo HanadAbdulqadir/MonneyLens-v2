@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent } from "@shared/components/ui/dialog";
+import { Input } from "@shared/components/ui/input";
+import { Button } from "@shared/components/ui/button";
+import { Badge } from "@shared/components/ui/badge";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@shared/hooks/use-toast";
 import { 
   Search, 
   Plus, 
@@ -58,7 +58,7 @@ import {
   Compass
 } from "lucide-react";
 
-interface Command {
+interface CommandItem {
   id: string;
   title: string;
   subtitle?: string;
@@ -77,7 +77,7 @@ const CommandPalette = () => {
   const location = useLocation();
   const { toast } = useToast();
 
-  const commands: Command[] = [
+  const commands: CommandItem[] = [
     // Navigation Commands
     {
       id: 'nav-dashboard',
@@ -355,10 +355,20 @@ const CommandPalette = () => {
       subtitle: 'Import transactions from CSV',
       icon: Upload,
       action: () => {
-        toast({
-          title: "CSV Import",
-          description: "CSV import feature coming soon...",
-        });
+        const importButton = document.querySelector('[data-csv-import] button') as HTMLButtonElement;
+        if (importButton) {
+          importButton.click();
+          toast({
+            title: "CSV Import",
+            description: "Opening CSV import dialog...",
+          });
+        } else {
+          toast({
+            title: "CSV Import",
+            description: "Navigate to Transactions page to import CSV files",
+          });
+          navigate('/transactions');
+        }
       },
       keywords: ['import', 'csv', 'upload', 'transactions'],
       category: 'import'
@@ -413,9 +423,10 @@ const CommandPalette = () => {
       subtitle: 'Convert between currencies',
       icon: DollarSign,
       action: () => {
+        navigate('/tools');
         toast({
           title: "Currency Converter",
-          description: "Currency converter coming soon...",
+          description: "Navigate to Tools page for currency conversion",
         });
       },
       keywords: ['currency', 'convert', 'exchange', 'rates'],
@@ -560,7 +571,7 @@ const CommandPalette = () => {
     }
     acc[command.category].push(command);
     return acc;
-  }, {} as Record<string, Command[]>);
+  }, {} as Record<string, CommandItem[]>);
 
   const categoryLabels = {
     navigation: 'Navigation',
@@ -573,7 +584,7 @@ const CommandPalette = () => {
     help: 'Help & Support'
   };
 
-  const executeCommand = useCallback((command: Command) => {
+  const executeCommand = useCallback((command: CommandItem) => {
     command.action();
     setIsOpen(false);
     setSearch('');

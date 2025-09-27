@@ -1,11 +1,11 @@
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { useFinancial } from "@/contexts/SupabaseFinancialContext";
+import { Card } from "@shared/components/ui/card";
+import { Button } from "@shared/components/ui/button";
+import { Badge } from "@shared/components/ui/badge";
+import { useFinancial } from "@core/contexts/SupabaseFinancialContext";
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, TrendingUp, TrendingDown } from "lucide-react";
-import EnhancedCalendarView from "@/components/EnhancedCalendarView";
-import AddTransactionModal from "@/components/AddTransactionModal";
+import EnhancedCalendarView from "@components/EnhancedCalendarView";
+import AddTransactionModal from "@components/AddTransactionModal";
 
 const Calendar = () => {
   const { dailyData, transactions, recurringTransactions } = useFinancial();

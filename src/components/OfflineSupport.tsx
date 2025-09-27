@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { useToast } from "@/hooks/use-toast";
+import { Button } from "@shared/components/ui/button";
+import { Card } from "@shared/components/ui/card";
+import { Badge } from "@shared/components/ui/badge";
+import { Alert, AlertDescription } from "@shared/components/ui/alert";
+import { useToast } from "@shared/hooks/use-toast";
 import { 
   Wifi, 
   WifiOff, 

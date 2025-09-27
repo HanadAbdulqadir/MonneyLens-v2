@@ -1,8 +1,8 @@
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card } from "@shared/components/ui/card";
+import { Button } from "@shared/components/ui/button";
 import { Fuel, UtensilsCrossed, ShoppingBag, TrendingUp, Trash2, X } from "lucide-react";
-import { useFinancial } from "@/contexts/SupabaseFinancialContext";
-import { useToast } from "@/hooks/use-toast";
+import { useFinancial } from "@core/contexts/SupabaseFinancialContext";
+import { useToast } from "@shared/hooks/use-toast";
 
 const RecentTransactions = () => {
   const { transactions, deleteTransaction, categoryFilter, setCategoryFilter } = useFinancial();

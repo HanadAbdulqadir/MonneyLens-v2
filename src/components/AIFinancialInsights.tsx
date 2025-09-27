@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useFinancial } from "@/contexts/SupabaseFinancialContext";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { Button } from '@/components/ui/button';
+import { useFinancial } from "@core/contexts/SupabaseFinancialContext";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@shared/components/ui/card";
+import { Badge } from "@shared/components/ui/badge";
+import { Progress } from "@shared/components/ui/progress";
+import { Button } from "@shared/components/ui/button";
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -17,7 +17,7 @@ import {
   CheckCircle,
   Sparkles
 } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from "@shared/hooks/use-toast";
 
 interface SpendingPattern {
   category: string;

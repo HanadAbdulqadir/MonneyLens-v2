@@ -1,14 +1,14 @@
 import React from 'react';
-import { Button } from "@/components/ui/button";
+import { Button } from "@shared/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
   DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
+} from "@shared/components/ui/dropdown-menu";
 import { MoreHorizontal, Edit, Trash2, Copy, Eye } from "lucide-react";
-import { Transaction } from "@/data/financialData";
+import { Transaction } from "@data/financialData";
 
 interface QuickActionMenuProps {
   transaction: Transaction | any;

@@ -1,20 +1,20 @@
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { Slider } from "@/components/ui/slider";
-import { useFinancial } from "@/contexts/SupabaseFinancialContext";
+import { Card } from "@shared/components/ui/card";
+import { Button } from "@shared/components/ui/button";
+import { Progress } from "@shared/components/ui/progress";
+import { Slider } from "@shared/components/ui/slider";
+import { useFinancial } from "@core/contexts/SupabaseFinancialContext";
 import { Target, TrendingUp, AlertTriangle, CheckCircle, Settings, TrendingDown, Calendar, DollarSign, Zap, Plus, Trash2 } from "lucide-react";
 import { useState, useEffect } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@shared/components/ui/dialog";
+import { Input } from "@shared/components/ui/input";
+import { Label } from "@shared/components/ui/label";
+import { Alert, AlertDescription } from "@shared/components/ui/alert";
+import { Badge } from "@shared/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@shared/components/ui/select";
+import { useToast } from "@shared/hooks/use-toast";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
-import { supabase } from "@/integrations/supabase/client";
-import { CategorySelector } from "@/components/CategorySelector";
+import { supabase } from "@core/integrations/supabase/client";
+import { CategorySelector } from "@components/CategorySelector";
 
 const Budget = () => {
   const { transactions } = useFinancial();

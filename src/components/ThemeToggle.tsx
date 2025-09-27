@@ -1,6 +1,6 @@
 import { Moon, Sun } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useFinancial } from "@/contexts/SupabaseFinancialContext";
+import { Button } from "@shared/components/ui/button";
+import { useFinancial } from "@core/contexts/SupabaseFinancialContext";
 
 const ThemeToggle = () => {
   const { isDarkMode, toggleDarkMode } = useFinancial();

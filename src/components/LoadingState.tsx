@@ -1,5 +1,5 @@
-import { Card } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Card } from "@shared/components/ui/card";
+import { Skeleton } from "@shared/components/ui/skeleton";
 import { Loader2, TrendingUp, BarChart3, PieChart } from "lucide-react";
 
 interface LoadingStateProps {

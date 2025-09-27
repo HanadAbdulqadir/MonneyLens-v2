@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { TimelineEvent, WhatIfScenario } from '@/utils/scenarioEngine';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Slider } from '@/components/ui/slider';
+import { TimelineEvent, WhatIfScenario } from "../shared/utils/scenarioEngine";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../shared/components/ui/card";
+import { Button } from "../shared/components/ui/button";
+import { Badge } from "../shared/components/ui/badge";
+import { Slider } from "../shared/components/ui/slider";
 import { 
   ChevronLeft, 
   ChevronRight, 
@@ -18,7 +18,7 @@ import {
   CreditCard,
   PiggyBank
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from "../shared/lib/utils";
 
 interface TimelineVisualizationProps {
   scenario: WhatIfScenario;

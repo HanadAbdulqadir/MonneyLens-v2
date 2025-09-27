@@ -1,6 +1,6 @@
-import { Card } from "@/components/ui/card";
+import { Card } from "@shared/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
-import { useFinancial } from "@/contexts/SupabaseFinancialContext";
+import { useFinancial } from "@core/contexts/SupabaseFinancialContext";
 
 const WeeklyChart = () => {
   const { dailyData, monthlyStartingPoint } = useFinancial();

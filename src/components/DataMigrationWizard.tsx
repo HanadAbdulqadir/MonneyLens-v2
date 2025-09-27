@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Progress } from '@/components/ui/progress';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
+import { useAuth } from "../../core/contexts/AuthContext";
+import { Button } from "../../shared/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../shared/components/ui/card";
+import { Alert, AlertDescription } from "../../shared/components/ui/alert";
+import { Progress } from "../../shared/components/ui/progress";
+import { Badge } from "../../shared/components/ui/badge";
+import { Separator } from "../../shared/components/ui/separator";
 import { 
   Database, 
   Download, 
@@ -22,7 +22,7 @@ import {
   X
 } from 'lucide-react';
 import { toast } from 'sonner';
-import DataMigrationService, { MigrationResult, LocalStorageData } from '@/utils/dataMigration';
+import DataMigrationService, { MigrationResult, LocalStorageData } from "../../shared/utils/dataMigration";
 
 interface DataMigrationWizardProps {
   onComplete?: () => void;

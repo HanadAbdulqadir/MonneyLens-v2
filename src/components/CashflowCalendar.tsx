@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
-import { usePots } from '@/contexts/PotsContext';
-import { useFinancial } from "@/contexts/SupabaseFinancialContext";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { usePots } from "@core/contexts/PotsContext";
+import { useFinancial } from "@core/contexts/SupabaseFinancialContext";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@shared/components/ui/card";
+import { Button } from "@shared/components/ui/button";
+import { Badge } from "@shared/components/ui/badge";
+import { Calendar } from "@shared/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@shared/components/ui/popover";
 import { CalendarIcon, Plus, Minus, TrendingUp, TrendingDown } from 'lucide-react';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, parseISO } from 'date-fns';
-import { cn } from '@/lib/utils';
+import { cn } from "@shared/lib/utils";
 
 interface CashflowCalendarProps {
   className?: string;

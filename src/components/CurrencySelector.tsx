@@ -1,5 +1,5 @@
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useFinancial } from "@/contexts/SupabaseFinancialContext";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@shared/components/ui/select";
+import { useFinancial } from "@core/contexts/SupabaseFinancialContext";
 
 const currencies = [
   { symbol: '£', name: 'British Pound', code: 'GBP' },

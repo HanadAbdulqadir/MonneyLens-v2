@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { useFinancial } from "@/contexts/SupabaseFinancialContext";
+import { Card } from "@shared/components/ui/card";
+import { Button } from "@shared/components/ui/button";
+import { Badge } from "@shared/components/ui/badge";
+import { Separator } from "@shared/components/ui/separator";
+import { ScrollArea } from "@shared/components/ui/scroll-area";
+import { useFinancial } from "@core/contexts/SupabaseFinancialContext";
 import { 
   ChevronLeft, 
   ChevronRight, 
@@ -17,8 +17,8 @@ import {
   Zap
 } from "lucide-react";
 import { format, parseISO, addDays, subDays, isSameDay } from "date-fns";
-import AddTransactionModal from "@/components/AddTransactionModal";
-import QuickActionMenu from "@/components/QuickActionMenu";
+import AddTransactionModal from "@components/AddTransactionModal";
+import QuickActionMenu from "@components/QuickActionMenu";
 
 interface CalendarDayViewProps {
   selectedDate: Date;

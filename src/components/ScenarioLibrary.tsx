@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { SavedScenario } from '@/types/scenario';
-import { scenarioStorage } from '@/services/scenarioStorage';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { SavedScenario } from "../../shared/types/scenario";
+import { scenarioStorage } from "../../core/services/scenarioStorage";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../shared/components/ui/card";
+import { Button } from "../../shared/components/ui/button";
+import { Badge } from "../../shared/components/ui/badge";
+import { Input } from "../../shared/components/ui/input";
+import { Label } from "../../shared/components/ui/label";
 import { 
   Search, 
   Filter, 
@@ -24,8 +24,8 @@ import {
   Calendar,
   DollarSign
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { toast } from '@/hooks/use-toast';
+import { cn } from "../../shared/lib/utils";
+import { toast } from "../../shared/hooks/use-toast";
 
 interface ScenarioLibraryProps {
   onLoadScenario?: (scenario: SavedScenario) => void;

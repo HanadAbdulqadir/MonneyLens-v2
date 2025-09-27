@@ -1,11 +1,11 @@
 import React, { useState, useRef } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
+import { Card, CardContent } from "@shared/components/ui/card";
+import { Button } from "@shared/components/ui/button";
+import { Label } from "@shared/components/ui/label";
+import { Badge } from "@shared/components/ui/badge";
+import { Progress } from "@shared/components/ui/progress";
 import { Upload, FileText, CheckCircle, AlertCircle, Calendar, TrendingUp } from "lucide-react";
-import { useFinancial } from "@/contexts/SupabaseFinancialContext";
+import { useFinancial } from "@core/contexts/SupabaseFinancialContext";
 
 interface CSVConfigurationImporterProps {
   onConfigurationComplete: (config: any) => void;

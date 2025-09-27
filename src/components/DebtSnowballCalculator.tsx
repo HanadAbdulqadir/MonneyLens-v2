@@ -1,14 +1,14 @@
 import { useState } from 'react';
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
-import { useFinancial } from "@/contexts/SupabaseFinancialContext";
-import { useToast } from "@/hooks/use-toast";
+import { Card } from "@shared/components/ui/card";
+import { Button } from "@shared/components/ui/button";
+import { Input } from "@shared/components/ui/input";
+import { Label } from "@shared/components/ui/label";
+import { Badge } from "@shared/components/ui/badge";
+import { Progress } from "@shared/components/ui/progress";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@shared/components/ui/select";
+import { Switch } from "@shared/components/ui/switch";
+import { useFinancial } from "@core/contexts/SupabaseFinancialContext";
+import { useToast } from "@shared/hooks/use-toast";
 import { 
   Calculator, 
   TrendingDown, 
@@ -22,7 +22,7 @@ import {
   Play,
   RotateCcw
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/utils";
 
 interface DebtSnowballPlan {
   debts: Array<{

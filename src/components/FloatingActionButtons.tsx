@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Button } from "@shared/components/ui/button";
+import { Card } from "@shared/components/ui/card";
 import { Plus, Target, Wallet, CreditCard, TrendingUp, Minimize2, Maximize2, X } from "lucide-react";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -8,7 +8,7 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@shared/components/ui/tooltip";
 
 const FloatingActionButtons = () => {
   const [isMinimized, setIsMinimized] = useState(false);

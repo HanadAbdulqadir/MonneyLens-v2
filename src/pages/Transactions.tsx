@@ -1,18 +1,18 @@
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { useFinancial } from "@/contexts/SupabaseFinancialContext";
+import { Card } from "@shared/components/ui/card";
+import { Button } from "@shared/components/ui/button";
+import { useFinancial } from "@core/contexts/SupabaseFinancialContext";
 import { useState, useMemo } from "react";
 import { Plus, Download, Filter, BarChart3, Upload } from "lucide-react";
-import AddTransactionModal from "@/components/AddTransactionModal";
-import SmartTransactionSearch, { SearchFilters } from "@/components/SmartTransactionSearch";
-import SmartTransactionEntry from "@/components/SmartTransactionEntry";
-import CSVImportModal from "@/components/CSVImportModal";
-import TransactionAnalytics from "@/components/TransactionAnalytics";
-import EnhancedTransactionList from "@/components/EnhancedTransactionList";
-import TransactionInsights from "@/components/TransactionInsights";
-import DataFilter, { FilterState } from "@/components/DataFilter";
-import LoadingState from "@/components/LoadingState";
-import { useToast } from "@/hooks/use-toast";
+import AddTransactionModal from "@components/AddTransactionModal";
+import SmartTransactionSearch, { SearchFilters } from "@components/SmartTransactionSearch";
+import SmartTransactionEntry from "@components/SmartTransactionEntry";
+import CSVImportModal from "@components/CSVImportModal";
+import TransactionAnalytics from "@components/TransactionAnalytics";
+import EnhancedTransactionList from "@components/EnhancedTransactionList";
+import TransactionInsights from "@components/TransactionInsights";
+import DataFilter, { FilterState } from "@components/DataFilter";
+import LoadingState from "@components/LoadingState";
+import { useToast } from "@shared/hooks/use-toast";
 import { format, parseISO, subDays, isWithinInterval, startOfDay, endOfDay } from "date-fns";
 
 const Transactions = () => {

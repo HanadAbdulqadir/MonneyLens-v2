@@ -1,9 +1,9 @@
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Card } from "@shared/components/ui/card";
+import { Button } from "@shared/components/ui/button";
+import { Badge } from "@shared/components/ui/badge";
+import { Checkbox } from "@shared/components/ui/checkbox";
+import { Input } from "@shared/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@shared/components/ui/select";
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -11,9 +11,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useFinancial } from "@/contexts/SupabaseFinancialContext";
-import { useVirtualScroll, useDebouncedSearch } from "@/hooks/usePerformance";
+} from "@shared/components/ui/dropdown-menu";
+import { useFinancial } from "@core/contexts/SupabaseFinancialContext";
+import { useVirtualScroll, useDebouncedSearch } from "@shared/hooks/usePerformance";
 import { 
   Search, 
   Filter, 
@@ -35,7 +35,7 @@ import {
   Circle
 } from "lucide-react";
 import { useState, useMemo, useCallback } from "react";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@shared/hooks/use-toast";
 import { format, parseISO, isWithinInterval, subDays, startOfDay, endOfDay } from "date-fns";
 
 interface EnhancedTransactionListProps {

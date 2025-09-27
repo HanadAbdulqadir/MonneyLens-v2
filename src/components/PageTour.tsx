@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
-import { useToast } from "@/hooks/use-toast";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@shared/components/ui/button";
+import { Card } from "@shared/components/ui/card";
+import { Progress } from "@shared/components/ui/progress";
+import { Badge } from "@shared/components/ui/badge";
+import { useToast } from "@shared/hooks/use-toast";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@shared/components/ui/dialog";
 import { 
   ArrowRight, 
   ArrowLeft,

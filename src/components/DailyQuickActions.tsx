@@ -1,6 +1,6 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@shared/components/ui/card";
+import { Badge } from "@shared/components/ui/badge";
+import { Button } from "@shared/components/ui/button";
 import { Zap, Target, TrendingUp, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 

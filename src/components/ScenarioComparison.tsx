@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { WhatIfScenario, ScenarioEngine, FinancialData } from '@/utils/scenarioEngine';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Checkbox } from '@/components/ui/checkbox';
+import { WhatIfScenario, ScenarioEngine, FinancialData } from "../shared/utils/scenarioEngine";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../shared/components/ui/card";
+import { Button } from "../shared/components/ui/button";
+import { Badge } from "../shared/components/ui/badge";
+import { Checkbox } from "../shared/components/ui/checkbox";
 import { 
   BarChart3, 
   TrendingUp, 
@@ -14,7 +14,7 @@ import {
   XCircle,
   Star
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from "../shared/lib/utils";
 
 interface ScenarioComparisonProps {
   scenarios: WhatIfScenario[];

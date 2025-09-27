@@ -1,8 +1,8 @@
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
-import { useFinancial } from "@/contexts/SupabaseFinancialContext";
+import { Card } from "@shared/components/ui/card";
+import { Button } from "@shared/components/ui/button";
+import { Progress } from "@shared/components/ui/progress";
+import { Badge } from "@shared/components/ui/badge";
+import { useFinancial } from "@core/contexts/SupabaseFinancialContext";
 import { Wallet, ArrowRight, AlertTriangle, CheckCircle, TrendingUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";

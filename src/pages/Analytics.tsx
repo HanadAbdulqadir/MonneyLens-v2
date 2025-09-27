@@ -1,7 +1,7 @@
-import { Card } from "@/components/ui/card";
-import { useFinancial } from "@/contexts/SupabaseFinancialContext";
-import AdvancedAnalyticsDashboard from "@/components/AdvancedAnalyticsDashboard";
-import TransactionAnalytics from "@/components/TransactionAnalytics";
+import { Card } from "@shared/components/ui/card";
+import { useFinancial } from "@core/contexts/SupabaseFinancialContext";
+import AdvancedAnalyticsDashboard from "@components/AdvancedAnalyticsDashboard";
+import TransactionAnalytics from "@components/TransactionAnalytics";
 
 const Analytics = () => {
   const { transactions, dailyData } = useFinancial();

@@ -1,17 +1,20 @@
 import { Calculator, TrendingUp, BarChart3, Play, Home, PiggyBank, Users, Target, Brain } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { ScenarioManager } from "@/components/ScenarioManager";
-import { AIInsightsDashboard } from "@/components/AIInsightsDashboard";
-import { LoanCalculator } from "@/components/LoanCalculator";
-import { InvestmentCalculator } from "@/components/InvestmentCalculator";
-import { RetirementCalculator } from "@/components/RetirementCalculator";
-import { SavingsGoalCalculator } from "@/components/SavingsGoalCalculator";
-import { useState } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@shared/components/ui/card";
+import { Button } from "@shared/components/ui/button";
+import { Badge } from "@shared/components/ui/badge";
+import { ScenarioManager } from "@components/ScenarioManager";
+import { AIInsightsDashboard } from "@components/AIInsightsDashboard";
+import { LoanCalculator } from "@components/LoanCalculator";
+import { InvestmentCalculator } from "@components/InvestmentCalculator";
+import { RetirementCalculator } from "@components/RetirementCalculator";
+import { SavingsGoalCalculator } from "@components/SavingsGoalCalculator";
+import { useState, useEffect } from "react";
+import { useSearchParams, useNavigate } from "react-router-dom";
 
 export default function Tools() {
   const [activeTool, setActiveTool] = useState<string | null>(null);
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   const tools = [
     {
@@ -64,6 +67,16 @@ export default function Tools() {
     }
   ];
 
+  // Handle URL parameters for tool navigation
+  useEffect(() => {
+    const toolId = searchParams.get('tool');
+    if (toolId && tools.find(tool => tool.id === toolId)) {
+      setActiveTool(toolId);
+    } else {
+      setActiveTool(null);
+    }
+  }, [searchParams]); // Update when searchParams change
+
   if (activeTool === 'what-if') {
     return (
       <div className="space-y-6">
@@ -71,7 +84,7 @@ export default function Tools() {
           <div>
             <Button 
               variant="outline" 
-              onClick={() => setActiveTool(null)}
+              onClick={() => navigate('/tools')}
               className="mb-4"
             >
               ← Back to Tools
@@ -94,7 +107,7 @@ export default function Tools() {
           <div>
             <Button 
               variant="outline" 
-              onClick={() => setActiveTool(null)}
+              onClick={() => navigate('/tools')}
               className="mb-4"
             >
               ← Back to Tools
@@ -117,7 +130,7 @@ export default function Tools() {
           <div>
             <Button 
               variant="outline" 
-              onClick={() => setActiveTool(null)}
+              onClick={() => navigate('/tools')}
               className="mb-4"
             >
               ← Back to Tools
@@ -140,7 +153,7 @@ export default function Tools() {
           <div>
             <Button 
               variant="outline" 
-              onClick={() => setActiveTool(null)}
+              onClick={() => navigate('/tools')}
               className="mb-4"
             >
               ← Back to Tools
@@ -163,7 +176,7 @@ export default function Tools() {
           <div>
             <Button 
               variant="outline" 
-              onClick={() => setActiveTool(null)}
+              onClick={() => navigate('/tools')}
               className="mb-4"
             >
               ← Back to Tools
@@ -186,7 +199,7 @@ export default function Tools() {
           <div>
             <Button 
               variant="outline" 
-              onClick={() => setActiveTool(null)}
+              onClick={() => navigate('/tools')}
               className="mb-4"
             >
               ← Back to Tools
@@ -233,7 +246,11 @@ export default function Tools() {
                   variant={tool.status === "Available" ? "default" : "outline"}
                   className="w-full"
                   disabled={tool.status !== "Available"}
-                  onClick={() => tool.status === "Available" && setActiveTool(tool.id)}
+                  onClick={() => {
+                    if (tool.status === "Available") {
+                      navigate(`/tools?tool=${tool.id}`);
+                    }
+                  }}
                 >
                   {tool.status === "Available" ? (
                     <>

@@ -1,20 +1,20 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { Card } from "@shared/components/ui/card";
+import { Button } from "@shared/components/ui/button";
+import { Badge } from "@shared/components/ui/badge";
+import { Separator } from "@shared/components/ui/separator";
+import { ScrollArea } from "@shared/components/ui/scroll-area";
 import { 
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from "@shared/components/ui/popover";
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
-} from "@/components/ui/hover-card";
-import { useFinancial } from "@/contexts/SupabaseFinancialContext";
+} from "@shared/components/ui/hover-card";
+import { useFinancial } from "@core/contexts/SupabaseFinancialContext";
 import { 
   ChevronLeft, 
   ChevronRight, 
@@ -34,11 +34,11 @@ import {
   BarChart3,
   Target
 } from "lucide-react";
-import AddTransactionModal from "@/components/AddTransactionModal";
-import SmartTransactionEntry from "@/components/SmartTransactionEntry";
-import QuickActionMenu from "@/components/QuickActionMenu";
-import CalendarDayView from "@/components/CalendarDayView";
-import TransactionPredictions from "@/components/TransactionPredictions";
+import AddTransactionModal from "@components/AddTransactionModal";
+import SmartTransactionEntry from "@components/SmartTransactionEntry";
+import QuickActionMenu from "@components/QuickActionMenu";
+import CalendarDayView from "@components/CalendarDayView";
+import TransactionPredictions from "@components/TransactionPredictions";
 import { format, parseISO, addDays, subDays, isSameDay, startOfWeek, endOfWeek, startOfMonth, endOfMonth } from "date-fns";
 import { useDrag, useDrop, DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';

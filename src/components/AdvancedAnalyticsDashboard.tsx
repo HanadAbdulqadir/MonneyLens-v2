@@ -1,17 +1,17 @@
 import React, { useState, useMemo } from 'react';
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { Card } from "@shared/components/ui/card";
+import { Button } from "@shared/components/ui/button";
+import { Badge } from "@shared/components/ui/badge";
+import { Progress } from "@shared/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@shared/components/ui/tabs";
+import { ScrollArea } from "@shared/components/ui/scroll-area";
 import { 
   Select, 
   SelectContent, 
   SelectItem, 
   SelectTrigger, 
   SelectValue 
-} from "@/components/ui/select";
+} from "@shared/components/ui/select";
 import {
   LineChart,
   Line,
@@ -36,7 +36,7 @@ import {
   PolarRadiusAxis,
   Radar
 } from 'recharts';
-import { useFinancial } from "@/contexts/SupabaseFinancialContext";
+import { useFinancial } from "@core/contexts/SupabaseFinancialContext";
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -110,7 +110,7 @@ const AdvancedAnalyticsDashboard = ({ className }: AdvancedAnalyticsDashboardPro
   }, [timeRange]);
 
   // Helper function to calculate volatility
-  const calculateVolatility = (values: number[]) => {
+  const calculateVolatility = (values: number[]): number => {
     if (values.length < 2) return 0;
     
     const mean = values.reduce((sum, val) => sum + val, 0) / values.length;
@@ -289,7 +289,7 @@ const AdvancedAnalyticsDashboard = ({ className }: AdvancedAnalyticsDashboardPro
           <XAxis dataKey="date" />
           <YAxis />
           <Tooltip 
-            formatter={(value: any, name: string) => [`${currency}${Number(value).toFixed(2)}`, name]}
+            formatter={(value: number, name: string) => [`${currency}${Number(value).toFixed(2)}`, name]}
             labelFormatter={(label) => `Date: ${label}`}
           />
           <Legend />
@@ -338,7 +338,7 @@ const AdvancedAnalyticsDashboard = ({ className }: AdvancedAnalyticsDashboardPro
         </div>
         
         <div className="flex items-center gap-2">
-          <Select value={timeRange} onValueChange={(value: any) => setTimeRange(value)}>
+          <Select value={timeRange} onValueChange={(value: '7d' | '30d' | '90d' | '1y') => setTimeRange(value)}>
             <SelectTrigger className="w-24">
               <SelectValue />
             </SelectTrigger>
@@ -350,7 +350,7 @@ const AdvancedAnalyticsDashboard = ({ className }: AdvancedAnalyticsDashboardPro
             </SelectContent>
           </Select>
           
-          <Select value={chartType} onValueChange={(value: any) => setChartType(value)}>
+          <Select value={chartType} onValueChange={(value: 'line' | 'area' | 'bar') => setChartType(value)}>
             <SelectTrigger className="w-20">
               <SelectValue />
             </SelectTrigger>
@@ -483,7 +483,7 @@ const AdvancedAnalyticsDashboard = ({ className }: AdvancedAnalyticsDashboardPro
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                     </Pie>
-                    <Tooltip formatter={(value: any) => [`${currency}${value.toFixed(2)}`, 'Amount']} />
+                    <Tooltip formatter={(value: number) => [`${currency}${value.toFixed(2)}`, 'Amount']} />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
@@ -645,7 +645,7 @@ const AdvancedAnalyticsDashboard = ({ className }: AdvancedAnalyticsDashboardPro
                     <XAxis dataKey="frequency" name="Frequency" />
                     <YAxis dataKey="amount" name="Total Amount" />
                     <Tooltip 
-                      formatter={(value: any, name: string) => [
+                      formatter={(value: number, name: string) => [
                         name === 'amount' ? `${currency}${value.toFixed(2)}` : value,
                         name === 'amount' ? 'Total Amount' : 'Frequency'
                       ]}

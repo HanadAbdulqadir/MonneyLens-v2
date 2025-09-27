@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { SavedScenario } from '@/types/scenario';
-import { aiInsightsService, AIInsight, FinancialHealthScore } from '@/services/aiInsights';
-import { scenarioStorage } from '@/services/scenarioStorage';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
+import { SavedScenario } from "@shared/types/scenario";
+import { aiInsightsService, AIInsight, FinancialHealthScore } from "@core/services/aiInsights";
+import { scenarioStorage } from "@core/services/scenarioStorage";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@shared/components/ui/card";
+import { Button } from "@shared/components/ui/button";
+import { Badge } from "@shared/components/ui/badge";
+import { Progress } from "@shared/components/ui/progress";
 import { 
   TrendingUp, 
   AlertTriangle, 
@@ -22,8 +22,8 @@ import {
   ArrowUpRight,
   RefreshCw
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { toast } from '@/hooks/use-toast';
+import { cn } from "@shared/lib/utils";
+import { toast } from "@shared/hooks/use-toast";
 
 interface AIInsightsDashboardProps {
   className?: string;

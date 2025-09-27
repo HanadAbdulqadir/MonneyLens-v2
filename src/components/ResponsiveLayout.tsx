@@ -1,7 +1,7 @@
 import { useState, useEffect, ReactNode } from 'react';
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Card } from "@shared/components/ui/card";
+import { Button } from "@shared/components/ui/button";
+import { Badge } from "@shared/components/ui/badge";
 import { 
   ChevronLeft, 
   ChevronRight, 
@@ -16,7 +16,7 @@ import {
   Columns3,
   Grid2X2
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@shared/lib/utils";
 
 interface ResponsiveLayoutProps {
   children: ReactNode;

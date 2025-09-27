@@ -1,7 +1,7 @@
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { useFinancial } from "@/contexts/SupabaseFinancialContext";
+import { Alert, AlertDescription } from "@shared/components/ui/alert";
+import { Button } from "@shared/components/ui/button";
+import { Badge } from "@shared/components/ui/badge";
+import { useFinancial } from "@core/contexts/SupabaseFinancialContext";
 import { AlertTriangle, CheckCircle, TrendingUp, Calendar, Target, CreditCard, X } from "lucide-react";
 import { useState } from "react";
 

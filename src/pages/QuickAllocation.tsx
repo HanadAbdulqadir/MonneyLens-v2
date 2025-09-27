@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { useFinancial } from "@/contexts/SupabaseFinancialContext";
-import { useToast } from "@/hooks/use-toast";
+import { useFinancial } from "@core/contexts/SupabaseFinancialContext";
+import { useToast } from "@shared/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
-import { Progress } from "@/components/ui/progress";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@shared/components/ui/card";
+import { Button } from "@shared/components/ui/button";
+import { Badge } from "@shared/components/ui/badge";
+import { Input } from "@shared/components/ui/input";
+import { Label } from "@shared/components/ui/label";
+import { Textarea } from "@shared/components/ui/textarea";
+import { Switch } from "@shared/components/ui/switch";
+import { Progress } from "@shared/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@shared/components/ui/tabs";
 import { 
   Calculator, 
   Target, 

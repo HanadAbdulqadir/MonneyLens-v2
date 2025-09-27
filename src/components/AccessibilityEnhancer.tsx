@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Slider } from "@/components/ui/slider";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Button } from "@shared/components/ui/button";
+import { Card } from "@shared/components/ui/card";
+import { Slider } from "@shared/components/ui/slider";
+import { Switch } from "@shared/components/ui/switch";
+import { Label } from "@shared/components/ui/label";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@shared/components/ui/dialog";
 import { 
   Accessibility, 
   ZoomIn, 

@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Separator } from '@/components/ui/separator';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
+import { useAuth } from "@core/contexts/AuthContext";
+import { Button } from "@shared/components/ui/button";
+import { Input } from "@shared/components/ui/input";
+import { Label } from "@shared/components/ui/label";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@shared/components/ui/card";
+import { Alert, AlertDescription } from "@shared/components/ui/alert";
+import { Separator } from "@shared/components/ui/separator";
+import { Avatar, AvatarFallback, AvatarImage } from "@shared/components/ui/avatar";
+import { Badge } from "@shared/components/ui/badge";
 import { User, Mail, Calendar, Shield, Loader2, Save, Eye, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
 

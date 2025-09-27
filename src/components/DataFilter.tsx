@@ -1,10 +1,10 @@
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { useFinancial } from "@/contexts/SupabaseFinancialContext";
+import { Card } from "@shared/components/ui/card";
+import { Button } from "@shared/components/ui/button";
+import { Badge } from "@shared/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@shared/components/ui/select";
+import { Calendar } from "@shared/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@shared/components/ui/popover";
+import { useFinancial } from "@core/contexts/SupabaseFinancialContext";
 import { 
   Calendar as CalendarIcon, 
   Filter, 

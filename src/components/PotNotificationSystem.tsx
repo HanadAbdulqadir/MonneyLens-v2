@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
-import { usePots } from '@/contexts/PotsContext';
-import { useFinancial } from "@/contexts/SupabaseFinancialContext";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
+import { usePots } from "@core/contexts/PotsContext";
+import { useFinancial } from "@core/contexts/SupabaseFinancialContext";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@shared/components/ui/card";
+import { Button } from "@shared/components/ui/button";
+import { Badge } from "@shared/components/ui/badge";
+import { Progress } from "@shared/components/ui/progress";
 import { Bell, AlertTriangle, CheckCircle, Info, PiggyBank, TrendingUp } from 'lucide-react';
 import { format, isAfter, isBefore, addDays, differenceInDays } from 'date-fns';
-import { cn } from '@/lib/utils';
+import { cn } from "@shared/lib/utils";
 import { toast } from 'sonner';
 
 interface PotNotificationSystemProps {

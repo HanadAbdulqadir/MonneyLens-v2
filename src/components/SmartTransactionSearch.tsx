@@ -1,7 +1,7 @@
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
+import { Input } from "@shared/components/ui/input";
+import { Button } from "@shared/components/ui/button";
+import { Badge } from "@shared/components/ui/badge";
+import { Card } from "@shared/components/ui/card";
 import { 
   Command,
   CommandEmpty,
@@ -9,14 +9,14 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command";
+} from "@shared/components/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { useFinancial } from "@/contexts/SupabaseFinancialContext";
-import { useDebouncedSearch } from "@/hooks/usePerformance";
+} from "@shared/components/ui/popover";
+import { useFinancial } from "@core/contexts/SupabaseFinancialContext";
+import { useDebouncedSearch } from "@shared/hooks/usePerformance";
 import { 
   Search, 
   Filter, 

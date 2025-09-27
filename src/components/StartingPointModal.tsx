@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@shared/components/ui/dialog";
+import { Button } from "@shared/components/ui/button";
+import { Input } from "@shared/components/ui/input";
+import { Label } from "@shared/components/ui/label";
 import { Settings } from 'lucide-react';
-import { useFinancial } from "@/contexts/SupabaseFinancialContext";
-import { useToast } from '@/hooks/use-toast';
+import { useFinancial } from "@core/contexts/SupabaseFinancialContext";
+import { useToast } from "@shared/hooks/use-toast";
 
 const StartingPointModal = () => {
   const [open, setOpen] = useState(false);

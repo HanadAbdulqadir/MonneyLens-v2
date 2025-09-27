@@ -1,6 +1,6 @@
-import { Card } from "@/components/ui/card";
+import { Card } from "@shared/components/ui/card";
 import { TrendingUp, TrendingDown } from "lucide-react";
-import { useFinancial } from "@/contexts/SupabaseFinancialContext";
+import { useFinancial } from "@core/contexts/SupabaseFinancialContext";
 
 const BalanceCard = () => {
   const { getCurrentBalance, getTodaysData, monthlyStartingPoint } = useFinancial();

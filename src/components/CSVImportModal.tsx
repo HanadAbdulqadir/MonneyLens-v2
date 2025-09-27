@@ -1,13 +1,13 @@
 import { useState, useCallback, useRef } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@shared/components/ui/dialog";
+import { Button } from "@shared/components/ui/button";
+import { Input } from "@shared/components/ui/input";
+import { Label } from "@shared/components/ui/label";
+import { Card } from "@shared/components/ui/card";
+import { Badge } from "@shared/components/ui/badge";
+import { Progress } from "@shared/components/ui/progress";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@shared/components/ui/select";
+import { Checkbox } from "@shared/components/ui/checkbox";
 import { 
   Upload, 
   FileText, 
@@ -23,10 +23,10 @@ import {
   TrendingDown,
   DollarSign
 } from 'lucide-react';
-import { useFinancial } from "@/contexts/SupabaseFinancialContext";
-import { useToast } from '@/hooks/use-toast';
+import { useFinancial } from "@core/contexts/SupabaseFinancialContext";
+import { useToast } from "@shared/hooks/use-toast";
 import { format, parseISO, isValid } from 'date-fns';
-import { cn } from '@/lib/utils';
+import { cn } from "@shared/lib/utils";
 
 interface CSVImportModalProps {
   trigger?: React.ReactNode;

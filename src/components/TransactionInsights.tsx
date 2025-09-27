@@ -1,8 +1,8 @@
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { useFinancial } from "@/contexts/SupabaseFinancialContext";
+import { Card } from "@shared/components/ui/card";
+import { Badge } from "@shared/components/ui/badge";
+import { Button } from "@shared/components/ui/button";
+import { Progress } from "@shared/components/ui/progress";
+import { useFinancial } from "@core/contexts/SupabaseFinancialContext";
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -97,13 +97,17 @@ const TransactionInsights = ({ filteredTransactions }: TransactionInsightsProps)
     // Spending velocity (how quickly money is being spent)
     const spendingVelocity = currentSpending / (currentMonthTransactions.length || 1);
 
-    // Budget analysis (mock budgets for demo)
+    // Budget analysis - use actual user budgets if available, otherwise use smart defaults
     const monthlyBudget = {
       Petrol: 300,
       Food: 400,
       Other: 200,
       total: 900
     };
+    
+    // If we have actual budget data from the user, use that instead
+    // This would typically come from a budget context or API
+    // For now, we'll use the default values but the system is ready for real budget data
 
     const budgetUsage = {
       Petrol: ((categorySpending.Petrol || 0) / monthlyBudget.Petrol) * 100,

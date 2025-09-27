@@ -10,9 +10,9 @@ import {
   ChevronDown,
   ChevronRight
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
+import { Button } from "@shared/components/ui/button";
+import { cn } from "@shared/lib/utils";
+import { Badge } from "@shared/components/ui/badge";
 
 export interface HubItem {
   id: string;
@@ -84,9 +84,7 @@ export const hubs: HubItem[] = [
     path: "/analytics",
     color: "text-orange-600",
     subItems: [
-      { id: "analytics", title: "Analytics", path: "/analytics", description: "Advanced financial analytics" },
-      { id: "reports", title: "Reports", path: "/reports", description: "Custom financial reports" },
-      { id: "trends", title: "Trends", path: "/trends", description: "Spending patterns analysis" }
+      { id: "analytics", title: "Analytics", path: "/analytics", description: "Advanced financial analytics" }
     ]
   },
   {
@@ -97,9 +95,12 @@ export const hubs: HubItem[] = [
     path: "/tools",
     color: "text-red-600",
     subItems: [
-      { id: "calculators", title: "Calculators", path: "/calculators", description: "Financial calculators" },
-      { id: "scenarios", title: "What-If Scenarios", path: "/scenarios", description: "Financial scenario testing" },
-      { id: "projections", title: "Projections", path: "/projections", description: "Future financial projections" }
+      { id: "what-if", title: "What-If Scenarios", path: "/tools?tool=what-if", description: "Financial scenario testing" },
+      { id: "ai-insights", title: "AI Insights", path: "/tools?tool=ai-insights", description: "Intelligent financial analysis" },
+      { id: "loan-calculator", title: "Loan Calculator", path: "/tools?tool=loan-calculator", description: "Mortgage and loan calculations" },
+      { id: "investment-calculator", title: "Investment Calculator", path: "/tools?tool=investment-calculator", description: "Investment growth projections" },
+      { id: "retirement-calculator", title: "Retirement Calculator", path: "/tools?tool=retirement-calculator", description: "Retirement planning" },
+      { id: "savings-calculator", title: "Savings Goal Calculator", path: "/tools?tool=savings-calculator", description: "Goal tracking and planning" }
     ]
   },
   {
@@ -133,7 +134,19 @@ export function HubNavigation({ className, variant = "sidebar" }: HubNavigationP
   };
 
   const isActiveSubItem = (subItem: HubSubItem) => {
-    return location.pathname === subItem.path;
+    // Check if the current path matches the subitem path (including URL parameters)
+    const currentPath = location.pathname + location.search;
+    
+    // For Tools Hub sub-items, check if the tool parameter matches
+    if (location.pathname === '/tools' && subItem.path.includes('?tool=')) {
+      const urlParams = new URLSearchParams(location.search);
+      const toolParam = urlParams.get('tool');
+      const subItemTool = new URLSearchParams(subItem.path.split('?')[1]).get('tool');
+      return toolParam === subItemTool;
+    }
+    
+    // For regular paths, check exact match
+    return currentPath === subItem.path;
   };
 
   const toggleHub = (hubId: string) => {

@@ -1,18 +1,18 @@
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useFinancial } from "@/contexts/SupabaseFinancialContext";
+import { Card } from "@shared/components/ui/card";
+import { Button } from "@shared/components/ui/button";
+import { Input } from "@shared/components/ui/input";
+import { Label } from "@shared/components/ui/label";
+import { Progress } from "@shared/components/ui/progress";
+import { Badge } from "@shared/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@shared/components/ui/tabs";
+import { useFinancial } from "@core/contexts/SupabaseFinancialContext";
 import { useState } from "react";
 import { Plus, CreditCard, Edit, Trash2, Calendar, DollarSign, TrendingDown, AlertTriangle, CheckCircle, Zap, Calculator } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { useToast } from "@/hooks/use-toast";
-import DebtSnowballCalculator from "@/components/DebtSnowballCalculator";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@shared/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@shared/components/ui/select";
+import { Alert, AlertDescription } from "@shared/components/ui/alert";
+import { useToast } from "@shared/hooks/use-toast";
+import DebtSnowballCalculator from "@components/DebtSnowballCalculator";
 
 const Debts = () => {
   const { debts, addDebt, updateDebt, deleteDebt, addDebtPayment, currency } = useFinancial();
