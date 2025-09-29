@@ -280,12 +280,12 @@ const Settings = () => {
           <Button 
             variant="outline" 
             className="gap-2 h-auto p-4 justify-start"
-            onClick={() => toast({ title: "Coming Soon", description: "Data import feature will be available soon" })}
+            onClick={() => window.location.href = '/import-export'}
           >
             <Upload className="h-4 w-4" />
             <div className="text-left">
-              <p className="font-medium">Import Data</p>
-              <p className="text-sm text-muted-foreground">Upload financial data from file</p>
+              <p className="font-medium">Import/Export Data</p>
+              <p className="text-sm text-muted-foreground">Full data management and backup</p>
             </div>
           </Button>
 

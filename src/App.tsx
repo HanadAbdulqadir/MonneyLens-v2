@@ -10,7 +10,7 @@ import { PotsProvider } from "@/core/contexts/PotsContext";
 import { AuthProvider, useAuth } from "@/core/contexts/AuthContext";
 import ProtectedRoute from "@/shared/components/ProtectedRoute";
 import ErrorBoundary from "@/shared/components/ErrorBoundary";
-import { AppSidebar } from "@layouts/AppSidebar";
+import { AppSidebar } from "@/components/AppSidebar";
 import UnifiedToolbar from "@/shared/components/UnifiedToolbar";
 import QuickActionsToolbar from "@/shared/components/QuickActionsToolbar";
 import PageTourManager from "@/shared/components/PageTourManager";
@@ -35,6 +35,7 @@ import FinancialHub from "./pages/FinancialHub";
 import QuickAllocation from "./pages/QuickAllocation";
 import Pots from "./pages/Pots";
 import Tools from "./pages/Tools";
+import ImportExport from "./pages/ImportExport";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -175,6 +176,11 @@ function AppContent() {
       <Route path="/tools" element={
         <ProtectedRoute>
           <ProtectedLayout><Tools /></ProtectedLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/import-export" element={
+        <ProtectedRoute>
+          <ProtectedLayout><ImportExport /></ProtectedLayout>
         </ProtectedRoute>
       } />
       

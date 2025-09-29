@@ -103,19 +103,19 @@ export const hubs: HubItem[] = [
       { id: "savings-calculator", title: "Savings Goal Calculator", path: "/tools?tool=savings-calculator", description: "Goal tracking and planning" }
     ]
   },
-  {
-    id: "settings",
-    title: "Settings Hub",
-    description: "User preferences and account management",
-    icon: Settings,
-    path: "/settings",
-    color: "text-gray-600",
-    subItems: [
-      { id: "profile", title: "Profile", path: "/profile", description: "User profile & account settings" },
-      { id: "settings", title: "Settings", path: "/settings", description: "Application configuration" },
-      { id: "import-export", title: "Import/Export", path: "/import-export", description: "Data management" }
-    ]
-  }
+      {
+        id: "settings",
+        title: "Settings Hub",
+        description: "User preferences and account management",
+        icon: Settings,
+        path: "/settings",
+        color: "text-gray-600",
+        subItems: [
+          { id: "profile", title: "Profile", path: "/profile", description: "User profile & account settings" },
+          { id: "settings", title: "Settings", path: "/settings", description: "Application configuration" },
+          { id: "import-export", title: "Import/Export", path: "/import-export", description: "Data management" }
+        ]
+      }
 ];
 
 interface HubNavigationProps {
@@ -156,8 +156,10 @@ export function HubNavigation({ className, variant = "sidebar" }: HubNavigationP
   const handleHubClick = (hub: HubItem) => {
     if (hub.subItems && hub.subItems.length > 0) {
       toggleHub(hub.id);
-      // Navigate to the first sub-item if not already on a sub-item
-      if (!isActiveHub(hub)) {
+      // For Tools Hub, navigate to the main tools page instead of first sub-item
+      if (hub.id === 'tools' && !isActiveHub(hub)) {
+        navigate(hub.path);
+      } else if (!isActiveHub(hub)) {
         navigate(hub.subItems[0].path);
       }
     } else {
