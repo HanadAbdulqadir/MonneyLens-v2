@@ -16,7 +16,7 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '18'
+        node-version: '20'
         cache: 'npm'
         
     - name: Install dependencies
@@ -28,7 +28,8 @@ jobs:
     - name: Build application
       run: npm run build
       
-    - name: Deploy to Vercel
+    - name: Deploy to Vercel (conditional)
+      if: env.VERCEL_TOKEN != '' && env.VERCEL_ORG_ID != '' && env.VERCEL_PROJECT_ID != ''
       uses: amondnet/vercel-action@v25
       with:
         vercel-token: ${{ secrets.VERCEL_TOKEN }}
@@ -36,8 +37,8 @@ jobs:
         vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
         vercel-args: '--prod'
         
-    - name: Deploy to Netlify (fallback)
-      if: failure()  # Only run if Vercel deployment fails
+    - name: Deploy to Netlify (conditional)
+      if: env.NETLIFY_AUTH_TOKEN != '' && env.NETLIFY_SITE_ID != ''
       uses: netlify/actions/cli@master
       env:
         NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
@@ -45,8 +46,15 @@ jobs:
       with:
         args: deploy --prod --dir=dist
 
-    - name: Deploy to Surge.sh (alternative)
-      if: always()  # Always run as alternative deployment
+    - name: Deploy to Surge.sh (conditional)
+      if: env.SURGE_TOKEN != ''
       run: |
         npm install -g surge
         surge dist moneylens-app.surge.sh --token ${{ secrets.SURGE_TOKEN }}
+        
+    - name: Skip deployments (info)
+      if: env.NETLIFY_AUTH_TOKEN == '' || env.SURGE_TOKEN == ''
+      run: |
+        echo "Some deployments skipped due to missing secrets:"
+        echo "- Netlify: ${{ secrets.NETLIFY_AUTH_TOKEN != '' && 'Configured' || 'Missing NETLIFY_AUTH_TOKEN' }}"
+        echo "- Surge: ${{ secrets.SURGE_TOKEN != '' && 'Configured' || 'Missing SURGE_TOKEN' }}"
