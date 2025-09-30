@@ -19,6 +19,7 @@ import AdvancedSearch from "@/shared/components/AdvancedSearch";
 import UserOnboarding from "@/shared/components/UserOnboarding";
 import MobileBottomNavigation from "@/shared/components/MobileBottomNavigation";
 import FloatingActionButton from "./components/FloatingActionButton";
+import QuickActionModals from "./components/QuickActionModals";
 import Index from "./pages/Index";
 import Analytics from "./pages/Analytics";
 import Transactions from "./pages/Transactions";
@@ -44,54 +45,107 @@ import Profile from "./pages/Profile";
 const queryClient = new QueryClient();
 
 // Helper component to avoid code duplication
-const ProtectedLayout = ({ children }: { children: React.ReactNode }) => (
-  <FinancialProvider>
-    <PotsProvider>
-      <SidebarProvider>
-        <div className="flex min-h-screen w-full">
-          <AppSidebar />
-          
-          <main className="flex-1 overflow-auto bg-gradient-to-br from-background to-muted/20">
-            <header className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b shadow-sm">
-              <div className="flex items-center justify-between h-16 px-6">
-                <div className="flex items-center gap-4">
-                  <SidebarTrigger className="mr-2" />
-                  <div className="hidden sm:block">
-                    <h1 className="text-lg font-semibold text-primary">MoneyLens</h1>
-                    <p className="text-xs text-muted-foreground">Your financial companion</p>
+const ProtectedLayout = ({ children }: { children: React.ReactNode }) => {
+  const [modalType, setModalType] = React.useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+
+  // Listen for modal events from FAB
+  React.useEffect(() => {
+    const handleOpenModal = (event: CustomEvent) => {
+      const modalType = event.type.replace('open-', '');
+      setModalType(modalType);
+      setIsModalOpen(true);
+    };
+
+    // Add event listeners for all modal types
+    const modalEvents = [
+      'open-add-transaction-modal',
+      'open-smart-transaction-entry',
+      'open-quick-goal-modal',
+      'open-budget-quick-action',
+      'open-debt-quick-entry',
+      'open-analytics-overview',
+      'open-calculator-modal',
+      'open-recurring-payment-modal',
+      'open-import-modal',
+      'open-export-modal',
+      'open-accessibility-panel',
+      'open-shortcuts-modal',
+      'open-quick-settings'
+    ];
+
+    modalEvents.forEach(eventType => {
+      window.addEventListener(eventType, handleOpenModal as EventListener);
+    });
+
+    return () => {
+      modalEvents.forEach(eventType => {
+        window.removeEventListener(eventType, handleOpenModal as EventListener);
+      });
+    };
+  }, []);
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setModalType(null);
+  };
+
+  return (
+    <FinancialProvider>
+      <PotsProvider>
+        <SidebarProvider>
+          <div className="flex min-h-screen w-full">
+            <AppSidebar />
+            
+            <main className="flex-1 overflow-auto bg-gradient-to-br from-background to-muted/20">
+              <header className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b shadow-sm">
+                <div className="flex items-center justify-between h-16 px-6">
+                  <div className="flex items-center gap-4">
+                    <SidebarTrigger className="mr-2" />
+                    <div className="hidden sm:block">
+                      <h1 className="text-lg font-semibold text-primary">MoneyLens</h1>
+                      <p className="text-xs text-muted-foreground">Your financial companion</p>
+                    </div>
+                  </div>
+                  
+                  {/* Header Actions */}
+                  <div className="flex items-center gap-3">
+                    <NotificationSystem />
+                    <DataImporter />
                   </div>
                 </div>
-                
-                {/* Header Actions */}
-                <div className="flex items-center gap-3">
-                  <NotificationSystem />
-                  <DataImporter />
-                </div>
+              </header>
+              
+              <div className="p-6">
+                {children}
               </div>
-            </header>
-            
-            <div className="p-6">
-              {children}
-            </div>
 
-            {/* Enhanced UX Components */}
-            <PageTourManager />
-            <GoalNotificationManager />
-            <AdvancedSearch />
-            <UserOnboarding />
-            <MobileBottomNavigation />
-            
-            {/* Main Floating Action Button - Replaces all floating buttons */}
-            <FloatingActionButton />
-          </main>
-        </div>
-        
-        <Toaster />
-        <Sonner />
-      </SidebarProvider>
-    </PotsProvider>
-  </FinancialProvider>
-);
+              {/* Enhanced UX Components */}
+              <PageTourManager />
+              <GoalNotificationManager />
+              <AdvancedSearch />
+              <UserOnboarding />
+              <MobileBottomNavigation />
+              
+              {/* Main Floating Action Button - Replaces all floating buttons */}
+              <FloatingActionButton />
+
+              {/* Quick Action Modals */}
+              <QuickActionModals 
+                isOpen={isModalOpen} 
+                onClose={handleCloseModal} 
+                type={modalType || ''} 
+              />
+            </main>
+          </div>
+          
+          <Toaster />
+          <Sonner />
+        </SidebarProvider>
+      </PotsProvider>
+    </FinancialProvider>
+  );
+};
 
 function AppContent() {
   return (

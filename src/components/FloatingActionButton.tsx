@@ -42,7 +42,7 @@ export default function FloatingActionButton({
     const angle = startAngle + (angleStep * index); // Add to go clockwise
     
     // Optimized radius to ensure all buttons fit on screen
-    const radius = 110; // Reduced radius to keep buttons within screen bounds
+    const radius = 500; // Larger radius for better spacing
     
     if (layout === "vertical") {
       return {
