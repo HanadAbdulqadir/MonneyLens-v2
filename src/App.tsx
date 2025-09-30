@@ -11,16 +11,14 @@ import { AuthProvider, useAuth } from "@/core/contexts/AuthContext";
 import ProtectedRoute from "@/shared/components/ProtectedRoute";
 import ErrorBoundary from "@/shared/components/ErrorBoundary";
 import { AppSidebar } from "@/components/AppSidebar";
-import UnifiedToolbar from "@/shared/components/UnifiedToolbar";
-import QuickActionsToolbar from "@/shared/components/QuickActionsToolbar";
 import PageTourManager from "@/shared/components/PageTourManager";
 import GoalNotificationManager from "@/shared/components/GoalNotificationManager";
 import NotificationSystem from "@/shared/components/NotificationSystem";
 import DataImporter from "@/shared/components/DataImporter";
 import AdvancedSearch from "@/shared/components/AdvancedSearch";
 import UserOnboarding from "@/shared/components/UserOnboarding";
-import SmartTransactionEntry from "@/shared/components/SmartTransactionEntry";
 import MobileBottomNavigation from "@/shared/components/MobileBottomNavigation";
+import FloatingActionButton from "./components/FloatingActionButton";
 import Index from "./pages/Index";
 import Analytics from "./pages/Analytics";
 import Transactions from "./pages/Transactions";
@@ -36,6 +34,7 @@ import QuickAllocation from "./pages/QuickAllocation";
 import Pots from "./pages/Pots";
 import Tools from "./pages/Tools";
 import ImportExport from "./pages/ImportExport";
+import FabDemo from "./pages/FabDemo";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -76,14 +75,14 @@ const ProtectedLayout = ({ children }: { children: React.ReactNode }) => (
             </div>
 
             {/* Enhanced UX Components */}
-            <QuickActionsToolbar />
-            <UnifiedToolbar />
             <PageTourManager />
             <GoalNotificationManager />
             <AdvancedSearch />
             <UserOnboarding />
-            <SmartTransactionEntry />
             <MobileBottomNavigation />
+            
+            {/* Main Floating Action Button - Replaces all floating buttons */}
+            <FloatingActionButton />
           </main>
         </div>
         
@@ -181,6 +180,11 @@ function AppContent() {
       <Route path="/import-export" element={
         <ProtectedRoute>
           <ProtectedLayout><ImportExport /></ProtectedLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/fab-demo" element={
+        <ProtectedRoute>
+          <ProtectedLayout><FabDemo /></ProtectedLayout>
         </ProtectedRoute>
       } />
       
