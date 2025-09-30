@@ -53,7 +53,25 @@ const ProtectedLayout = ({ children }: { children: React.ReactNode }) => {
   React.useEffect(() => {
     const handleOpenModal = (event: CustomEvent) => {
       console.log('Received modal event:', event.type);
-      const modalType = event.type.replace('open-', '');
+      
+      // Map FAB event names to QuickActionModals types
+      const eventToModalMap: { [key: string]: string } = {
+        'open-add-transaction-modal': 'add-transaction',
+        'open-smart-transaction-entry': 'quick-transaction',
+        'open-quick-goal-modal': 'quick-goal',
+        'open-budget-quick-action': 'budget-quick',
+        'open-debt-quick-entry': 'debt-quick',
+        'open-analytics-overview': 'analytics-overview',
+        'open-calculator-modal': 'calculator',
+        'open-recurring-payment-modal': 'recurring-payment',
+        'open-import-modal': 'import',
+        'open-export-modal': 'export',
+        'open-accessibility-panel': 'accessibility',
+        'open-shortcuts-modal': 'shortcuts',
+        'open-quick-settings': 'quick-settings'
+      };
+      
+      const modalType = eventToModalMap[event.type] || event.type.replace('open-', '');
       setModalType(modalType);
       setIsModalOpen(true);
     };
