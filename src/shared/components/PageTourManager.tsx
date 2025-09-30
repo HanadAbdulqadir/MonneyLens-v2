@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import PageTour from '../../components/PageTour';
+import { Button } from "@/shared/components/ui/button";
+import { Badge } from "@/shared/components/ui/badge";
+import { Sparkles, Play, Info } from "lucide-react";
+import { useToast } from "@/shared/hooks/use-toast";
 
 interface TourStep {
   id: string;
@@ -16,6 +20,8 @@ interface PageTourConfig {
 const PageTourManager = () => {
   const [currentTour, setCurrentTour] = useState<{ pageName: string; steps: TourStep[] } | null>(null);
   const [isTourOpen, setIsTourOpen] = useState(false);
+  const [showWelcomeTour, setShowWelcomeTour] = useState(false);
+  const { toast } = useToast();
 
   // Define page-specific tours
   const pageTours: PageTourConfig = {
@@ -235,6 +241,37 @@ const PageTourManager = () => {
     ]
   };
 
+  // Check if user is new and show welcome tour
+  useEffect(() => {
+    const isNewUser = !localStorage.getItem('moneylens-welcome-tour-completed');
+    const currentPath = window.location.pathname;
+    
+    if (isNewUser && currentPath === '/') {
+      // Show welcome tour after a short delay
+      const timer = setTimeout(() => {
+        setShowWelcomeTour(true);
+        toast({
+          title: "🎉 Welcome to MoneyLens!",
+          description: "Let's take a quick tour to get you started.",
+          action: (
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => {
+                setShowWelcomeTour(false);
+                localStorage.setItem('moneylens-welcome-tour-completed', 'true');
+              }}
+            >
+              Skip
+            </Button>
+          ),
+        });
+      }, 2000);
+
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
   // Listen for page tour events
   useEffect(() => {
     const handlePageTour = (event: CustomEvent) => {
@@ -257,15 +294,78 @@ const PageTourManager = () => {
     setCurrentTour(null);
   };
 
-  if (!currentTour) return null;
+  const startWelcomeTour = () => {
+    setCurrentTour({ pageName: 'Dashboard', steps: pageTours['Dashboard'] });
+    setIsTourOpen(true);
+    setShowWelcomeTour(false);
+    localStorage.setItem('moneylens-welcome-tour-completed', 'true');
+  };
+
+  const skipWelcomeTour = () => {
+    setShowWelcomeTour(false);
+    localStorage.setItem('moneylens-welcome-tour-completed', 'true');
+  };
 
   return (
-    <PageTour
-      pageName={currentTour.pageName}
-      steps={currentTour.steps}
-      open={isTourOpen}
-      onOpenChange={setIsTourOpen}
-    />
+    <>
+      {/* Welcome Tour Popup */}
+      {showWelcomeTour && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="bg-background border rounded-lg shadow-xl max-w-md mx-4 p-6 space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                <Sparkles className="h-5 w-5 text-white" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-lg">Welcome to MoneyLens! 🎉</h3>
+                <p className="text-muted-foreground text-sm">
+                  Let's take a quick tour to discover all the powerful features.
+                </p>
+              </div>
+            </div>
+            
+            <div className="space-y-2 text-sm">
+              <div className="flex items-center gap-2">
+                <Badge variant="outline" className="text-xs">Dashboard</Badge>
+                <span>Real-time financial insights</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Badge variant="outline" className="text-xs">Transactions</Badge>
+                <span>Complete transaction management</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Badge variant="outline" className="text-xs">Budget</Badge>
+                <span>Smart budget tracking</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Badge variant="outline" className="text-xs">Analytics</Badge>
+                <span>Deep financial insights</span>
+              </div>
+            </div>
+
+            <div className="flex gap-2 pt-2">
+              <Button variant="outline" onClick={skipWelcomeTour} className="flex-1">
+                Skip Tour
+              </Button>
+              <Button onClick={startWelcomeTour} className="flex-1 gap-2">
+                <Play className="h-4 w-4" />
+                Start Tour
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Page Tour */}
+      {currentTour && (
+        <PageTour
+          pageName={currentTour.pageName}
+          steps={currentTour.steps}
+          open={isTourOpen}
+          onOpenChange={setIsTourOpen}
+        />
+      )}
+    </>
   );
 };
 

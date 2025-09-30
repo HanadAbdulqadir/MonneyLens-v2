@@ -6,7 +6,7 @@ import { Switch } from "@/shared/components/ui/switch";
 import { Separator } from "@/shared/components/ui/separator";
 import { useFinancial } from "@/core/contexts/SupabaseFinancialContext";
 import { useState, useEffect } from "react";
-import { Settings as SettingsIcon, Download, Upload, Trash2, RefreshCw, User, Bell, Shield, Palette, Search } from "lucide-react";
+import { Settings as SettingsIcon, Download, Upload, Trash2, RefreshCw, User, Bell, Shield, Palette, Search, Play, Sparkles } from "lucide-react";
 import { useToast } from "@/shared/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/shared/components/ui/dialog";
 import ThemeToggle from "@/components/ThemeToggle";
@@ -338,6 +338,86 @@ const Settings = () => {
 
       {/* Offline Support */}
       <OfflineSupport />
+
+      {/* Interactive Tours */}
+      <Card className="p-6">
+        <div className="flex items-center gap-3 mb-6">
+          <Sparkles className="h-5 w-5 text-primary" />
+          <h2 className="text-xl font-semibold">Interactive Tours</h2>
+        </div>
+        <div className="space-y-4">
+          <p className="text-sm text-muted-foreground">
+            Take guided tours to learn how to use different features of MoneyLens.
+          </p>
+          
+          <div className="grid gap-4 md:grid-cols-2">
+            <Button 
+              variant="outline" 
+              className="gap-2 h-auto p-4 justify-start"
+              onClick={() => window.dispatchEvent(new CustomEvent('open-page-tour', { detail: { pageName: 'Dashboard' } }))}
+            >
+              <Play className="h-4 w-4" />
+              <div className="text-left">
+                <p className="font-medium">Dashboard Tour</p>
+                <p className="text-sm text-muted-foreground">Learn about your financial dashboard</p>
+              </div>
+            </Button>
+
+            <Button 
+              variant="outline" 
+              className="gap-2 h-auto p-4 justify-start"
+              onClick={() => window.dispatchEvent(new CustomEvent('open-page-tour', { detail: { pageName: 'Transactions' } }))}
+            >
+              <Play className="h-4 w-4" />
+              <div className="text-left">
+                <p className="font-medium">Transactions Tour</p>
+                <p className="text-sm text-muted-foreground">Master transaction management</p>
+              </div>
+            </Button>
+
+            <Button 
+              variant="outline" 
+              className="gap-2 h-auto p-4 justify-start"
+              onClick={() => window.dispatchEvent(new CustomEvent('open-page-tour', { detail: { pageName: 'Budget' } }))}
+            >
+              <Play className="h-4 w-4" />
+              <div className="text-left">
+                <p className="font-medium">Budget Tour</p>
+                <p className="text-sm text-muted-foreground">Learn budget management</p>
+              </div>
+            </Button>
+
+            <Button 
+              variant="outline" 
+              className="gap-2 h-auto p-4 justify-start"
+              onClick={() => window.dispatchEvent(new CustomEvent('open-page-tour', { detail: { pageName: 'Analytics' } }))}
+            >
+              <Play className="h-4 w-4" />
+              <div className="text-left">
+                <p className="font-medium">Analytics Tour</p>
+                <p className="text-sm text-muted-foreground">Explore financial insights</p>
+              </div>
+            </Button>
+          </div>
+
+          <div className="pt-4">
+            <Button 
+              variant="default" 
+              className="gap-2 w-full"
+              onClick={() => {
+                localStorage.removeItem('moneylens-welcome-tour-completed');
+                window.location.reload();
+              }}
+            >
+              <Sparkles className="h-4 w-4" />
+              Reset All Tours
+            </Button>
+            <p className="text-xs text-muted-foreground mt-2 text-center">
+              This will show the welcome tour again on your next visit
+            </p>
+          </div>
+        </div>
+      </Card>
 
       {/* Advanced Search */}
       <Card className="p-6">
