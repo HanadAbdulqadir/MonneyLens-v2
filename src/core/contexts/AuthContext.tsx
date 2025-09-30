@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session, AuthError } from '@supabase/supabase-js';
-import { supabase } from "@core/integrations/supabase/client";
+import { supabase } from "@/core/integrations/supabase/client";
 import { toast } from 'sonner';
 
 interface AuthContextType {
@@ -97,7 +97,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         email,
         password,
         options: {
-          data: userData || {}
+          data: userData || {},
+          emailRedirectTo: `${window.location.origin}/auth/callback`
         }
       });
 
@@ -107,7 +108,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
 
       if (data.user && !data.session) {
-        toast.success('Please check your email to confirm your account!');
+        toast.success('Account created successfully! Please check your email to verify your account.');
+      } else if (data.user && data.session) {
+        toast.success('Account created and signed in successfully!');
       }
 
       return { user: data.user, error: null };
