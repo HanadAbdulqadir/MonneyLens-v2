@@ -1,18 +1,19 @@
-import { Card } from "@shared/components/ui/card";
-import { Button } from "@shared/components/ui/button";
-import { Input } from "@shared/components/ui/input";
-import { Label } from "@shared/components/ui/label";
-import { Switch } from "@shared/components/ui/switch";
-import { Separator } from "@shared/components/ui/separator";
-import { useFinancial } from "@core/contexts/SupabaseFinancialContext";
+import { Card } from "@/shared/components/ui/card";
+import { Button } from "@/shared/components/ui/button";
+import { Input } from "@/shared/components/ui/input";
+import { Label } from "@/shared/components/ui/label";
+import { Switch } from "@/shared/components/ui/switch";
+import { Separator } from "@/shared/components/ui/separator";
+import { useFinancial } from "@/core/contexts/SupabaseFinancialContext";
 import { useState, useEffect } from "react";
-import { Settings as SettingsIcon, Download, Upload, Trash2, RefreshCw, User, Bell, Shield, Palette } from "lucide-react";
-import { useToast } from "@shared/hooks/use-toast";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@shared/components/ui/dialog";
-import ThemeToggle from "@components/ThemeToggle";
-import CurrencySelector from "@components/CurrencySelector";
-import ThemePreferences from "@components/ThemePreferences";
-import OfflineSupport from "@components/OfflineSupport";
+import { Settings as SettingsIcon, Download, Upload, Trash2, RefreshCw, User, Bell, Shield, Palette, Search } from "lucide-react";
+import { useToast } from "@/shared/hooks/use-toast";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/shared/components/ui/dialog";
+import ThemeToggle from "@/components/ThemeToggle";
+import CurrencySelector from "@/components/CurrencySelector";
+import ThemePreferences from "@/components/ThemePreferences";
+import OfflineSupport from "@/components/OfflineSupport";
+import AdvancedSearch from "@/shared/components/AdvancedSearch";
 
 const Settings = () => {
   const { monthlyStartingPoint, setMonthlyStartingPoint, dailyData, transactions, currency, clearAllData } = useFinancial();
@@ -337,6 +338,20 @@ const Settings = () => {
 
       {/* Offline Support */}
       <OfflineSupport />
+
+      {/* Advanced Search */}
+      <Card className="p-6">
+        <div className="flex items-center gap-3 mb-6">
+          <Search className="h-5 w-5 text-primary" />
+          <h2 className="text-xl font-semibold">Advanced Search</h2>
+        </div>
+        <div className="space-y-4">
+          <p className="text-sm text-muted-foreground">
+            Search through all your financial data with advanced filters and criteria.
+          </p>
+          <AdvancedSearch />
+        </div>
+      </Card>
     </div>
   );
 };
