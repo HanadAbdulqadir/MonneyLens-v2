@@ -42,7 +42,7 @@ export default function FloatingActionButton({
     const angle = startAngle + (angleStep * index); // Add to go clockwise
     
     // Optimized radius to ensure all buttons fit on screen
-    const radius = 500; // Reduced radius to keep buttons within screen bounds
+    const radius = 110; // Reduced radius to keep buttons within screen bounds
     
     if (layout === "vertical") {
       return {
@@ -122,13 +122,9 @@ const defaultActions: FabAction[] = [
     icon: <Plus size={20} />,
     label: "Add Transaction",
     onClick: () => {
-      // Navigate to transactions or trigger add modal
-      if (window.location.pathname === '/') {
-        const addButton = document.querySelector('[data-add-transaction]') as HTMLButtonElement;
-        if (addButton) addButton.click();
-      } else {
-        window.location.href = '/transactions';
-      }
+      // Trigger quick transaction modal
+      const event = new CustomEvent('open-add-transaction-modal');
+      window.dispatchEvent(event);
     },
     color: "bg-blue-500 hover:bg-blue-600"
   },
@@ -145,51 +141,79 @@ const defaultActions: FabAction[] = [
   {
     icon: <Target size={20} />,
     label: "New Goal",
-    onClick: () => window.location.href = '/goals',
+    onClick: () => {
+      // Trigger quick goal creation modal
+      const event = new CustomEvent('open-quick-goal-modal');
+      window.dispatchEvent(event);
+    },
     color: "bg-green-500 hover:bg-green-600"
   },
   {
     icon: <Wallet size={20} />,
-    label: "Budget",
-    onClick: () => window.location.href = '/budget',
+    label: "Quick Budget",
+    onClick: () => {
+      // Trigger budget quick action
+      const event = new CustomEvent('open-budget-quick-action');
+      window.dispatchEvent(event);
+    },
     color: "bg-amber-500 hover:bg-amber-600"
   },
   {
     icon: <CreditCard size={20} />,
     label: "Add Debt",
-    onClick: () => window.location.href = '/debts',
+    onClick: () => {
+      // Trigger debt quick entry
+      const event = new CustomEvent('open-debt-quick-entry');
+      window.dispatchEvent(event);
+    },
     color: "bg-red-500 hover:bg-red-600"
   },
   {
     icon: <TrendingUp size={20} />,
-    label: "Analytics",
-    onClick: () => window.location.href = '/analytics',
+    label: "Quick Analytics",
+    onClick: () => {
+      // Trigger analytics overview modal
+      const event = new CustomEvent('open-analytics-overview');
+      window.dispatchEvent(event);
+    },
     color: "bg-purple-500 hover:bg-purple-600"
   },
   {
     icon: <Calculator size={20} />,
     label: "Quick Calculator",
-    onClick: () => window.location.href = '/tools',
+    onClick: () => {
+      // Trigger calculator modal
+      const event = new CustomEvent('open-calculator-modal');
+      window.dispatchEvent(event);
+    },
     color: "bg-indigo-500 hover:bg-indigo-600"
   },
   {
     icon: <Calendar size={20} />,
     label: "Schedule Payment",
-    onClick: () => window.location.href = '/recurring',
+    onClick: () => {
+      // Trigger recurring payment modal
+      const event = new CustomEvent('open-recurring-payment-modal');
+      window.dispatchEvent(event);
+    },
     color: "bg-orange-500 hover:bg-orange-600"
   },
   {
     icon: <Folder size={20} />,
     label: "Import Data",
-    onClick: () => window.location.href = '/import-export',
+    onClick: () => {
+      // Trigger import modal
+      const event = new CustomEvent('open-import-modal');
+      window.dispatchEvent(event);
+    },
     color: "bg-teal-500 hover:bg-teal-600"
   },
   {
     icon: <Download size={20} />,
     label: "Export Data",
     onClick: () => {
-      // Trigger export functionality
-      const event = new CustomEvent('export-data');
+      // Trigger export modal
+      const event = new CustomEvent('open-export-modal');
       window.dispatchEvent(event);
     },
     color: "bg-cyan-500 hover:bg-cyan-600"
@@ -213,7 +237,7 @@ const defaultActions: FabAction[] = [
     label: "Accessibility",
     onClick: () => {
       // Trigger accessibility panel
-      const event = new CustomEvent('open-accessibility');
+      const event = new CustomEvent('open-accessibility-panel');
       window.dispatchEvent(event);
     },
     color: "bg-pink-500 hover:bg-pink-600"
@@ -235,12 +259,8 @@ const defaultActions: FabAction[] = [
     icon: <Keyboard size={20} />,
     label: "Shortcuts",
     onClick: () => {
-      // Show shortcuts help
-      const event = new KeyboardEvent('keydown', {
-        key: 'k',
-        ctrlKey: true,
-        bubbles: true
-      });
+      // Show shortcuts modal
+      const event = new CustomEvent('open-shortcuts-modal');
       window.dispatchEvent(event);
     },
     color: "bg-lime-500 hover:bg-lime-600"
@@ -248,7 +268,11 @@ const defaultActions: FabAction[] = [
   {
     icon: <Settings size={20} />,
     label: "Quick Settings",
-    onClick: () => window.location.href = '/settings',
+    onClick: () => {
+      // Trigger settings panel
+      const event = new CustomEvent('open-quick-settings');
+      window.dispatchEvent(event);
+    },
     color: "bg-gray-500 hover:bg-gray-600"
   }
 ];
