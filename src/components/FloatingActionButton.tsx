@@ -25,10 +25,10 @@ export default function FloatingActionButton({
 
   // Position classes
   const positionClasses = {
-    "bottom-right": "bottom-6 right-6",
-    "bottom-left": "bottom-6 left-6",
-    "top-right": "top-6 right-6",
-    "top-left": "top-6 left-6"
+    "bottom-right": "bottom-6 right-4 sm:right-6",
+    "bottom-left": "bottom-6 left-4 sm:left-6",
+    "top-right": "top-6 right-4 sm:right-6",
+    "top-left": "top-6 left-4 sm:left-6"
   };
 
   // Layout calculations - Quarter circle optimized to fit all buttons on screen

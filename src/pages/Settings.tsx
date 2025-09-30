@@ -119,7 +119,7 @@ const Settings = () => {
   };
 
   return (
-    <div className="space-y-6 animate-fade-in max-w-4xl mx-auto px-4">
+    <div className="space-y-4 sm:space-y-6 animate-fade-in max-w-4xl mx-auto px-3 sm:px-4">
       <div className="flex items-center justify-between">
         <div className="space-y-1">
           <h1 className="text-3xl font-bold tracking-tight">

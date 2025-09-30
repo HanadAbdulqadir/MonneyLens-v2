@@ -117,24 +117,27 @@ const ProtectedLayout = ({ children }: { children: React.ReactNode }) => {
             
             <main className="flex-1 overflow-auto bg-gradient-to-br from-background to-muted/20">
               <header className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b shadow-sm">
-                <div className="flex items-center justify-between h-16 px-6">
-                  <div className="flex items-center gap-4">
-                    <SidebarTrigger className="mr-2" />
+                <div className="flex items-center justify-between h-16 px-4 sm:px-6">
+                  <div className="flex items-center gap-3">
+                    <SidebarTrigger className="mr-1 sm:mr-2" />
                     <div className="hidden sm:block">
                       <h1 className="text-lg font-semibold text-primary">MoneyLens</h1>
                       <p className="text-xs text-muted-foreground">Your financial companion</p>
                     </div>
+                    <div className="sm:hidden">
+                      <h1 className="text-base font-semibold text-primary">MoneyLens</h1>
+                    </div>
                   </div>
                   
                   {/* Header Actions */}
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 sm:gap-3">
                     <NotificationSystem />
                     <DataImporter />
                   </div>
                 </div>
               </header>
               
-              <div className="p-6">
+              <div className="p-4 sm:p-6 pb-20 sm:pb-6">
                 {children}
               </div>
 
