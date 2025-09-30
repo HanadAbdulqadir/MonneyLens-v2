@@ -123,6 +123,7 @@ const defaultActions: FabAction[] = [
     label: "Add Transaction",
     onClick: () => {
       // Trigger quick transaction modal
+      console.log('Dispatching open-add-transaction-modal event');
       const event = new CustomEvent('open-add-transaction-modal');
       window.dispatchEvent(event);
     },

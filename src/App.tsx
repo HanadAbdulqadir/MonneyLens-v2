@@ -52,6 +52,7 @@ const ProtectedLayout = ({ children }: { children: React.ReactNode }) => {
   // Listen for modal events from FAB
   React.useEffect(() => {
     const handleOpenModal = (event: CustomEvent) => {
+      console.log('Received modal event:', event.type);
       const modalType = event.type.replace('open-', '');
       setModalType(modalType);
       setIsModalOpen(true);
