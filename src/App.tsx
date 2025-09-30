@@ -15,7 +15,6 @@ import PageTourManager from "@/shared/components/PageTourManager";
 import GoalNotificationManager from "@/shared/components/GoalNotificationManager";
 import NotificationSystem from "@/shared/components/NotificationSystem";
 import DataImporter from "@/shared/components/DataImporter";
-import AdvancedSearch from "@/shared/components/AdvancedSearch";
 import UserOnboarding from "@/shared/components/UserOnboarding";
 import MobileBottomNavigation from "@/shared/components/MobileBottomNavigation";
 import FloatingActionButton from "./components/FloatingActionButton";
@@ -142,7 +141,6 @@ const ProtectedLayout = ({ children }: { children: React.ReactNode }) => {
               {/* Enhanced UX Components */}
               <PageTourManager />
               <GoalNotificationManager />
-              <AdvancedSearch />
               <UserOnboarding />
               <MobileBottomNavigation />
               
