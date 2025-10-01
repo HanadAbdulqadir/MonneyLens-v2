@@ -35,6 +35,7 @@ import Pots from "./pages/Pots";
 import Tools from "./pages/Tools";
 import ImportExport from "./pages/ImportExport";
 import FabDemo from "./pages/FabDemo";
+import OctoberPlan from "./pages/OctoberPlan";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -259,6 +260,11 @@ function AppContent() {
       <Route path="/fab-demo" element={
         <ProtectedRoute>
           <ProtectedLayout><FabDemo /></ProtectedLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/october-plan" element={
+        <ProtectedRoute>
+          <ProtectedLayout><OctoberPlan /></ProtectedLayout>
         </ProtectedRoute>
       } />
       
