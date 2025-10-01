@@ -56,7 +56,7 @@ export const hubs: HubItem[] = [
     color: "text-green-600",
     subItems: [
       { id: "financial-hub", title: "Financial Hub", path: "/financial-hub", description: "Complete financial planning" },
-      { id: "october-plan", title: "October Plan", path: "/october-plan", description: "Dynamic cash flow planning" },
+      { id: "cash-flow-planner", title: "Cash Flow Planner", path: "/cash-flow-planner", description: "Dynamic monthly cash flow planning" },
       { id: "pots", title: "Pots", path: "/pots", description: "Envelope budgeting system" },
       { id: "budget", title: "Budget", path: "/budget", description: "Budget management & tracking" },
       { id: "goals", title: "Goals", path: "/goals", description: "Financial goal achievement" },

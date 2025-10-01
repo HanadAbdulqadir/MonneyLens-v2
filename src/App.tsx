@@ -36,6 +36,7 @@ import Tools from "./pages/Tools";
 import ImportExport from "./pages/ImportExport";
 import FabDemo from "./pages/FabDemo";
 import OctoberPlan from "./pages/OctoberPlan";
+import CashFlowPlanner from "./pages/CashFlowPlanner";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -265,6 +266,11 @@ function AppContent() {
       <Route path="/october-plan" element={
         <ProtectedRoute>
           <ProtectedLayout><OctoberPlan /></ProtectedLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/cash-flow-planner" element={
+        <ProtectedRoute>
+          <ProtectedLayout><CashFlowPlanner /></ProtectedLayout>
         </ProtectedRoute>
       } />
       
